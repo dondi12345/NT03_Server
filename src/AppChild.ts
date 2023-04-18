@@ -2,8 +2,9 @@
 import { Server, Socket } from "socket.io";
 import {port, url, variable} from "./other/Env";
 import redis from 'redis';
-import { router } from "./Message/MessageRouter";
+import { MessageRouter } from "./Message/Router/MessageRouter";
 import { Message } from "./Message/Model/Message";
+import Init from "./Service/Init";
 // import SocketMessageModel from "./Socket/SocketMessageModel";
 // import { router } from "./Socket/SocketRouter";
 
@@ -20,25 +21,33 @@ function AppChild() {
     console.log(`Worker ${process.pid} listening on port: ${port.portAppChild}`);
     const workerChannel = `worker${process.pid}`;
 
-    redisSubscriber.subscribe('worker');
+    Init.Init().then(()=>{
+        io.on(variable.eventSocketConnection, (socket : Socket) => {
+            // send a message to the client
+            for (let i = 0; i < 600000; i++) {
+            }
+            console.log("new socket connect");
+            listSocket.push(socket);
+        
+            // receive a message from the client
+            socket.on(variable.eventSocketListening, (data) => {
+                console.log(data);
+                var message = Message.Parse(data);
+                message.socketId = socket.id;
+                console.log(message);
+                MessageRouter(message)
+            });
+        });
+    }).catch(err=>{
+        console.log(err);
+    })
+
+    redisSubscriber.subscribe(variable.worker);
 
     redisSubscriber.on('message', (channel, data) => {
-        // var socketMessage = SocketMessageModel.SocketMessage.Parse(data);
-        // router(socketMessage);
-});
-
-io.on(variable.eventSocketConnection, (socket) => {
-    // send a message to the client
-    for (let i = 0; i < 600000; i++) {
-    }
-    listSocket.push(socket);
-
-    // receive a message from the client
-    socket.on(variable.eventSocketListening, (data) => {
-        var message : Message = JSON.parse(data);
-        router(message)
+        var message = Message.Parse(data);
+        MessageRouter(message);
     });
-});
 }
 
 export { AppChild, listSocket };
