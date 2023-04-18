@@ -5,6 +5,7 @@ import redis from 'redis';
 import { MessageRouter } from "./Message/Router/MessageRouter";
 import { Message } from "./Message/Model/Message";
 import Init from "./Service/Init";
+import { MessageCode } from "./Message/MessageCode";
 // import SocketMessageModel from "./Socket/SocketMessageModel";
 // import { router } from "./Socket/SocketRouter";
 
@@ -26,15 +27,14 @@ function AppChild() {
             // send a message to the client
             for (let i = 0; i < 600000; i++) {
             }
-            console.log("new socket connect");
-            listSocket.push(socket);
-        
+            
             // receive a message from the client
             socket.on(variable.eventSocketListening, (data) => {
-                console.log(data);
                 var message = Message.Parse(data);
+                if(message.messageCode == MessageCode.messageConnect){
+                    listSocket.push(socket);
+                }
                 message.socketId = socket.id;
-                console.log(message);
                 MessageRouter(message)
             });
         });
@@ -47,6 +47,15 @@ function AppChild() {
     redisSubscriber.on('message', (channel, data) => {
         var message = Message.Parse(data);
         MessageRouter(message);
+    });
+}
+
+export function SendMessage(message : Message, socketId){
+    listSocket.forEach(element => {
+        if(socketId == element.id){
+            console.log(`${socketId} emit: ${element.id}` + JSON.stringify(message));
+            element.emit(variable.eventSocketListening, JSON.stringify(message));
+        }
     });
 }
 
