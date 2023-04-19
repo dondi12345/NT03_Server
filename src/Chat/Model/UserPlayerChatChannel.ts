@@ -1,14 +1,15 @@
 import mongoose, { Schema, ObjectId } from 'mongoose';
+import { Socket } from "socket.io";
 
 export interface IUserPlayerChatChannel {
-    socketId: string;
     idUser : ObjectId;
+    socket : Socket;
     idChatChannels : ObjectId[];
 }
 
 export class UserPlayerChatChannel implements IUserPlayerChatChannel {
-    socketId: string;
     idUser : ObjectId;
+    socket : Socket;
     idChatChannels : ObjectId[];
 
     static ExistChatChannel(id : ObjectId, userPlayerChatChannel : IUserPlayerChatChannel){

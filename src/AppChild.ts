@@ -7,6 +7,7 @@ import { Message } from "./Message/Model/Message";
 import Init from "./Service/Init";
 import { MessageCode } from "./Message/MessageCode";
 import mongoose, { ObjectId } from "mongoose";
+import { ConnectToChat } from "./Chat/Controller/ChatController";
 // import SocketMessageModel from "./Socket/SocketMessageModel";
 // import { router } from "./Socket/SocketRouter";
 
@@ -37,10 +38,10 @@ export function AppChild() {
             socket.on(variable.eventSocketListening, (data) => {
                 console.log(data);
                 var message = Message.Parse(data);
-                if(message.messageCode == MessageCode.messageConnect){
-                    AddUserSocket(message.idUser, socket);
-                }
                 message.socketId = socket.id;
+                if(message.messageCode == MessageCode.messageConnect){
+                    UserConnect(message.idUser, socket);
+                }
                 MessageRouter(message)
             });
         });
@@ -56,11 +57,17 @@ export function AppChild() {
     });
 }
 
+export function UserConnect(idUser: ObjectId, socket: Socket){
+    AddUserSocket(idUser, socket);
+    ConnectToChat(idUser, socket);
+}
+
 export function AddUserSocket(idUser : ObjectId, socket : Socket){
     for (let index = 0; index < listUserSocket.length; index++) {
         const element = listUserSocket[index];
         console.log(idUser + ' - ' + element.idUser + ": " + (idUser == element.idUser));
         if(idUser == element.idUser){
+            element.socket.disconnect;
             element.socket = socket;
             console.log("Update socket");
             return;
@@ -70,16 +77,17 @@ export function AddUserSocket(idUser : ObjectId, socket : Socket){
     newUserSocket.idUser = idUser;
     newUserSocket.socket = socket;
     listUserSocket.push(newUserSocket);
-    console.log("New user socket: "+ listUserSocket.length);
+    console.log(`New user connect to ${workerChannel}: `+ listUserSocket.length);
 }
 
 export function SendMessage(message : Message, idUser : ObjectId){
     var data : string = JSON.stringify(message.data);
     message.data = data;
+    const messageData :string = JSON.stringify(message);
     listUserSocket.forEach(element => {
         if(idUser == element.idUser){
-            console.log(`${workerChannel} emit to ${element.idUser}: ` + JSON.stringify(message) +`\n`);
-            element.socket.emit(variable.eventSocketListening, JSON.stringify(message));
+            console.log(`${workerChannel} emit to ${element.socket.id} : ${element.idUser}: ` + messageData +`\n`);
+            element.socket.emit(variable.eventSocketListening, messageData);
         }
     });
 }

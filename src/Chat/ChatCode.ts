@@ -1,4 +1,4 @@
 export enum ChatCode {
-    sendGlobal = 1,
-    reciveGlobal = 2,
+    sendChat = 1,
+    reciveChat = 2,
 }

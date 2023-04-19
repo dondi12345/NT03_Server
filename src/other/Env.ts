@@ -2,6 +2,7 @@ export const port = {
     portAppChild : 8080,
     portSocketManager : 9000,
     portSocketManagerIO : 9090,
+    portChatSystem : 8081,
 }
 
 export const Mongo = {

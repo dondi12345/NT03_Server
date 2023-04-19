@@ -7,10 +7,10 @@ import { Chat } from "../Model/Chat";
 export function ChatRouter(message : IMessage){
     var chat : Chat = Chat.Parse(message.data);
     message.data = chat;
-    if(chat.chatCode == ChatCode.sendGlobal){
+    if(chat.chatCode == ChatCode.sendChat){
         ClientSendGlobalChat(message);
     }
-    if(chat.chatCode == ChatCode.reciveGlobal){
+    if(chat.chatCode == ChatCode.reciveChat){
         ServerSendGlobalChat(message);
     }
 }

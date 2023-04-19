@@ -5,18 +5,15 @@ import { variable } from '../../other/Env';
 export interface IChatChannel{
     _id : ObjectId;
     detail : string;
-    chats: Chat[];
 }
 
 export class ChatChannel implements IChatChannel{
     _id: ObjectId;
     detail: string;
-    chats: Chat[];
 
     constructor(data) {
         this._id = data._id;
         this.detail = data.detail;
-        this.chats = data.chats;
     }
 
     static Parse(data) : ChatChannel{
@@ -32,7 +29,6 @@ const ChatChannelSchema = new Schema<IChatChannel>(
     {
       _id : { type: mongoose.Schema.Types.ObjectId},
       detail: String,
-      chats : [],
     }
 );
   
