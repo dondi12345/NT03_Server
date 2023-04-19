@@ -4,10 +4,6 @@ export const port = {
     portSocketManagerIO : 9090,
 }
 
-export const url = {
-    urlConnectUser : "http://localhost:9000/connect",
-}
-
 export const Mongo = {
     dbLink : "mongodb://localhost/NT03",
     DbName : "NT03",

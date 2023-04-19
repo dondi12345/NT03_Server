@@ -1,28 +1,36 @@
 import mongoose, { Schema, ObjectId } from 'mongoose';
+import { variable } from '../other/Env';
 
 export interface IUserPlayer{
     _id : ObjectId;
     lastDate : Number;
     loginStreak : Number;
-    idChatChannels : ObjectId[];
+    idChatGlobal? : ObjectId;
+    idChatGuild? : ObjectId;
 }
 
 export class UserPlayer implements IUserPlayer{
     _id: Schema.Types.ObjectId;
     lastDate: Number;
     loginStreak: Number;
-    idChatChannels : ObjectId[];
+    idChatGlobal? : ObjectId;
+    idChatGuild? : ObjectId;
 
     constructor() {
         
     }
 
-    static Parse(data) : UserPlayer{
+    static Parse(data) : IUserPlayer{
         try{
-            return JSON.parse(data);
-        }catch{
-            return data;
-        }
+            data = JSON.parse(data);
+        }catch(err){}
+        var userPlayer = new UserPlayer();
+        userPlayer._id = data._id;
+        userPlayer.lastDate = data.lastDate;
+        userPlayer.loginStreak = data.loginStreak;
+        userPlayer.idChatGlobal = data?.idChatGlobal ? data.idChatGlobal : null;
+        userPlayer.idChatGuild = data?.idChatGuild ? data.idChatGuild : null;
+        return userPlayer;
     }
 }
 
@@ -31,7 +39,8 @@ const UserPlayerSchema = new Schema<IUserPlayer>(
       _id : { type: mongoose.Schema.Types.ObjectId},
       lastDate: Number,
       loginStreak : Number,
-      idChatChannels : [],
+      idChatGlobal : { type: mongoose.Schema.Types.ObjectId},
+      idChatGuild : { type: mongoose.Schema.Types.ObjectId},
     }
 );
   
