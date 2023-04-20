@@ -9,52 +9,11 @@ import { GetUserPlayerById, UserPlayer, IUserPlayer } from "../../UserPlayer/Use
 import mongoose, { Schema, ObjectId } from 'mongoose';
 import { SendMessage } from "../../AppChild";
 import { Socket } from "socket.io";
+import { userPlayerChatChannels } from "../ChatSystem";
 
 const redisChat = redis.createClient();
 
 const redisPublisher = redis.createClient();
-
-let userPlayerChatChannels : UserPlayerChatChannel[] = []
-
-export function ConnectToChat(idUser : ObjectId, socket : Socket){
-    GetUserPlayerById(idUser).then((res : UserPlayer)=>{
-        var userPlayerChatChannel = new UserPlayerChatChannel();
-        userPlayerChatChannel.socket = socket;
-        userPlayerChatChannel.idChatChannels = [];
-        try{
-            var userPlayer = UserPlayer.Parse(res);
-            console.log(JSON.stringify(userPlayer) + `\n`);
-            if(userPlayer.idChatGlobal != null) userPlayerChatChannel.idChatChannels.push(userPlayer.idChatGlobal)
-            if(userPlayer.idChatGuild != null) userPlayerChatChannel.idChatChannels.push(userPlayer.idChatGuild)
-            console.log(JSON.stringify(userPlayerChatChannel.idChatChannels)+ `\n`);
-            userPlayerChatChannel.idUser = idUser;
-        }catch(err){
-            console.log("GetUserPlayerById: \n" + err)
-            var idChatGlobal = new mongoose.Schema.Types.ObjectId(variable.idChatGlobal);
-            userPlayerChatChannel.idChatChannels.push(idChatGlobal);
-            userPlayerChatChannel.idUser = idUser;
-        }
-        AddUserPlayerChatChannel(userPlayerChatChannel, socket);
-    }).catch((err)=>{
-        console.log(err);
-    })
-}
-
-function AddUserPlayerChatChannel(userPlayerChatChannel: UserPlayerChatChannel, socket : Socket){
-    for (let index = 0; index < userPlayerChatChannels.length; index++) {
-        const element = userPlayerChatChannels[index];
-        console.log(userPlayerChatChannel.idUser + ' - ' + element.idUser + ": " + (userPlayerChatChannel.idUser == element.idUser));
-        if(element.idUser == userPlayerChatChannel.idUser){
-            console.log("Update userPlayerChatChannel");
-            element.idChatChannels = userPlayerChatChannel.idChatChannels;
-            element.socket.disconnect;
-            element.socket = socket;
-            return;
-        }
-    }
-    userPlayerChatChannels.push(userPlayerChatChannel);
-    console.log("New userPlayerChatChannel: "+ userPlayerChatChannels.length);
-}
 
 export function ClientSendGlobalChat(message : IMessage){
     var chat : Chat = Chat.Parse(message.data);
@@ -63,7 +22,7 @@ export function ClientSendGlobalChat(message : IMessage){
     if(chat.content.length == 0) return;
     GetChatChannelById(chat.idChatChannel).then((res : ChatChannel) => {
         console.log("findout chatChannel: " + JSON.stringify(res));
-        redisPublisher.publish(variable.worker, JSON.stringify(message));
+        redisPublisher.publish(variable.chatSystem, JSON.stringify(message));
         addChatToRedis(JSON.stringify(res._id), JSON.stringify(chat));
     })
 }
@@ -76,7 +35,7 @@ export function ServerSendGlobalChat(message : IMessage){
     console.log("ServerSendGlobalChat: "+ chatData +`\n`);
     userPlayerChatChannels.forEach(element => {
         if(UserPlayerChatChannel.ExistChatChannel(chat.idChatChannel, element)){
-            console.log("ChatServerSendGMessage: "+ messageData +`\n`);
+            console.log(`ChatServerSendGMessage : ${process.pid} to ${element.socket.id}`+ messageData +`\n`);
             element.socket.emit(variable.eventSocketListening, messageData);
         }
     });
@@ -90,13 +49,6 @@ export function addChatToRedis(idChatChannel :string, chat: string) {
             console.log(`Chat message added ${result}: `, chat);
             // Remove oldest message if we have more than MAX_CHAT
             if (result > variable.maxLengthChat) {
-                // redisChat.lpop(idChatChannel, (error, result) => {
-                //     if (error) {
-                //     console.error('Failed to remove oldest chat message:', error);
-                //     } else {
-                //     console.log('Oldest chat message removed:', result);
-                //     }
-                // });
                 redisChat.ltrim(idChatChannel, result - variable.maxLengthChat, -1, (error, result) => {
                     if (error) {
                         console.error('Failed to remove oldest chat message:', error);

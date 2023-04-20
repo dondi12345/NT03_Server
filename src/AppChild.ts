@@ -7,7 +7,7 @@ import { Message } from "./Message/Model/Message";
 import Init from "./Service/Init";
 import { MessageCode } from "./Message/MessageCode";
 import mongoose, { ObjectId } from "mongoose";
-import { ConnectToChat } from "./Chat/Controller/ChatController";
+import { ChatSystemInit } from "./Chat/ChatSystem";
 // import SocketMessageModel from "./Socket/SocketMessageModel";
 // import { router } from "./Socket/SocketRouter";
 
@@ -34,13 +34,14 @@ export function AppChild() {
             // send a message to the client
             // for (let i = 0; i < 600000; i++) {
             // }
-            // receive a message from the client
+            console.log("Socket connec to App");
             socket.on(variable.eventSocketListening, (data) => {
                 console.log(data);
                 var message = Message.Parse(data);
                 message.socketId = socket.id;
                 if(message.messageCode == MessageCode.messageConnect){
                     UserConnect(message.idUser, socket);
+                    return;
                 }
                 MessageRouter(message)
             });
@@ -48,6 +49,8 @@ export function AppChild() {
     }).catch(err=>{
         console.log(err);
     })
+
+    ChatSystemInit();
 
     redisSubscriber.subscribe(variable.worker);
 
@@ -59,7 +62,6 @@ export function AppChild() {
 
 export function UserConnect(idUser: ObjectId, socket: Socket){
     AddUserSocket(idUser, socket);
-    ConnectToChat(idUser, socket);
 }
 
 export function AddUserSocket(idUser : ObjectId, socket : Socket){

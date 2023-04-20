@@ -14,6 +14,7 @@ export const variable = {
     eventSocketConnection : "connection",
     eventSocketListening : "listening",
     worker : "worker",
+    chatSystem : "ChatSystem",
     idChatGlobal : "643e14f2d8930cecd1865a60",
     maxLengthChat : 50,
 }
