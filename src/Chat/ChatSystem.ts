@@ -1,9 +1,7 @@
 import { Server, Socket } from "socket.io";
 import {port, variable} from "../other/Env";
 import redis from 'redis';
-import { MessageRouter } from "../Message/Router/MessageRouter";
 import { Message } from "../Message/Model/Message";
-import Init from "../Service/Init";
 import { MessageCode } from "../Message/MessageCode";
 import mongoose, { ObjectId } from "mongoose";
 import { UserPlayerChatChannel } from "./Model/UserPlayerChatChannel";
@@ -21,7 +19,6 @@ export function ChatSystemInit(){
     const io = new Server(port.portChatSystem);
     console.log(`Chat ${process.pid} listening on port: ${port.portChatSystem}`);
     io.on(variable.eventSocketConnection, (socket : Socket) => {
-        console.log("Socket connec to Chat");
         socket.on(variable.eventSocketListening, (data) => {
             console.log(data);
             var message = Message.Parse(data);
@@ -33,8 +30,7 @@ export function ChatSystemInit(){
             ChatRouter(message)
         });
         socket.on('disconnect', () => {
-            console.log('A client disconnected: ' + socket.id);
-            RemovePlayerChatChannel(socket);
+            RemovePlayerChatChannelBySocket(socket);
         });
     });
 
@@ -53,38 +49,38 @@ export function UserConnectToChat(idUser : ObjectId, socket : Socket){
         userPlayerChatChannel.idChatChannels = [];
         try{
             var userPlayer = UserPlayer.Parse(res);
-            console.log(JSON.stringify(userPlayer) + `\n`);
             if(userPlayer.idChatGlobal != null) userPlayerChatChannel.idChatChannels.push(userPlayer.idChatGlobal)
             if(userPlayer.idChatGuild != null) userPlayerChatChannel.idChatChannels.push(userPlayer.idChatGuild)
-            console.log(JSON.stringify(userPlayerChatChannel.idChatChannels)+ `\n`);
             userPlayerChatChannel.idUser = idUser;
         }catch(err){
-            console.log("GetUserPlayerById: \n" + err)
             var idChatGlobal = new mongoose.Schema.Types.ObjectId(variable.idChatGlobal);
             userPlayerChatChannel.idChatChannels.push(idChatGlobal);
             userPlayerChatChannel.idUser = idUser;
         }
-        AddUserPlayerChatChannel(userPlayerChatChannel, socket);
+        AddUserPlayerChatChannel(userPlayerChatChannel);
     }).catch((err)=>{
         console.log(err);
     })
 }
 
-function AddUserPlayerChatChannel(userPlayerChatChannel: UserPlayerChatChannel, socket : Socket){
+function AddUserPlayerChatChannel(userPlayerChatChannel: UserPlayerChatChannel){
+    RemovePlayerChatChannelByIdUser(userPlayerChatChannel.idUser);
     userPlayerChatChannels.push(userPlayerChatChannel);
-    console.log("New userPlayerChatChannel: "+ userPlayerChatChannels.length);
 }
 
-function RemovePlayerChatChannel(socket : Socket){
-    var pos = -1;
-    for (let index = 0; index < userPlayerChatChannels.length; index++) {
+function RemovePlayerChatChannelBySocket(socket : Socket){
+    for (let index = userPlayerChatChannels.length -1; index >=0 ; index--) {
         const element = userPlayerChatChannels[index];
         if(element.socket.id == socket.id){
-            pos = index;
-            element.socket.disconnect; 
-            socket.disconnect;
+            userPlayerChatChannels.splice(index, 1);
         }
     }
-    if(pos == -1) return;
-    userPlayerChatChannels.splice(pos, 1);
+}
+function RemovePlayerChatChannelByIdUser(id : ObjectId){
+    for (let index = userPlayerChatChannels.length -1; index >=0 ; index--) {
+        const element = userPlayerChatChannels[index];
+        if(element.idUser == id){
+            userPlayerChatChannels.splice(index, 1);
+        }
+    }
 }

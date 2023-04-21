@@ -5,6 +5,7 @@ export interface IChat{
     chatCode : ChatCode;
     idChatChannel : ObjectId;
     idUser : ObjectId;
+    time : Date;
     content : string;
 }
 
@@ -12,6 +13,7 @@ export class Chat implements IChat {
     chatCode : ChatCode;
     idChatChannel : ObjectId;
     idUser : ObjectId;
+    time : Date = new Date;
     content : string;
 
     constructor() {
@@ -26,14 +28,3 @@ export class Chat implements IChat {
         }
     }
 }
-
-const ChatSchema = new Schema<IChat>(
-    {
-        chatCode : {type : Number, enum : ChatCode},
-        idChatChannel : { type: mongoose.Schema.Types.ObjectId, ref: 'ChatChannel' },
-        idUser : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        content : String,
-    }
-);
-  
-export const ChatModel = mongoose.model<IChat>('Chat', ChatSchema);

@@ -39,7 +39,6 @@ export async function GetChatChannelById(_id : ObjectId){
     await ChatChannelModel.findById(_id).then((res)=>{
         chatChannel = new ChatChannel(res);
     }).catch((err)=>{
-        console.log("cand find chatChannel: " + err);
         chatChannel = new ChatChannel({});
     });
     return chatChannel;

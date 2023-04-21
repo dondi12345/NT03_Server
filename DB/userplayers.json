@@ -1,0 +1,18 @@
+[{
+  "_id": {
+    "$oid": "64351f20cb49ccd25e90dda0"
+  },
+  "lastDate": 20230412,
+  "loginStreak": 3,
+  "idChatGlobal": "643e14f2d8930cecd1865a60",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6435244ef6d247cc157d14c3"
+  },
+  "lastDate": 20230411,
+  "loginStreak": 2,
+  "idChatGlobal": "643e14f2d8930cecd1865a60",
+  "idChatGuild": "643e7a27d8930cecd1865a96",
+  "__v": 0
+}]

@@ -21,7 +21,6 @@ export function ClientSendGlobalChat(message : IMessage){
     message.data = chat;
     if(chat.content.length == 0) return;
     GetChatChannelById(chat.idChatChannel).then((res : ChatChannel) => {
-        console.log("findout chatChannel: " + JSON.stringify(res));
         redisPublisher.publish(variable.chatSystem, JSON.stringify(message));
         addChatToRedis(JSON.stringify(res._id), JSON.stringify(chat));
     })
@@ -32,10 +31,10 @@ export function ServerSendGlobalChat(message : IMessage){
     var chatData : string = JSON.stringify(chat);
     message.data = chatData;
     var messageData :string = JSON.stringify(message);
-    console.log("ServerSendGlobalChat: "+ chatData +`\n`);
+    console.log(`${process.pid} ServerSendGlobalChat ${userPlayerChatChannels.length}`);
     userPlayerChatChannels.forEach(element => {
         if(UserPlayerChatChannel.ExistChatChannel(chat.idChatChannel, element)){
-            console.log(`ChatServerSendGMessage : ${process.pid} to ${element.socket.id}`+ messageData +`\n`);
+            console.log(`${process.pid} ChatServerSendGMessage to ${element.socket.id}`);
             element.socket.emit(variable.eventSocketListening, messageData);
         }
     });

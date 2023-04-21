@@ -1,0 +1,11 @@
+[{
+  "_id": {
+    "$oid": "643e14f2d8930cecd1865a60"
+  },
+  "detail": "Global chat"
+},{
+  "_id": {
+    "$oid": "643e7a27d8930cecd1865a96"
+  },
+  "detail": "Private chat"
+}]
