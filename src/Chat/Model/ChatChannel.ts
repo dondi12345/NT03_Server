@@ -27,7 +27,6 @@ export class ChatChannel implements IChatChannel{
 
 const ChatChannelSchema = new Schema<IChatChannel>(
     {
-      _id : { type: mongoose.Schema.Types.ObjectId},
       detail: String,
     }
 );

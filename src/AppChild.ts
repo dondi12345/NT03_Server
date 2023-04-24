@@ -30,6 +30,7 @@ export function AppChild() {
     workerChannel = `worker${process.pid}`;
 
     Init.Init().then(()=>{
+        console.log("Init success");
         io.on(variable.eventSocketConnection, (socket : Socket) => {
             // send a message to the client
             // for (let i = 0; i < 600000; i++) {

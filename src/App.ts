@@ -3,6 +3,10 @@
 import cluster from 'cluster';
 import { createClient } from 'redis';
 import {AppChild} from './AppChild';
+import { CreateRacingHourse, RacingHourse } from './MiniGame/RacingHourse/Controller/RacingHourseCtroller';
+import Init from './Service/Init';
+
+import { scheduleJob } from 'node-schedule';
 
 // Create Redis client
 const redisClient = createClient();
@@ -24,6 +28,12 @@ if (cluster.isMaster) {
   cluster.on('exit', (worker, code, signal) => {
     console.log(`worker ${worker.process.pid} died`);
   });
+
+  let idRacingHourse = 0;
+  Init.Init().then(res=>{
+    const date = new Date(2023, 3, 24, 18, 1, 0);
+    const job = scheduleJob(date,()=> RacingHourse());
+  })
 } else {
   // Start child app
   AppChild();

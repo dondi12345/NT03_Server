@@ -6,7 +6,7 @@ export const port = {
 }
 
 export const Mongo = {
-    dbLink : "mongodb://localhost/NT03",
+    dbLink : "mongodb://127.0.0.1:27017",
     DbName : "NT03",
 }
 
@@ -17,4 +17,6 @@ export const variable = {
     chatSystem : "ChatSystem",
     idChatGlobal : "643e14f2d8930cecd1865a60",
     maxLengthChat : 50,
+    maxLandRacingHourse : 8,
+    maxStepRacingHourse : 20,
 }
