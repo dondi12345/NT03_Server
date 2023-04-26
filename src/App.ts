@@ -7,6 +7,9 @@ import { CreateRacingHourse, RacingHourse } from './MiniGame/RacingHourse/Contro
 import Init from './Service/Init';
 
 import { scheduleJob } from 'node-schedule';
+import { GetNewestResultRacingHourse } from './MiniGame/RacingHourse/Model/ResultRacingHourse';
+import { GetTicketByIdResultRacingHourse } from './MiniGame/RacingHourse/Model/Ticket';
+import mongoose from 'mongoose';
 
 // Create Redis client
 const redisClient = createClient();
@@ -32,7 +35,9 @@ if (cluster.isMaster) {
   let idRacingHourse = 0;
   Init.Init().then(res=>{
     const date = new Date(2023, 3, 24, 18, 1, 0);
-    const job = scheduleJob(date,()=> RacingHourse());
+    var id = new mongoose.Schema.Types.ObjectId("64464d995f152f402a21521d")
+    GetTicketByIdResultRacingHourse(id);
+    // const job = scheduleJob(date,()=> RacingHourse());
   })
 } else {
   // Start child app

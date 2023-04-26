@@ -36,3 +36,29 @@ export async function CreateResultRacingHourse(){
     })
     return resultRacingHourse;
 }
+
+export async function FindResultRacingHourse(_id : ObjectId) {
+    var id = _id.path;
+    var data;
+    await ResultRacingHourseModel.findOne({_id : id}).then((res)=>{
+        data = res;
+    })
+    console.log(data._id);
+    return data;
+}
+
+export async function UpdateResultRacingHourse(resultRacingHourse : ResultRacingHourse){
+    await ResultRacingHourseModel.findByIdAndUpdate(resultRacingHourse._id, resultRacingHourse).then(res=>{
+        console.log(res);
+    });
+}
+
+export async function GetNewestResultRacingHourse(){
+    const maxVal = await ResultRacingHourseModel.aggregate([
+        { $group: {_id : null, maxField: { $max: '$dateCreate' } } }
+    ]).exec();
+    ResultRacingHourseModel.find({dateCreate : maxVal[0].maxField}).then(res=>{
+        console.log(res);
+    })
+}
+

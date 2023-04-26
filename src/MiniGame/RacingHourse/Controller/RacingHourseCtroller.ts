@@ -1,9 +1,10 @@
+import mongoose, { ObjectId } from "mongoose";
 import { variable } from "../../../other/Env";
 import { EffectCode } from "../Model/EffectCode";
 import { RacingHourseData } from "../Model/RacingHourseData";
-import { CreateResultRacingHourse, ResultRacingHourse } from "../Model/ResultRacingHourse";
+import { CreateResultRacingHourse, FindResultRacingHourse, ResultRacingHourse, UpdateResultRacingHourse } from "../Model/ResultRacingHourse";
 
-let idCurrentRacingHourse;
+let idCurrentRacingHourse = new mongoose.Schema.Types.ObjectId("64464d6a5b090c6657e54f70");
 
 export async function CreateRacingHourse(){
     await CreateResultRacingHourse().then((res)=>{
@@ -14,24 +15,27 @@ export async function CreateRacingHourse(){
 }
 
 export function RacingHourse(){
-    var resultRacingHourse  = new ResultRacingHourse();
-    resultRacingHourse.racingHourseDatas = [];
-    for (let i = 0; i < variable.maxLandRacingHourse; i++)
-    {
-        var racingHourseData = InitRacingHourseData();
-        racingHourseData.rank = 1;
-        for (let index = 0; index < resultRacingHourse.racingHourseDatas.length; index++) {
-            const element = resultRacingHourse.racingHourseDatas[index];
-            if(racingHourseData.totalTime < element.totalTime){
-                element.rank ++;
-            }else{
-                racingHourseData.rank++;
+    FindResultRacingHourse(idCurrentRacingHourse).then((resultRacingHourse : ResultRacingHourse)=>{
+        resultRacingHourse.racingHourseDatas = [];
+        resultRacingHourse.dateRacing = new Date();
+        for (let i = 0; i < variable.maxLandRacingHourse; i++)
+        {
+            var racingHourseData = InitRacingHourseData();
+            racingHourseData.rank = 1;
+            for (let index = 0; index < resultRacingHourse.racingHourseDatas.length; index++) {
+                const element = resultRacingHourse.racingHourseDatas[index];
+                if(racingHourseData.totalTime < element.totalTime){
+                    element.rank ++;
+                }else{
+                    racingHourseData.rank++;
+                }
             }
+            resultRacingHourse.racingHourseDatas.push(racingHourseData);
         }
-        resultRacingHourse.racingHourseDatas.push(racingHourseData);
-    }
-    console.log(resultRacingHourse);
-    return resultRacingHourse;
+        UpdateResultRacingHourse(resultRacingHourse);
+    })
+    
+    // return resultRacingHourse;
 }
 
 export function InitRacingHourseData() : RacingHourseData{
