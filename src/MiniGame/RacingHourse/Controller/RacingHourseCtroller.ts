@@ -1,13 +1,15 @@
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { Types, Schema } from "mongoose";
 import { variable } from "../../../other/Env";
 import { EffectCode } from "../Model/EffectCode";
 import { RacingHourseData } from "../Model/RacingHourseData";
-import { CreateResultRacingHourse, FindResultRacingHourse, ResultRacingHourse, UpdateResultRacingHourse } from "../Model/ResultRacingHourse";
+import { CreateResultRacingHourse, FindResultRacingHourse, IResultRacingHourse, ResultRacingHourse, UpdateResultRacingHourse } from "../Model/ResultRacingHourse";
+import { CreateTicket, ITicket, TicketModel, UpdateRankOfTicket } from "../Model/Ticket";
+import { GetUserPlayerById, IUserPlayer } from "../../../UserPlayer/UserPlayer";
 
-let idCurrentRacingHourse = new mongoose.Schema.Types.ObjectId("64464d6a5b090c6657e54f70");
+let idCurrentRacingHourse = new mongoose.Types.ObjectId("64464d6a5b090c6657e54f70");
 
 export async function CreateRacingHourse(){
-    await CreateResultRacingHourse().then((res)=>{
+    await CreateResultRacingHourse().then((res : IResultRacingHourse)=>{
         idCurrentRacingHourse = res._id;
     }).catch((err)=>{
         throw err;
@@ -33,6 +35,7 @@ export function RacingHourse(){
             resultRacingHourse.racingHourseDatas.push(racingHourseData);
         }
         UpdateResultRacingHourse(resultRacingHourse);
+        UpdateRankOfTicket(resultRacingHourse);
     })
     
     // return resultRacingHourse;
@@ -88,6 +91,10 @@ export function GetEffectByRate(rate : number) : Effect{
         rate -= element.appearRate;
     }
     return data;
+}
+
+export function BetTicket(data : ITicket){
+    CreateTicket(data);
 }
 
 export class Effect{

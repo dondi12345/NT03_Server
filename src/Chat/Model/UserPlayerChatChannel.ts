@@ -1,18 +1,18 @@
-import mongoose, { Schema, ObjectId } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { Socket } from "socket.io";
 
 export interface IUserPlayerChatChannel {
-    idUser : ObjectId;
+    idUser : Types.ObjectId;
     socket : Socket;
-    idChatChannels : ObjectId[];
+    idChatChannels : Types.ObjectId[];
 }
 
 export class UserPlayerChatChannel implements IUserPlayerChatChannel {
-    idUser : ObjectId;
+    idUser : Types.ObjectId;
     socket : Socket;
-    idChatChannels : ObjectId[];
+    idChatChannels : Types.ObjectId[];
 
-    static ExistChatChannel(id : ObjectId, userPlayerChatChannel : IUserPlayerChatChannel){
+    static ExistChatChannel(id : Types.ObjectId, userPlayerChatChannel : IUserPlayerChatChannel){
         for (let index = 0; index < userPlayerChatChannel.idChatChannels.length; index++) {
             let element = userPlayerChatChannel.idChatChannels[index];
             if(id == element) return true;

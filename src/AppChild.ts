@@ -6,7 +6,7 @@ import { MessageRouter } from "./Message/Router/MessageRouter";
 import { Message } from "./Message/Model/Message";
 import Init from "./Service/Init";
 import { MessageCode } from "./Message/MessageCode";
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { ChatSystemInit } from "./Chat/ChatSystem";
 // import SocketMessageModel from "./Socket/SocketMessageModel";
 // import { router } from "./Socket/SocketRouter";
@@ -17,7 +17,7 @@ const redisSubscriber = redis.createClient();
 const redisPublisher = redis.createClient();
 
 export class UserSocket{
-    idUser : ObjectId;
+    idUser : Types.ObjectId;
     socket : Socket;
 }
 
@@ -61,11 +61,11 @@ export function AppChild() {
     });
 }
 
-export function UserConnect(idUser: ObjectId, socket: Socket){
+export function UserConnect(idUser: Types.ObjectId, socket: Socket){
     AddUserSocket(idUser, socket);
 }
 
-export function AddUserSocket(idUser : ObjectId, socket : Socket){
+export function AddUserSocket(idUser : Types.ObjectId, socket : Socket){
     for (let index = 0; index < listUserSocket.length; index++) {
         const element = listUserSocket[index];
         console.log(idUser + ' - ' + element.idUser + ": " + (idUser == element.idUser));
@@ -83,7 +83,7 @@ export function AddUserSocket(idUser : ObjectId, socket : Socket){
     console.log(`New user connect to ${workerChannel}: `+ listUserSocket.length);
 }
 
-export function SendMessage(message : Message, idUser : ObjectId){
+export function SendMessage(message : Message, idUser : Types.ObjectId){
     var data : string = JSON.stringify(message.data);
     message.data = data;
     const messageData :string = JSON.stringify(message);

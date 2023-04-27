@@ -3,7 +3,7 @@ import {port, variable} from "../other/Env";
 import redis from 'redis';
 import { Message } from "../Message/Model/Message";
 import { MessageCode } from "../Message/MessageCode";
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { UserPlayerChatChannel } from "./Model/UserPlayerChatChannel";
 import { GetUserPlayerById, UserPlayer, IUserPlayer } from "../UserPlayer/UserPlayer";
 import { ChatRouter } from "./Router/ChatRouter";
@@ -42,7 +42,7 @@ export function ChatSystemInit(){
     });
 }
 
-export function UserConnectToChat(idUser : ObjectId, socket : Socket){
+export function UserConnectToChat(idUser : Types.ObjectId, socket : Socket){
     GetUserPlayerById(idUser).then((res : UserPlayer)=>{
         var userPlayerChatChannel = new UserPlayerChatChannel();
         userPlayerChatChannel.socket = socket;
@@ -53,7 +53,7 @@ export function UserConnectToChat(idUser : ObjectId, socket : Socket){
             if(userPlayer.idChatGuild != null) userPlayerChatChannel.idChatChannels.push(userPlayer.idChatGuild)
             userPlayerChatChannel.idUser = idUser;
         }catch(err){
-            var idChatGlobal = new mongoose.Schema.Types.ObjectId(variable.idChatGlobal);
+            var idChatGlobal = new mongoose.Types.ObjectId(variable.idChatGlobal);
             userPlayerChatChannel.idChatChannels.push(idChatGlobal);
             userPlayerChatChannel.idUser = idUser;
         }
@@ -76,7 +76,7 @@ function RemovePlayerChatChannelBySocket(socket : Socket){
         }
     }
 }
-function RemovePlayerChatChannelByIdUser(id : ObjectId){
+function RemovePlayerChatChannelByIdUser(id : Types.ObjectId){
     for (let index = userPlayerChatChannels.length -1; index >=0 ; index--) {
         const element = userPlayerChatChannels[index];
         if(element.idUser == id){

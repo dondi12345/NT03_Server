@@ -1,20 +1,20 @@
-import mongoose, { Schema, ObjectId } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { variable } from '../other/Env';
 
 export interface IUserPlayer{
-    _id : ObjectId;
+    _id? : Types.ObjectId;
     lastDate : Number;
     loginStreak : Number;
-    idChatGlobal? : ObjectId;
-    idChatGuild? : ObjectId;
+    idChatGlobal? : Types.ObjectId;
+    idChatGuild? : Types.ObjectId;
 }
 
 export class UserPlayer implements IUserPlayer{
-    _id: Schema.Types.ObjectId;
+    _id? : Types.ObjectId;
     lastDate: Number;
     loginStreak: Number;
-    idChatGlobal? : ObjectId;
-    idChatGuild? : ObjectId;
+    idChatGlobal? : Types.ObjectId;
+    idChatGuild? : Types.ObjectId;
 
     constructor() {
         
@@ -36,17 +36,17 @@ export class UserPlayer implements IUserPlayer{
 
 const UserPlayerSchema = new Schema<IUserPlayer>(
     {
-      _id : { type: mongoose.Schema.Types.ObjectId},
+      _id : { type: Types.ObjectId},
       lastDate: Number,
       loginStreak : Number,
-      idChatGlobal : { type: mongoose.Schema.Types.ObjectId},
-      idChatGuild : { type: mongoose.Schema.Types.ObjectId},
+      idChatGlobal : { type: Types.ObjectId},
+      idChatGuild : { type: Types.ObjectId},
     }
 );
   
 export const UserPlayerModel = mongoose.model<IUserPlayer>('UserPlayer', UserPlayerSchema);
 
-export async function GetUserPlayerById(_id : ObjectId){
+export async function GetUserPlayerById(_id : Types.ObjectId){
     var userPlayer = new UserPlayer();
     await UserPlayerModel.findById(_id).then((res)=>{
         userPlayer = UserPlayer.Parse(res);
