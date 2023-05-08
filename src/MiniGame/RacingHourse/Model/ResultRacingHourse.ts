@@ -46,7 +46,7 @@ export async function FindResultRacingHourse(_id : Types.ObjectId) {
     return data;
 }
 
-export async function UpdateResultRacingHourse(resultRacingHourse : ResultRacingHourse){
+export async function UpdateResultRacingHourse(resultRacingHourse : IResultRacingHourse){
     await ResultRacingHourseModel.findByIdAndUpdate(resultRacingHourse._id, resultRacingHourse).then(res=>{
         console.log(res);
     });
