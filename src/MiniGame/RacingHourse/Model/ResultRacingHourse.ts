@@ -38,27 +38,32 @@ export async function CreateResultRacingHourse(){
 }
 
 export async function FindResultRacingHourse(_id : ObjectId) {
-    var id = _id.path;
+    console.log(_id);
     var data;
-    await ResultRacingHourseModel.findOne({_id : id}).then((res)=>{
+    await ResultRacingHourseModel.findById(_id).then((res)=>{
         data = res;
+        console.log("FindResultRacingHourse: \n"+ res);
     })
-    console.log(data._id);
     return data;
 }
 
 export async function UpdateResultRacingHourse(resultRacingHourse : ResultRacingHourse){
+    console.log("UpdateResultRacingHourse:\n"+resultRacingHourse+"\n"+resultRacingHourse.dateCreate);
+    await FindResultRacingHourse(resultRacingHourse._id);
     await ResultRacingHourseModel.findByIdAndUpdate(resultRacingHourse._id, resultRacingHourse).then(res=>{
-        console.log(res);
+        console.log("UpdateResultRacingHourse:\n"+res);
     });
 }
 
 export async function GetNewestResultRacingHourse(){
+    var data;
     const maxVal = await ResultRacingHourseModel.aggregate([
         { $group: {_id : null, maxField: { $max: '$dateCreate' } } }
     ]).exec();
-    ResultRacingHourseModel.find({dateCreate : maxVal[0].maxField}).then(res=>{
-        console.log(res);
+    await ResultRacingHourseModel.find({dateCreate : maxVal[0].maxField}).then(res=>{
+        console.log("GetNewestResultRacingHourse:\n" + res);
+        data = res;
     })
+    return data;
 }
 

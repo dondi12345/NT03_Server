@@ -7,6 +7,7 @@ export const port = {
 
 export const Mongo = {
     dbLink : "mongodb://127.0.0.1:27017",
+    // dbLink : "mongodb+srv://dondi1412:Trunghung24@cluster0.vj24px5.mongodb.net/",
     DbName : "NT03",
 }
 

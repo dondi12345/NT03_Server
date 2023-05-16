@@ -2,20 +2,21 @@ import mongoose, { ObjectId } from "mongoose";
 import { variable } from "../../../other/Env";
 import { EffectCode } from "../Model/EffectCode";
 import { RacingHourseData } from "../Model/RacingHourseData";
-import { CreateResultRacingHourse, FindResultRacingHourse, ResultRacingHourse, UpdateResultRacingHourse } from "../Model/ResultRacingHourse";
+import { CreateResultRacingHourse, FindResultRacingHourse, GetNewestResultRacingHourse, ResultRacingHourse, UpdateResultRacingHourse } from "../Model/ResultRacingHourse";
 
-let idCurrentRacingHourse = new mongoose.Schema.Types.ObjectId("64464d6a5b090c6657e54f70");
+let idCurrentRacingHourse = new mongoose.Schema.Types.ObjectId("64639651a7cb1ff92d7579aa");
 
 export async function CreateRacingHourse(){
     await CreateResultRacingHourse().then((res)=>{
         idCurrentRacingHourse = res._id;
+        console.log("CreateRacingHourse: " + res._id);
     }).catch((err)=>{
         throw err;
     })
 }
 
 export function RacingHourse(){
-    FindResultRacingHourse(idCurrentRacingHourse).then((resultRacingHourse : ResultRacingHourse)=>{
+    GetNewestResultRacingHourse().then((resultRacingHourse : ResultRacingHourse)=>{
         resultRacingHourse.racingHourseDatas = [];
         resultRacingHourse.dateRacing = new Date();
         for (let i = 0; i < variable.maxLandRacingHourse; i++)
@@ -32,6 +33,7 @@ export function RacingHourse(){
             }
             resultRacingHourse.racingHourseDatas.push(racingHourseData);
         }
+        console.log("RacingHourse");
         UpdateResultRacingHourse(resultRacingHourse);
     })
     

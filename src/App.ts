@@ -34,12 +34,17 @@ if (cluster.isMaster) {
 
   let idRacingHourse = 0;
   Init.Init().then(res=>{
-    const date = new Date(2023, 3, 24, 18, 1, 0);
+    const date = new Date(2023, 4, 16, 21, 52, 0);
     var id = new mongoose.Schema.Types.ObjectId("64464d995f152f402a21521d")
-    GetTicketByIdResultRacingHourse(id);
+    // GetTicketByIdResultRacingHourse(id);
+    // CreateRacingHourse().then(res=>{
+    //   RacingHourse();
+    // });
+    RacingHourse();
     // const job = scheduleJob(date,()=> RacingHourse());
+    // RacingHourse();
   })
 } else {
   // Start child app
-  AppChild();
+  // AppChild();
 }
