@@ -1,14 +1,14 @@
-import mongoose, { Schema, ObjectId } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { Chat } from './Chat';
 import { variable } from '../../other/Env';
 
 export interface IChatChannel{
-    _id : ObjectId;
+    _id : Types.ObjectId;
     detail : string;
 }
 
 export class ChatChannel implements IChatChannel{
-    _id: ObjectId;
+    _id: Types.ObjectId;
     detail: string;
 
     constructor(data) {
@@ -33,7 +33,7 @@ const ChatChannelSchema = new Schema<IChatChannel>(
   
 export const ChatChannelModel = mongoose.model<IChatChannel>('ChatChannel', ChatChannelSchema);
 
-export async function GetChatChannelById(_id : ObjectId){
+export async function GetChatChannelById(_id : Types.ObjectId){
     var chatChannel = new ChatChannel({}); 
     await ChatChannelModel.findById(_id).then((res)=>{
         chatChannel = new ChatChannel(res);

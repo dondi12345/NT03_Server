@@ -1,18 +1,18 @@
 import { ChatCode } from "../ChatCode";
-import mongoose, { Schema, ObjectId } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 
 export interface IChat{
     chatCode : ChatCode;
-    idChatChannel : ObjectId;
-    idUser : ObjectId;
+    idChatChannel : Types.ObjectId;
+    idUser : Types.ObjectId;
     time : Date;
     content : string;
 }
 
 export class Chat implements IChat {
     chatCode : ChatCode;
-    idChatChannel : ObjectId;
-    idUser : ObjectId;
+    idChatChannel : Types.ObjectId;
+    idUser : Types.ObjectId;
     time : Date = new Date;
     content : string;
 

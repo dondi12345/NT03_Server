@@ -1,17 +1,17 @@
-import mongoose, { Schema, ObjectId } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { MessageCode } from "../MessageCode";
 
 export interface IMessage{
     messageCode : MessageCode;
     socketId : string;
-    idUser : ObjectId,
+    idUser : Types.ObjectId,
     data : any;
 }
 
 export class Message implements IMessage {
     messageCode: MessageCode;
     socketId: string;
-    idUser: ObjectId;
+    idUser: Types.ObjectId;
     data: any;
 
     constructor() {

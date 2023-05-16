@@ -1,28 +1,27 @@
-import mongoose, { Schema, ObjectId } from 'mongoose';
-import { RacingHourseData } from "./RacingHourseData";
+import mongoose, { Schema,Types } from 'mongoose';
+import { IRacingHourseData, RacingHourseData, RacingHourseDataSchema } from "./RacingHourseData";
 import { ChatChannelModel } from '../../../Chat/Model/ChatChannel';
 
 export interface IResultRacingHourse{
-    _id : ObjectId;
+    _id : Types.ObjectId;
     dateCreate : Date;
-    racingHourseDatas ?: RacingHourseData[];
+    racingHourseDatas ?: IRacingHourseData[];
     dateRacing : Date;
 }
 
 export class ResultRacingHourse implements IResultRacingHourse{
-    _id : ObjectId;
+    _id : Types.ObjectId;
     dateCreate : Date;
-    racingHourseDatas : RacingHourseData[];
+    racingHourseDatas : IRacingHourseData[];
     dateRacing : Date;
 }
 
-const ResultRacingHourseSchema = new Schema<IResultRacingHourse>(
-    {
-      dateCreate : {type : Date},
-      racingHourseDatas : {type : []},
-      dateRacing : {type : Date},
-    }
-);
+const ResultRacingHourseSchema = new Schema<IResultRacingHourse>({
+    _id : { type: Schema.Types.ObjectId, default: new Types.ObjectId()},
+    dateCreate : {type : Date},
+    racingHourseDatas : {type : [RacingHourseDataSchema], default: []},
+    dateRacing : {type : Date},
+  });
   
 export const ResultRacingHourseModel = mongoose.model<IResultRacingHourse>('ResultRacingHourse', ResultRacingHourseSchema);
 
@@ -37,8 +36,8 @@ export async function CreateResultRacingHourse(){
     return resultRacingHourse;
 }
 
-export async function FindResultRacingHourse(_id : ObjectId) {
-    console.log(_id);
+export async function FindResultRacingHourse(_id : Types.ObjectId) {
+    var id = _id;
     var data;
     await ResultRacingHourseModel.findById(_id).then((res)=>{
         data = res;
@@ -47,9 +46,7 @@ export async function FindResultRacingHourse(_id : ObjectId) {
     return data;
 }
 
-export async function UpdateResultRacingHourse(resultRacingHourse : ResultRacingHourse){
-    console.log("UpdateResultRacingHourse:\n"+resultRacingHourse+"\n"+resultRacingHourse.dateCreate);
-    await FindResultRacingHourse(resultRacingHourse._id);
+export async function UpdateResultRacingHourse(resultRacingHourse : IResultRacingHourse){
     await ResultRacingHourseModel.findByIdAndUpdate(resultRacingHourse._id, resultRacingHourse).then(res=>{
         console.log("UpdateResultRacingHourse:\n"+res);
     });

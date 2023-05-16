@@ -1,43 +1,60 @@
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { Types, Schema } from "mongoose";
 import { variable } from "../../../other/Env";
 import { EffectCode } from "../Model/EffectCode";
 import { RacingHourseData } from "../Model/RacingHourseData";
-import { CreateResultRacingHourse, FindResultRacingHourse, GetNewestResultRacingHourse, ResultRacingHourse, UpdateResultRacingHourse } from "../Model/ResultRacingHourse";
+import { CreateResultRacingHourse, FindResultRacingHourse, GetNewestResultRacingHourse, IResultRacingHourse, ResultRacingHourse, ResultRacingHourseModel, UpdateResultRacingHourse } from "../Model/ResultRacingHourse";
+import { CreateTicket, ITicket, TicketModel, UpdateRankOfTicket } from "../Model/Ticket";
+import { scheduleJob } from 'node-schedule';
 
-let idCurrentRacingHourse = new mongoose.Schema.Types.ObjectId("64639651a7cb1ff92d7579aa");
+let idCurrentRacingHourse = new mongoose.Types.ObjectId("64464d6a5b090c6657e54f70");
+
+export function RacingHourseManager(){
+
+    // const dateCreate = new Date(2023, 3, 27, 15, 2, 0);
+    // const jobCreate = scheduleJob(dateCreate,()=> CreateRacingHourse());
+    const dateRacing = new Date(2023, 3, 27, 15, 29, 0);
+    const jobRacing = scheduleJob(dateRacing,()=> RacingHourse());
+}
 
 export async function CreateRacingHourse(){
-    await CreateResultRacingHourse().then((res)=>{
-        idCurrentRacingHourse = res._id;
-        console.log("CreateRacingHourse: " + res._id);
+    await CreateResultRacingHourse().then((res : IResultRacingHourse)=>{
+        console.log("Create race");
     }).catch((err)=>{
         throw err;
     })
 }
 
 export function RacingHourse(){
-    GetNewestResultRacingHourse().then((resultRacingHourse : ResultRacingHourse)=>{
-        resultRacingHourse.racingHourseDatas = [];
-        resultRacingHourse.dateRacing = new Date();
-        for (let i = 0; i < variable.maxLandRacingHourse; i++)
-        {
-            var racingHourseData = InitRacingHourseData();
-            racingHourseData.rank = 1;
-            for (let index = 0; index < resultRacingHourse.racingHourseDatas.length; index++) {
-                const element = resultRacingHourse.racingHourseDatas[index];
-                if(racingHourseData.totalTime < element.totalTime){
-                    element.rank ++;
-                }else{
-                    racingHourseData.rank++;
-                }
-            }
-            resultRacingHourse.racingHourseDatas.push(racingHourseData);
-        }
-        console.log("RacingHourse");
-        UpdateResultRacingHourse(resultRacingHourse);
+    console.log("Racing");
+    ResultRacingHourseModel.find({ dateRacing: { $exists: false } }).then(res=>{
+        if(res.length == 0) return;
+        res.forEach(element => {
+            element.racingHourseDatas = [];
+            element.dateRacing = new Date();
+            element.racingHourseDatas = InitListRacingHourseData();
+            UpdateResultRacingHourse(element);
+            UpdateRankOfTicket(element);
+        });
     })
-    
-    // return resultRacingHourse;
+}
+
+export function InitListRacingHourseData(){
+    var racingHourseDatas : RacingHourseData[] = [];
+    for (let i = 0; i < variable.maxLandRacingHourse; i++)
+    {
+        var racingHourseData = InitRacingHourseData();
+        racingHourseData.rank = 1;
+        for (let index = 0; index < racingHourseDatas.length; index++) {
+            const element = racingHourseDatas[index];
+            if(racingHourseData.totalTime < element.totalTime){
+                element.rank ++;
+            }else{
+                racingHourseData.rank++;
+            }
+        }
+        racingHourseDatas.push(racingHourseData);
+    }
+    return racingHourseDatas;
 }
 
 export function InitRacingHourseData() : RacingHourseData{
