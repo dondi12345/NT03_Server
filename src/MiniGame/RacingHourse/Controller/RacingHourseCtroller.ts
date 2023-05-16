@@ -12,8 +12,11 @@ export function RacingHourseManager(){
 
     // const dateCreate = new Date(2023, 3, 27, 15, 2, 0);
     // const jobCreate = scheduleJob(dateCreate,()=> CreateRacingHourse());
-    const dateRacing = new Date(2023, 3, 27, 15, 29, 0);
-    const jobRacing = scheduleJob(dateRacing,()=> RacingHourse());
+    // const dateRacing = new Date(2023, 3, 27, 15, 29, 0);
+    // const jobRacing = scheduleJob(dateRacing,()=> RacingHourse());
+    CreateRacingHourse().then((res)=>{
+        RacingHourse();
+    })
 }
 
 export async function CreateRacingHourse(){
