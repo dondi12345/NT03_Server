@@ -1,96 +1,12 @@
 // Import necessary modules
-import { Server, Socket } from "socket.io";
-import {port, variable} from "./other/Env";
-import redis from 'redis';
-import { MessageRouter } from "./Message/Router/MessageRouter";
-import { Message } from "./Message/Model/Message";
 import Init from "./Service/Init";
-import { MessageCode } from "./Message/MessageCode";
-import mongoose, { Types } from "mongoose";
-import { ChatSystemInit } from "./Chat/ChatSystem";
-// import SocketMessageModel from "./Socket/SocketMessageModel";
-// import { router } from "./Socket/SocketRouter";
+import { InitMessageServer } from "./MessageServer/Init/Init";
 
-// Create Redis subscriber client
-const redisSubscriber = redis.createClient();
-// Create Redis publisher client
-const redisPublisher = redis.createClient();
-
-export class UserSocket{
-    idUser : Types.ObjectId;
-    socket : Socket;
-}
-
-export let listUserSocket: UserSocket[] = [];
-let workerChannel;
 // Function to create app child instance
 export function AppChild() {
-    const io = new Server(port.portAppChild);
-    console.log(`Worker ${process.pid} listening on port: ${port.portAppChild}`);
-    workerChannel = `worker${process.pid}`;
-
-    Init.Init().then(()=>{
-        console.log("Init success");
-        io.on(variable.eventSocketConnection, (socket : Socket) => {
-            // send a message to the client
-            // for (let i = 0; i < 600000; i++) {
-            // }
-            console.log("Socket connec to App");
-            socket.on(variable.eventSocketListening, (data) => {
-                console.log(data);
-                var message = Message.Parse(data);
-                message.socketId = socket.id;
-                if(message.messageCode == MessageCode.messageConnect){
-                    UserConnect(message.idUser, socket);
-                    return;
-                }
-                MessageRouter(message)
-            });
-        });
+    Init.InitDatabase().then(()=>{
+        InitMessageServer();
     }).catch(err=>{
         console.log(err);
     })
-
-    ChatSystemInit();
-
-    redisSubscriber.subscribe(variable.worker);
-
-    redisSubscriber.on('message', (channel, data) => {
-        var message = Message.Parse(data);
-        MessageRouter(message);
-    });
-}
-
-export function UserConnect(idUser: Types.ObjectId, socket: Socket){
-    AddUserSocket(idUser, socket);
-}
-
-export function AddUserSocket(idUser : Types.ObjectId, socket : Socket){
-    for (let index = 0; index < listUserSocket.length; index++) {
-        const element = listUserSocket[index];
-        console.log(idUser + ' - ' + element.idUser + ": " + (idUser == element.idUser));
-        if(idUser == element.idUser){
-            element.socket.disconnect;
-            element.socket = socket;
-            console.log("Update socket");
-            return;
-        }
-    }
-    var newUserSocket = new UserSocket();
-    newUserSocket.idUser = idUser;
-    newUserSocket.socket = socket;
-    listUserSocket.push(newUserSocket);
-    console.log(`New user connect to ${workerChannel}: `+ listUserSocket.length);
-}
-
-export function SendMessage(message : Message, idUser : Types.ObjectId){
-    var data : string = JSON.stringify(message.data);
-    message.data = data;
-    const messageData :string = JSON.stringify(message);
-    listUserSocket.forEach(element => {
-        if(idUser == element.idUser){
-            console.log(`${workerChannel} emit to ${element.socket.id} : ${element.idUser}: ` + messageData +`\n`);
-            element.socket.emit(variable.eventSocketListening, messageData);
-        }
-    });
 }

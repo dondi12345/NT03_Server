@@ -3,11 +3,12 @@ export const port = {
     portSocketManager : 9000,
     portSocketManagerIO : 9090,
     portChatSystem : 8081,
+    portMessageServer : 8000,
 }
 
 export const Mongo = {
-    // dbLink : "mongodb://127.0.0.1:27017",
-    dbLink : "mongodb+srv://dondi1412:Trunghung24@cluster0.vj24px5.mongodb.net/",
+    dbLink : "mongodb://127.0.0.1:27017",
+    // dbLink : "mongodb+srv://dondi1412:Trunghung24@cluster0.vj24px5.mongodb.net/",
     DbName : "NT03",
 }
 

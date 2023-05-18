@@ -1,7 +1,7 @@
 import { MongoDBDatabase } from './Database/MongoConnect';
 
 export = {
-    Init: async function () {
+    InitDatabase: async function () {
       console.log("Init db")
       await new MongoDBDatabase().connectAsync();
     },

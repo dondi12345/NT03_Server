@@ -7,12 +7,16 @@ import { CreateRacingHourse, RacingHourse, RacingHourseManager } from './MiniGam
 import Init from './Service/Init';
 import mongoose, { Schema, Types } from 'mongoose';
 
+import express from 'express';
+const app = express()
+const portAPI = 4000;
+
 // Create Redis client
 const redisClient = createClient();
 
 // Define number of worker processes
-// const numCPUs = 2;
-const numCPUs = require('os').cpus().length;
+const numCPUs = 1;
+// const numCPUs = require('os').cpus().length;
 
 // Check if current process is master or worker
 if (cluster.isMaster) {
@@ -31,12 +35,25 @@ if (cluster.isMaster) {
   });
 
   let idRacingHourse = 0;
-  Init.Init().then(res=>{
+  Init.InitDatabase().then(res=>{
     
-    RacingHourseManager();
+    // RacingHourseManager();
     
   })
+  API();
 } else {
   // Start child app
-  // AppChild();
+  AppChild();
+}
+
+function API(){
+  app.get('/', (req, res) => {
+      res.send("Hello");
+    });
+  app.post('/',(req, res)=>{
+      console.log(res.body);
+  })
+  app.listen(portAPI, () => {
+      console.log(`Example app listening on port ${portAPI}`)
+    })
 }
