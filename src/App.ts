@@ -30,11 +30,11 @@ if (cluster.isMaster) {
   });
 
   let idRacingHourse = 0;
-  Init.Init().then(res=>{
+  // Init.Init().then(res=>{
     
-    RacingHourseManager();
+  //   RacingHourseManager();
     
-  })
+  // })
 } else {
   // Start child app
   // AppChild();
