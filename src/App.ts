@@ -23,6 +23,7 @@ if (cluster.isMaster) {
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
+  console.log("create cluster");
   
   // Handle exit of worker processes
   cluster.on('exit', (worker, code, signal) => {
@@ -30,11 +31,11 @@ if (cluster.isMaster) {
   });
 
   let idRacingHourse = 0;
-  // Init.Init().then(res=>{
+  Init.Init().then(res=>{
     
-  //   RacingHourseManager();
+    RacingHourseManager();
     
-  // })
+  })
 } else {
   // Start child app
   // AppChild();
