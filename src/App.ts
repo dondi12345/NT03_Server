@@ -11,7 +11,8 @@ import mongoose, { Schema, Types } from 'mongoose';
 const redisClient = createClient();
 
 // Define number of worker processes
-const numCPUs = 2;
+// const numCPUs = 2;
+const numCPUs = require('os').cpus().length;
 
 // Check if current process is master or worker
 if (cluster.isMaster) {
