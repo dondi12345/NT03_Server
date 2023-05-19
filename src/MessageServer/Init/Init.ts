@@ -2,11 +2,11 @@ import { Server, Socket } from "socket.io";
 import {port, variable} from "../../other/Env";
 import { Message } from "../Model/Message";
 import { MessageCode } from "../Model/MessageCode";
-import { UserSocker } from "../../UserSocker/Model/UserSocker";
+import { UserSocket } from "../../UserSocket/Model/UserSocket";
 import { MessageRouter } from "../Router/MessageRouter";
 import { createClient } from 'redis';
 
-export let listUserSocket: Record<string, UserSocker> = {};
+export let listUserSocket: Record<string, UserSocket> = {};
 const redisSubscriber = createClient();
 
 export function InitMessageServer(){
@@ -21,6 +21,7 @@ function InitWithSocket() {
         socket.on(variable.eventSocketListening, (data) => {
             console.log("1684424442:" + data);
             var message = Message.Parse(data);
+            message.socket = socket;
             if(message.messageCode == MessageCode.messageConnect){
                 listUserSocket
                 return;
