@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { UserSocket } from "../../UserSocket/Model/UserSocket";
 import { variable } from "../../other/Env";
-import { IMessage, Message } from "../Model/Message";
-import { MessageCode } from "../Model/MessageCode";
+import { IMessage, Message } from "../model/Message";
+import { MessageCode } from "../model/MessageCode";
 
 type UserSockets = Record<string, UserSocket>;
 let userSocket : UserSocket;

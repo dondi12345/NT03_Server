@@ -8,7 +8,7 @@ import Init from './Service/Init';
 import mongoose, { Schema, Types } from 'mongoose';
 
 import express from 'express';
-import { MessageRawData } from './MessageServer/Router/MessageRouter';
+import { MessageRawData } from './MessageServer/router/MessageRouter';
 const app = express()
 const portAPI = 4000;
 

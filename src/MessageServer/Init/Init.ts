@@ -1,9 +1,9 @@
 import { Server, Socket } from "socket.io";
 import {port, variable} from "../../other/Env";
-import { Message } from "../Model/Message";
-import { MessageCode } from "../Model/MessageCode";
+import { Message } from "../model/Message";
+import { MessageCode } from "../model/MessageCode";
 import { UserSocket } from "../../UserSocket/Model/UserSocket";
-import { MessageRouter } from "../Router/MessageRouter";
+import { MessageRouter } from "../router/MessageRouter";
 import { createClient } from 'redis';
 
 export let listUserSocket: Record<string, UserSocket> = {};

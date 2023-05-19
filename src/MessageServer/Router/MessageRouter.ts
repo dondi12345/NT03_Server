@@ -1,5 +1,5 @@
-import { IMessage, Message } from "../Model/Message";
-import { MessageCode } from "../Model/MessageCode";
+import { IMessage, Message } from "../model/Message";
+import { MessageCode } from "../model/MessageCode";
 import { Connect } from "../controller/MessageController";
 
 export function MessageRawData(data){
