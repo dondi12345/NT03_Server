@@ -3,18 +3,18 @@ import { variable } from '../other/Env';
 
 export interface IUserPlayer{
     _id? : Types.ObjectId;
-    lastDate : Number;
+    LastDate : Number;
     loginStreak : Number;
-    idChatGlobal? : Types.ObjectId;
-    idChatGuild? : Types.ObjectId;
+    IdChatGlobal? : Types.ObjectId;
+    IdChatGuild? : Types.ObjectId;
 }
 
 export class UserPlayer implements IUserPlayer{
     _id? : Types.ObjectId;
-    lastDate: Number;
+    LastDate: Number;
     loginStreak: Number;
-    idChatGlobal? : Types.ObjectId;
-    idChatGuild? : Types.ObjectId;
+    IdChatGlobal? : Types.ObjectId;
+    IdChatGuild? : Types.ObjectId;
 
     constructor() {
         
@@ -26,10 +26,10 @@ export class UserPlayer implements IUserPlayer{
         }catch(err){}
         var userPlayer = new UserPlayer();
         userPlayer._id = data._id;
-        userPlayer.lastDate = data.lastDate;
+        userPlayer.LastDate = data.lastDate;
         userPlayer.loginStreak = data.loginStreak;
-        userPlayer.idChatGlobal = data?.idChatGlobal ? data.idChatGlobal : null;
-        userPlayer.idChatGuild = data?.idChatGuild ? data.idChatGuild : null;
+        userPlayer.IdChatGlobal = data?.idChatGlobal ? data.idChatGlobal : null;
+        userPlayer.IdChatGuild = data?.idChatGuild ? data.idChatGuild : null;
         return userPlayer;
     }
 }
@@ -37,10 +37,10 @@ export class UserPlayer implements IUserPlayer{
 const UserPlayerSchema = new Schema<IUserPlayer>(
     {
       _id : { type: Types.ObjectId},
-      lastDate: Number,
+      LastDate: Number,
       loginStreak : Number,
-      idChatGlobal : { type: Types.ObjectId},
-      idChatGuild : { type: Types.ObjectId},
+      IdChatGlobal : { type: Types.ObjectId},
+      IdChatGuild : { type: Types.ObjectId},
     }
 );
   

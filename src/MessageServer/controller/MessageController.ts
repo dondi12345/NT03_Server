@@ -1,17 +1,13 @@
 import { Types } from "mongoose";
 import { UserSocket } from "../../UserSocket/Model/UserSocket";
 import { variable } from "../../other/Env";
-import { IMessage, Message } from "../model/Message";
-import { MessageCode } from "../model/MessageCode";
-
-type UserSockets = Record<string, UserSocket>;
-let userSocket : UserSocket;
+import { IMessage, Message } from "../Model/Message";
+import { MessageCode } from "../Model/MessageCode";
 
 export function Connect(message : IMessage){
     try{
-        userSocket[message.idUser.toString()] = message.socket;
         var messageRes = new Message();
-        messageRes.idUser = message.idUser;
+        messageRes.IdUserPlayer = message.IdUserPlayer;
         messageRes.messageCode = MessageCode.messageConnectResponse;
         message.socket?.emit(variable.eventSocketListening, JSON.stringify(messageRes));
     }catch{

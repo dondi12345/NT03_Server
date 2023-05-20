@@ -1,9 +1,7 @@
 export const port = {
-    portAppChild : 8080,
-    portSocketManager : 9000,
-    portSocketManagerIO : 9090,
-    portChatSystem : 8081,
+    portAPI : 4000,
     portMessageServer : 8000,
+    portChatServer : 8010,
 }
 
 export const Mongo = {
@@ -16,6 +14,8 @@ export const variable = {
     eventSocketConnection : "connection",
     eventSocketListening : "listening",
     worker : "worker",
+    messageServer : "MessageServer",
+    chatServer: "ChatServer",
     chatSystem : "ChatSystem",
     idChatGlobal : "643e14f2d8930cecd1865a60",
     maxLengthChat : 50,

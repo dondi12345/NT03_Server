@@ -46,13 +46,13 @@ export function InitListRacingHourseData(){
     for (let i = 0; i < variable.maxLandRacingHourse; i++)
     {
         var racingHourseData = InitRacingHourseData();
-        racingHourseData.rank = 1;
+        racingHourseData.Rank = 1;
         for (let index = 0; index < racingHourseDatas.length; index++) {
             const element = racingHourseDatas[index];
-            if(racingHourseData.totalTime < element.totalTime){
-                element.rank ++;
+            if(racingHourseData.TotalTime < element.TotalTime){
+                element.Rank ++;
             }else{
-                racingHourseData.rank++;
+                racingHourseData.Rank++;
             }
         }
         racingHourseDatas.push(racingHourseData);
@@ -62,32 +62,32 @@ export function InitListRacingHourseData(){
 
 export function InitRacingHourseData() : RacingHourseData{
     var racingHourseData = new RacingHourseData();
-    racingHourseData.effectCodes.push(EffectCode.nonEffect);
-    racingHourseData.effectCodes.push(EffectCode.nonEffect);
-    racingHourseData.totalTime = 3;
+    racingHourseData.EffectCodes.push(EffectCode.nonEffect);
+    racingHourseData.EffectCodes.push(EffectCode.nonEffect);
+    racingHourseData.TotalTime = 3;
     let timeOver : number = 1;
     let countAffect = 0;
     let totalRate = TotalRate();
     for (let i = 2; i < variable.maxStepRacingHourse - 2; i++)
     {
-        racingHourseData.totalTime += timeOver;
+        racingHourseData.TotalTime += timeOver;
         let rate = Math.random()*totalRate;
         var effect = GetEffectByRate(rate);
         countAffect -= 1;
         if(countAffect < 0) timeOver = 1;
-        racingHourseData.effectCodes[i] = effect.effectCode;
+        racingHourseData.EffectCodes[i] = effect.effectCode;
         if(effect.effectCode == EffectCode.nonEffect) continue;;
         timeOver = effect.timeOver;
         countAffect = effect.countEffect;
     }
-    racingHourseData.totalTime += timeOver;
+    racingHourseData.TotalTime += timeOver;
     countAffect -= 1;
     if(countAffect <= 0) timeOver = 1;
-    racingHourseData.effectCodes.push(EffectCode.nonEffect);
-    racingHourseData.totalTime += timeOver;
+    racingHourseData.EffectCodes.push(EffectCode.nonEffect);
+    racingHourseData.TotalTime += timeOver;
     countAffect -= 1;
     if(countAffect <= 0) timeOver = 1;
-    racingHourseData.effectCodes.push(EffectCode.nonEffect);
+    racingHourseData.EffectCodes.push(EffectCode.nonEffect);
     return racingHourseData;
 }
 

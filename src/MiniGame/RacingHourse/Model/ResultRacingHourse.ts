@@ -1,6 +1,5 @@
 import mongoose, { Schema,Types } from 'mongoose';
 import { IRacingHourseData, RacingHourseData, RacingHourseDataSchema } from "./RacingHourseData";
-import { ChatChannelModel } from '../../../Chat/Model/ChatChannel';
 
 export interface IResultRacingHourse{
     _id : Types.ObjectId;

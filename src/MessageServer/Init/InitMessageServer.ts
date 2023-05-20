@@ -1,13 +1,13 @@
 import { Server, Socket } from "socket.io";
 import {port, variable} from "../../other/Env";
-import { Message } from "../model/Message";
-import { MessageCode } from "../model/MessageCode";
-import { UserSocket } from "../../UserSocket/Model/UserSocket";
-import { MessageRouter } from "../router/MessageRouter";
+import { Message } from "../Model/Message";
+import { UserSocket, UserSocketServer } from "../../UserSocket/Model/UserSocket";
+import { MessageRouter } from "../Router/MessageRouter";
 import { createClient } from 'redis';
 
-export let listUserSocket: Record<string, UserSocket> = {};
 const redisSubscriber = createClient();
+
+export let userSocketMessageServer : UserSocketServer = {};
 
 export function InitMessageServer(){
     InitWithSocket();
@@ -15,24 +15,22 @@ export function InitMessageServer(){
 
 function InitWithSocket() {
     const io = new Server(port.portMessageServer);
-    console.log(`1684424393 Worker ${process.pid} listening on port: ${port.portAppChild}`);
+    console.log(`1684424393 Worker ${process.pid} listening to MessageServer on port: ${port.portMessageServer}`);
     io.on(variable.eventSocketConnection, (socket : Socket) => {
-        console.log("1684424410 Socket connec to App");
+        console.log("1684424410 Socket connec to MessageServer");
         socket.on(variable.eventSocketListening, (data) => {
             console.log("1684424442:" + data);
             var message = Message.Parse(data);
+            console.log("1684562499 Save SocketUser: "+ message.IdUserPlayer.toString()+" _ "+socket.id);
+            userSocketMessageServer[message.IdUserPlayer.toString()] = socket;
             message.socket = socket;
-            if(message.messageCode == MessageCode.messageConnect){
-                listUserSocket
-                return;
-            }
             MessageRouter(message)
         });
     });
 
     redisSubscriber.subscribe(variable.worker);
 
-    redisSubscriber.on('message', (channel, data) => {
+    redisSubscriber.on(variable.messageServer, (channel, data) => {
         var message = Message.Parse(data);
         MessageRouter(message);
     });

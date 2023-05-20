@@ -1,6 +1,6 @@
 {
     "_id" : ObjectId("644a0b9bb0daec775d074c64"),
-    "idUser" : ObjectId("64351f20cb49ccd25e90dda0"),
+    "IdUserPlayer" : ObjectId("64351f20cb49ccd25e90dda0"),
     "idResultRacingHourse" : ObjectId("64464d6a5b090c6657e54f70"),
     "numberHourse" : NumberInt(2),
     "rank" : NumberInt(5),
@@ -8,7 +8,7 @@
 }
 {
     "_id" : ObjectId("644a0bdc4cc06d94573c2605"),
-    "idUser" : ObjectId("64351f20cb49ccd25e90dda0"),
+    "IdUserPlayer" : ObjectId("64351f20cb49ccd25e90dda0"),
     "idResultRacingHourse" : ObjectId("64464d6a5b090c6657e54f70"),
     "numberHourse" : NumberInt(1),
     "rank" : NumberInt(6),

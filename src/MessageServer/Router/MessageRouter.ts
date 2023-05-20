@@ -1,6 +1,6 @@
-import { IMessage, Message } from "../model/Message";
-import { MessageCode } from "../model/MessageCode";
-import { Connect } from "../controller/MessageController";
+import { IMessage, Message } from "../Model/Message";
+import { MessageCode } from "../Model/MessageCode";
+import { Connect } from "../Controller/MessageController";
 
 export function MessageRawData(data){
     var message = Message.Parse(data);
@@ -9,7 +9,7 @@ export function MessageRawData(data){
 
 export function MessageRouter(message : IMessage){
     if(message.messageCode == MessageCode.messageTest){
-        console.log("1684475214 Test")
+        console.log("1684475214 Test Message")
     }
     if(message.messageCode == MessageCode.messageConnect){
         Connect(message);

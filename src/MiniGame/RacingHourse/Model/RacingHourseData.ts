@@ -2,20 +2,20 @@ import { EffectCode } from "./EffectCode";
 import mongoose, { Schema,Types } from 'mongoose'
 
 export interface IRacingHourseData{
-    effectCodes : EffectCode[];
-    totalTime : number;
-    rank : number;
+    EffectCodes : EffectCode[];
+    TotalTime : number;
+    Rank : number;
 }
 
 export class RacingHourseData implements IRacingHourseData {
-    effectCodes : EffectCode[] = [];
-    totalTime : number = 0;
-    rank : number;
+    EffectCodes : EffectCode[] = [];
+    TotalTime : number = 0;
+    Rank : number;
 }
 
 export const RacingHourseDataSchema = new Schema({
-    effectCodes : {type : []},
-    totalTime: { type: Number, default: 0 },
-    rank: { type: Number }
+    EffectCodes : {type : []},
+    TotalTime: { type: Number, default: 0 },
+    Rank: { type: Number }
   });
 

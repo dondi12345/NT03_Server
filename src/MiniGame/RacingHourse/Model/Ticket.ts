@@ -3,30 +3,30 @@ import { IResultRacingHourse, ResultRacingHourse, ResultRacingHourseModel } from
 
 export interface ITicket {
     _id : Types.ObjectId;
-    idUser : Types.ObjectId;
-    idResultRacingHourse : Types.ObjectId;
-    numberHourse : Number;
-    rank : Number;
-    receiveGift : Boolean;
+    IdUserPlayer : Types.ObjectId;
+    IdResultRacingHourse : Types.ObjectId;
+    NumberHourse : Number;
+    Rank : Number;
+    ReceiveGift : Boolean;
 }
 
 export class Ticket implements ITicket{
     _id : Types.ObjectId;
-    idUser : Types.ObjectId;
-    idResultRacingHourse : Types.ObjectId;  
-    numberHourse : Number;
-    rank : Number = 0;
-    receiveGift : Boolean = false;
+    IdUserPlayer : Types.ObjectId;
+    IdResultRacingHourse : Types.ObjectId;  
+    NumberHourse : Number;
+    Rank : Number = 0;
+    ReceiveGift : Boolean = false;
 }
 
 const TicketSchema = new Schema<ITicket>(
     {
       _id : { type: Schema.Types.ObjectId, default: new Types.ObjectId()},
-      idUser : { type: Schema.Types.ObjectId, ref : 'UserPlayer'},
-      idResultRacingHourse : { type: Schema.Types.ObjectId, ref: 'ResultRacingHourse'},
-      numberHourse : {type: Number},
-      rank : {type: Number, default : 0},
-      receiveGift : {type: Boolean, default: false},
+      IdUserPlayer : { type: Schema.Types.ObjectId, ref : 'UserPlayer'},
+      IdResultRacingHourse : { type: Schema.Types.ObjectId, ref: 'ResultRacingHourse'},
+      NumberHourse : {type: Number},
+      Rank : {type: Number, default : 0},
+      ReceiveGift : {type: Boolean, default: false},
     }
 );
   
@@ -43,7 +43,7 @@ export async function CreateTicket(data : ITicket){
 export async function GetTicketByIdResultRacingHourse(idRacingHourse : Types.ObjectId){
     var data;
     console.log(idRacingHourse);
-    await TicketModel.find({},{idResultRacingHourse : idRacingHourse}).then(res=>{
+    await TicketModel.find({},{IdResultRacingHourse : idRacingHourse}).then(res=>{
         console.log(res)
         data = res;
     })
@@ -71,11 +71,11 @@ export async function GetTicketAndResultById(_id : Types.ObjectId) {
 }
 
 export async function UpdateRankOfTicket(resultRacingHourse : IResultRacingHourse) {
-    TicketModel.find({idResultRacingHourse : resultRacingHourse._id}).then(res=>{
+    TicketModel.find({IdResultRacingHourse : resultRacingHourse._id}).then(res=>{
         res.forEach(element => {
             if(resultRacingHourse.racingHourseDatas != undefined && resultRacingHourse.racingHourseDatas != null && resultRacingHourse.racingHourseDatas.length > 0){
-                var index : number = element.numberHourse.valueOf();
-                element.rank = resultRacingHourse.racingHourseDatas[index].rank;
+                var index : number = element.NumberHourse.valueOf();
+                element.Rank = resultRacingHourse.racingHourseDatas[index].Rank;
             }
             UpdateTicket(element);
         });
