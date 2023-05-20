@@ -23,7 +23,7 @@ function InitWithSocket() {
             var message = Message.Parse(data);
             console.log("1684562499 Save SocketUser: "+ message.IdUserPlayer.toString()+" _ "+socket.id);
             userSocketMessageServer[message.IdUserPlayer.toString()] = socket;
-            message.socket = socket;
+            message.Socket = socket;
             MessageRouter(message)
         });
     });

@@ -12,47 +12,49 @@ const redisSubscriber = createClient();
 
 export let userSocketChatServer : UserSocketServer;
 
-let isSocket : boolean;
+export let isChatServerUseSocket : boolean;
 
 export function InitChatServer(){
-    InitWithSocket();
-
+    // InitWithSocket();
+    InitWithMessageServer();
     redisSubscriber.subscribe(variable.chatServer);
+    console.log("1684573787 Subscrib ChatServer: "+variable.chatServer)
+
     redisSubscriber.on('message', (channel, data) => {
-        console.log("1684573787 Subscrib ChatServer: "+channel)
         var chat = Chat.Parse(data);
+        console.log("1684603001 Listent "+ JSON.stringify(chat));
         ChatRouter(chat);
     });
 }
 
 function InitWithSocket() {
-    isSocket = true;
+    isChatServerUseSocket = true;
     userSocketChatServer = {};
     const io = new Server(port.portChatServer);
     console.log(`1684563910 Worker ${process.pid} listening to ChatServer on port: ${port.portChatServer}`);
     io.on(variable.eventSocketConnection, (socket : Socket) => {
         console.log("1684563926 Socket connect to ChatServer");
         socket.on(variable.eventSocketListening, (data) => {
-            console.log("1684564028:" + data);
             var chat = Chat.Parse(data);
+            console.log("1684564028:" + JSON.stringify(chat));
             console.log("1684564034 Save SocketUser: "+ chat.IdUserPlayer.toString()+" _ "+socket.id);
             userSocketChatServer[chat.IdUserPlayer.toString()] = socket;
-            chat.socket = socket;
+            chat.Socket = socket;
             ChatRouter(chat)
         });
     });
 }
 
 function InitWithMessageServer(){
-    isSocket = false;
+    isChatServerUseSocket = false;
     userSocketChatServer = userSocketMessageServer;
 }
 
 export function ChatServerFormatData(chat : IChat){
-    if(isSocket) return Chat.ToString(chat);
+    if(isChatServerUseSocket) return Chat.ToString(chat);
     var message : Message = new Message();
-    message.messageCode = MessageCode.message_ChatServer;
+    message.MessageCode = MessageCode.Message_ChatServer;
     message.IdUserPlayer = chat.IdUserPlayer;
-    message.data = Chat.ToString(chat);
+    message.Data = Chat.ToString(chat);
     return JSON.stringify(message);
 }

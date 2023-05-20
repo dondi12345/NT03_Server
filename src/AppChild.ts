@@ -9,9 +9,8 @@ import { Types } from "mongoose";
 export function AppChild() {
     console.log("1684561087 Init AppChild")
     Init.InitDatabase().then(()=>{
-        // InitMessageServer();
-        // InitChatServer();
-        GetIdUserPlayerByIdChatChannel(new Types.ObjectId("643e14f2d8930cecd1865a60"));
+        InitMessageServer();
+        InitChatServer();
     }).catch(err=>{
         console.log(err);
     })

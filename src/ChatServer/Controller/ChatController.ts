@@ -5,6 +5,7 @@ import { GetIdUserPlayerByIdChatChannel, UserChatChannel } from '../Model/UserCh
 import { ChatServerFormatData, userSocketChatServer } from '../Init/InitChatServer';
 import { variable } from '../../other/Env';
 import { ChatCode } from '../Model/ChatCode';
+import { Socket } from 'socket.io';
 
 const redisChat = redis.createClient();
 
@@ -12,23 +13,27 @@ const redisPublisher = redis.createClient();
 
 export function SendChat(chat :IChat){
     console.log("1684569237 Sendchat: " + Chat.ToString(chat))
-    if(chat.content.length == 0) return;
-    chat.ChatCode = ChatCode.reciveChat;
+    if(chat.Content.length == 0) return;
+    chat.ChatCode = ChatCode.ReciveChat;
     GetChatChannelById(chat.IdChatChannel).then((res : ChatChannel) => {
         if(res == null || res == undefined) return;
-        redisPublisher.publish(variable.chatServer, ChatServerFormatData(chat));
+        redisPublisher.publish(variable.chatServer, Chat.ToString(chat));
         addChatToRedis(JSON.stringify(res._id), Chat.ToString(chat));
     })
 }
 
 export function ReciveChat(chat :IChat){
+    console.log("1684569247 ReciveChat")
     GetChatChannelById(chat.IdChatChannel).then(res=>{
-        console.log("1684569247 ReciveChat " + res)
+        console.log("1684569247 Recive "+res)
         var chatChannel = ChatChannel.Parse(res);
         GetIdUserPlayerByIdChatChannel(chatChannel._id).then(res=>{
             if(res.length == 0) return;
             res.forEach(element => {
-                userSocketChatServer[element.IdUserPlayer.toString()].emit(variable.eventSocketListening, ChatServerFormatData(chat));
+                var socket = userSocketChatServer[element.IdUserPlayer.toString()];
+                if(socket == null|| socket == undefined) return;
+                socket.emit(variable.eventSocketListening, ChatServerFormatData(chat));
+                console.log("1684599816 "+socket.id)
             });
         })
     })

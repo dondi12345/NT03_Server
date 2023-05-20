@@ -7,18 +7,18 @@ export interface IChat{
     ChatCode : ChatCode;
     IdChatChannel : Types.ObjectId;
     IdUserPlayer : Types.ObjectId;
-    socket ?: Socket,
-    time : Date;
-    content : string;
+    Socket ?: Socket,
+    Time : Date;
+    Content : string;
 }
 
 export class Chat implements IChat {
     ChatCode : ChatCode;
     IdChatChannel : Types.ObjectId;
     IdUserPlayer : Types.ObjectId;
-    socket?: Socket;
-    time : Date = new Date;
-    content : string;
+    Socket?: Socket;
+    Time : Date = new Date;
+    Content : string;
 
     constructor() {
         
@@ -29,8 +29,8 @@ export class Chat implements IChat {
         data.ChatCode = chat.ChatCode;
         data.IdChatChannel = chat.IdChatChannel;
         data.IdUserPlayer = chat.IdUserPlayer;
-        data.time = chat.time;
-        data.content = chat.content;
+        data.Time = chat.Time;
+        data.Content = chat.Content;
         return JSON.stringify(data);
     }
 

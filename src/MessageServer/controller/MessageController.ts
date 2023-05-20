@@ -8,8 +8,8 @@ export function Connect(message : IMessage){
     try{
         var messageRes = new Message();
         messageRes.IdUserPlayer = message.IdUserPlayer;
-        messageRes.messageCode = MessageCode.messageConnectResponse;
-        message.socket?.emit(variable.eventSocketListening, JSON.stringify(messageRes));
+        messageRes.MessageCode = MessageCode.MessageConnectResponse;
+        message.Socket?.emit(variable.eventSocketListening, JSON.stringify(messageRes));
     }catch{
         console.log("1684474838 Not found socket");
     }

@@ -1,7 +1,7 @@
 export enum MessageCode {
-    messageTest = 1000,
-    messageConnect = 1001,
-    messageConnectResponse = 1002,
+    MessageTest = 1000,
+    MessageConnect = 1001,
+    MessageConnectResponse = 1002,
 
-    message_ChatServer = 2001,
+    Message_ChatServer = 2001,
 }

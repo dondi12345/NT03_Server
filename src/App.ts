@@ -36,8 +36,8 @@ function InitApp(){
       console.log(`1684475542 worker ${worker.process.pid} died`);
     });
     API();
-    AppTest();
+    // AppTest();
   } else {
-    // AppChild();
+    AppChild();
   }
 }

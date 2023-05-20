@@ -1,5 +1,5 @@
 export enum ChatCode {
-    testChat = 1000,
-    sendChat = 1001,
-    reciveChat = 1002,
+    TestChat = 1000,
+    SendChat = 1001,
+    ReciveChat = 1002,
 }

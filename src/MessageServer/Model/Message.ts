@@ -4,17 +4,17 @@ import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 export interface IMessage{
-    messageCode : MessageCode;
+    MessageCode : MessageCode;
     IdUserPlayer : Types.ObjectId,
-    socket? : Socket,
-    data : any;
+    Socket? : Socket,
+    Data : any;
 }
 
 export class Message implements IMessage {
-    messageCode: MessageCode;                              
+    MessageCode: MessageCode;                              
     IdUserPlayer: Types.ObjectId = new Types.ObjectId("012345678910111213141516");
-    socket?: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any> | undefined;
-    data: any;
+    Socket?: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any> | undefined;
+    Data: any;
 
     constructor() {
         
