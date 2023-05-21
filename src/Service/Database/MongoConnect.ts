@@ -1,5 +1,5 @@
 import mongoose, { ConnectOptions } from 'mongoose';
-import { Mongo } from '../../other_1/Env';
+import { Mongo } from '../../Other/Env';
 
 export class MongoDBDatabase {
 

@@ -1,5 +1,5 @@
 import mongoose, { Types, Schema } from "mongoose";
-import { variable } from "../../../other_1/Env";
+import { variable } from "../../../Other/Env";
 import { EffectCode } from "../Model/EffectCode";
 import { RacingHourseData } from "../Model/RacingHourseData";
 import { CreateResultRacingHourse, FindResultRacingHourse, GetNewestResultRacingHourse, IResultRacingHourse, ResultRacingHourse, ResultRacingHourseModel, UpdateResultRacingHourse } from "../Model/ResultRacingHourse";
