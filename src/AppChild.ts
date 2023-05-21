@@ -1,6 +1,6 @@
 // Import necessary modules
 import Init from "./Service/Init";
-import { InitMessageServer } from "./MessageServer/Init/InitMessageServer";
+import { InitMessageServer } from "./MessageServer/Service/MessageService";
 import { InitChatServer } from "./ChatServer/Service/ChatService";
 import { GetIdUserPlayerByIdChatChannel } from "./ChatServer/Model/UserChatChannel";
 import { Types } from "mongoose";

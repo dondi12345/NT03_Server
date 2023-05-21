@@ -4,7 +4,7 @@ import { UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { createClient } from 'redis';
 import { Chat, IChat } from "../Model/Chat";
 import { ChatRouter } from "../Router/ChatRouter";
-import { userSocketMessageServer } from "../../MessageServer/Init/InitMessageServer";
+import { userSocketMessageServer } from "../../MessageServer/Service/MessageService";
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { IMSGChat, MSGChat } from "../Model/MSGChat";

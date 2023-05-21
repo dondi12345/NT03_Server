@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { userSocketMessageServer } from "../../MessageServer/Init/InitMessageServer";
+import { userSocketMessageServer } from "../../MessageServer/Service/MessageService";
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { UserSocketServer } from "../../UserSocket/Model/UserSocket";
