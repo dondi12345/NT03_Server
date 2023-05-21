@@ -46,6 +46,25 @@ export function API(){
       res.send("suc");
   })
 
+  let socketAccount;
+  app.get('/account', (req, res) =>{
+    socketAccount = io("ws://localhost:"+port.portAccountServer);
+    socketAccount.on(variable.eventSocketListening, (arg)=>{
+      console.log("1684683425 AccountServer: "+arg);
+    })
+    res.send("Connect to AccountServer");
+  });
+
+  app.post('/account',(req, res)=>{
+    if(socketAccount == null){
+      res.send("Not connect to AccountServer")
+      return;
+    }
+    console.log("1684683483 "+ JSON.stringify(req.body));
+    socketAccount.emit(variable.eventSocketListening, JSON.stringify(req.body));
+      res.send("suc");
+  })
+
   app.listen(port.portAPI, () => {
       console.log(`1684475518 Example app listening on port ${port.portAPI}`)
     })

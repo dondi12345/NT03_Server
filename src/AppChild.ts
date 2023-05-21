@@ -5,11 +5,13 @@ import { InitChatServer } from "./ChatServer/Init/InitChatServer";
 import { GetIdUserPlayerByIdChatChannel } from "./ChatServer/Model/UserChatChannel";
 import { Types } from "mongoose";
 import { InitUserPlayerServer } from "./UserPlayerServer/Master/UserPlayerMaster";
+import { InitAccountServer } from "./AccountServer/Service/AccountService";
 
 // Function to create app child instance
 export function AppChild() {
     console.log("1684561087 Init AppChild")
     Init.InitDatabase().then(()=>{
+        InitAccountServer();
         InitMessageServer();
         InitUserPlayerServer();
         InitChatServer();
