@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Schema, Types } from "mongoose";
+import { ServerGameCode } from "../../UserPlayerServer/Model/ServerGameCode";
 
 export enum TyppeChatChannelCode{
     Global = 10000,
@@ -9,12 +10,14 @@ export enum TyppeChatChannelCode{
 export interface IChatChannel{
     _id : Types.ObjectId;
     TyppeChatChannelCode : TyppeChatChannelCode;
+    ServerGameCode : ServerGameCode;
     Detail : string;
 }
 
 export class ChatChannel implements IChatChannel{
     _id: Types.ObjectId;
     TyppeChatChannelCode : TyppeChatChannelCode;
+    ServerGameCode : ServerGameCode;
     Detail: string;
 
     static Parse(data) : ChatChannel{
@@ -29,6 +32,7 @@ export class ChatChannel implements IChatChannel{
 const ChatChannelSchema = new Schema<IChatChannel>(
     {
         TyppeChatChannelCode : {type : Number, enum : TyppeChatChannelCode},
+        ServerGameCode : {type : Number, enum : ServerGameCode},
         Detail: String,
     }
 );
@@ -53,9 +57,9 @@ export async function CreateChatChannel(chatChannel : IChatChannel){
     return data;
 }
 
-export async function FindGlobalChannel() {
+export async function FindGlobalChannel(serverGameCode : ServerGameCode) {
     var globalChannel;
-    await ChatChannelModel.findOne({TyppeChatChannelCode : TyppeChatChannelCode.Global}).then(res=>{
+    await ChatChannelModel.findOne({TyppeChatChannelCode : TyppeChatChannelCode.Global, ServerGameCode : serverGameCode}).then(res=>{
         globalChannel = res;
     })
     return globalChannel;

@@ -1,6 +1,7 @@
 import mongoose, { Types } from "mongoose";
 import { FindGlobalChannel, IChatChannel } from "./ChatChannel";
 import { Schema } from "mongoose";
+import { ServerGameCode } from "../../UserPlayerServer/Model/ServerGameCode";
 
 export interface IUserChatChannel{
     _id : Types.ObjectId,
@@ -51,8 +52,8 @@ export async function UserJoinToChatChannel(idUserPlayer: Types.ObjectId, idChat
     })
 }
 
-export async function UserJoinToGlobalChannel(idUserPlayer: Types.ObjectId) {
-    await FindGlobalChannel().then((res : IChatChannel) =>{
+export async function UserJoinToGlobalChannel(idUserPlayer: Types.ObjectId, serverGameCode : ServerGameCode) {
+    await FindGlobalChannel(serverGameCode).then((res : IChatChannel) =>{
         try {
             UserJoinToChatChannel(idUserPlayer, res._id);
         } catch (error) {

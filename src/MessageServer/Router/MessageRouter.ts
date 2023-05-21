@@ -1,7 +1,7 @@
 import { IMessage, Message } from "../Model/Message";
 import { MessageCode } from "../Model/MessageCode";
 import { Connect } from "../Controller/MessageController";
-import { isChatServerUseSocket } from "../../ChatServer/Init/InitChatServer";
+import { isChatServerUseSocket } from "../../ChatServer/Service/ChatService";
 import { Chat } from "../../ChatServer/Model/Chat";
 import { ChatRouter } from "../../ChatServer/Router/ChatRouter";
 import { MSGUserPlayer } from "../../UserPlayerServer/Model/MSGUserPlayer";

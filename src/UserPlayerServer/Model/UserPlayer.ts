@@ -1,19 +1,28 @@
 import mongoose, { Schema, Types } from 'mongoose';
 import { variable } from '../../Other/Env';
+import { ServerGameCode } from './ServerGameCode';
 
 export interface IUserPlayer{
     _id : Types.ObjectId;
-    Username?: String;
-    Password?: String;
+    IdAccount : Types.ObjectId;
+    ServerGameCode : ServerGameCode;
 }
 
 export class UserPlayer implements IUserPlayer{
     _id : Types.ObjectId = new Types.ObjectId();
-    Username?: String;
-    Password?: String;
+    IdAccount : Types.ObjectId;
+    ServerGameCode : ServerGameCode;
 
     constructor() {
         
+    }
+
+    static ToString(data : IUserPlayer){
+        var userPlayer = new UserPlayer;
+        userPlayer._id = data._id;
+        userPlayer.IdAccount = data.IdAccount;
+        userPlayer.ServerGameCode = data.ServerGameCode;
+        return JSON.stringify(userPlayer);
     }
 
     static Parse(data) : IUserPlayer{
@@ -27,8 +36,8 @@ export class UserPlayer implements IUserPlayer{
 const UserPlayerSchema = new Schema<IUserPlayer>(
     {
       _id : { type: Schema.Types.ObjectId, default: new Types.ObjectId()},
-      Username :{type : String},
-      Password : { type: String}
+      IdAccount: {type: Schema.Types.ObjectId, ref : 'Account'},
+      ServerGameCode : {type : Number, enum : ServerGameCode}
     }
 );
   
@@ -52,10 +61,10 @@ export async function CreateUserPlayer(userPlayer:UserPlayer) {
     return newUserPlayer
 }
 
-export async function FindByUserName(userPlayer : UserPlayer){
-    var userPlayerFO;
-    await UserPlayerModel.findOne({Username : userPlayer.Username}).then(res=>{
-        userPlayerFO = res;
+export async function FindByIdAccountAndServerGameCode(idAccount : Types.ObjectId, serverGameCode : ServerGameCode) {
+    var userPlayer;
+    await UserPlayerModel.findOne({IdAccount : idAccount, ServerGameCode : serverGameCode}).then((res)=>{
+        userPlayer = UserPlayer.Parse(res);
     })
-    return userPlayerFO;
+    return userPlayer;
 }

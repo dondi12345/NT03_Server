@@ -1,10 +1,10 @@
 // Import necessary modules
 import Init from "./Service/Init";
 import { InitMessageServer } from "./MessageServer/Init/InitMessageServer";
-import { InitChatServer } from "./ChatServer/Init/InitChatServer";
+import { InitChatServer } from "./ChatServer/Service/ChatService";
 import { GetIdUserPlayerByIdChatChannel } from "./ChatServer/Model/UserChatChannel";
 import { Types } from "mongoose";
-import { InitUserPlayerServer } from "./UserPlayerServer/Master/UserPlayerMaster";
+import { InitUserPlayerServer } from "./UserPlayerServer/Service/UserPlayerService";
 import { InitAccountServer } from "./AccountServer/Service/AccountService";
 
 // Function to create app child instance

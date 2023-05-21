@@ -12,7 +12,7 @@ export function API(){
   app.get('/message', (req, res) => {
     socketMessage = io("ws://localhost:"+port.portMessageServer);
     socketMessage.on(variable.eventSocketListening, (arg)=>{
-      console.log("1684561396 MessageServer: "+arg);
+      console.log("1684561396 from MessageServer: "+arg);
     })
       res.send("Connect MessageServer");
     });
@@ -31,7 +31,7 @@ export function API(){
   app.get('/chat', (req, res) =>{
     socketChat = io("ws://localhost:"+port.portChatServer);
     socketChat.on(variable.eventSocketListening, (arg)=>{
-      console.log("1684568352 ChatServer: "+arg);
+      console.log("1684568352 from ChatServer: "+arg);
     })
     res.send("Connect to ChatServer");
   });
@@ -50,7 +50,7 @@ export function API(){
   app.get('/account', (req, res) =>{
     socketAccount = io("ws://localhost:"+port.portAccountServer);
     socketAccount.on(variable.eventSocketListening, (arg)=>{
-      console.log("1684683425 AccountServer: "+arg);
+      console.log("1684683425 from AccountServer: "+arg);
     })
     res.send("Connect to AccountServer");
   });

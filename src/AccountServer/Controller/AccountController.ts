@@ -1,4 +1,3 @@
-import { UserJoinToGlobalChannel } from "../../ChatServer/Model/UserChatChannel";
 import { SendToSocket } from "../Service/AccountService";
 import { IMSGAccount, MSGAccount } from "../Model/MSGAccount";
 import { MSGAccountCode } from "../Model/MSGAccountCode";
