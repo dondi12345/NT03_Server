@@ -1,19 +1,18 @@
 import { ReciveChat, SendChat } from "../Controller/ChatController";
-import {Chat, IChat } from "../Model/Chat";
-import { ChatCode } from "../Model/ChatCode";
+import { MSGChatCode } from "../Model/MSGChatCode";
+import { IMSGChat } from "../Model/MSGChat";
 
-export function ChatRouter(chat : IChat){
-    var chat : Chat = Chat.Parse(chat);
-    if(chat.ChatCode == ChatCode.TestChat){
+export function ChatRouter(msgChat : IMSGChat){
+    if(msgChat.MSGChatCode == MSGChatCode.TestMSGChat){
         console.log("1684566303 TestChat")
         return;
     }
-    if(chat.ChatCode == ChatCode.SendChat){
-        SendChat(chat);
+    if(msgChat.MSGChatCode == MSGChatCode.SendMSGChat){
+        SendChat(msgChat);
         return;
     }
-    if(chat.ChatCode == ChatCode.ReciveChat){
-        ReciveChat(chat);
+    if(msgChat.MSGChatCode == MSGChatCode.ReciveMSGChat){
+        ReciveChat(msgChat);
         return;
     }
 }

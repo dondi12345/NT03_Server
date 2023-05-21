@@ -1,10 +1,9 @@
 import { Socket } from "socket.io";
 import mongoose, { Schema, Types } from 'mongoose';
-import { ChatCode } from "./ChatCode";
+import { MSGChatCode } from "./MSGChatCode";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 export interface IChat{
-    ChatCode : ChatCode;
     IdChatChannel : Types.ObjectId;
     IdUserPlayer : Types.ObjectId;
     Socket ?: Socket,
@@ -13,7 +12,6 @@ export interface IChat{
 }
 
 export class Chat implements IChat {
-    ChatCode : ChatCode;
     IdChatChannel : Types.ObjectId;
     IdUserPlayer : Types.ObjectId;
     Socket?: Socket;
@@ -26,7 +24,6 @@ export class Chat implements IChat {
 
     static ToString(chat : IChat){
         var data = new Chat();
-        data.ChatCode = chat.ChatCode;
         data.IdChatChannel = chat.IdChatChannel;
         data.IdUserPlayer = chat.IdUserPlayer;
         data.Time = chat.Time;
