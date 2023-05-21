@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { UserSocket } from "../../UserSocket/Model/UserSocket";
-import { variable } from "../../Other/Env";
+import { variable } from "../../other_1/Env";
 import { IMessage, Message } from "../Model/Message";
 import { MessageCode } from "../Model/MessageCode";
 

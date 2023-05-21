@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { variable } from '../../Other/Env';
+import { variable } from '../../other_1/Env';
 import { ServerGameCode } from './ServerGameCode';
 
 export interface IUserPlayer{
