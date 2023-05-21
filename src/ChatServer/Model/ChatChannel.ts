@@ -52,3 +52,11 @@ export async function CreateChatChannel(chatChannel : IChatChannel){
     }))
     return data;
 }
+
+export async function FindGlobalChannel() {
+    var globalChannel;
+    await ChatChannelModel.findOne({TyppeChatChannelCode : TyppeChatChannelCode.Global}).then(res=>{
+        globalChannel = res;
+    })
+    return globalChannel;
+}

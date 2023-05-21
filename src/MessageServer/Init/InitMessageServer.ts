@@ -21,8 +21,11 @@ function InitWithSocket() {
         socket.on(variable.eventSocketListening, (data) => {
             console.log("1684424442:" + data);
             var message = Message.Parse(data);
-            console.log("1684562499 Save SocketUser: "+ message.IdUserPlayer.toString()+" _ "+socket.id);
-            userSocketMessageServer[message.IdUserPlayer.toString()] = socket;
+            try {
+                userSocketMessageServer[message.IdUserPlayer.toString()] = socket;
+            } catch (error) {
+                console.log("1684642567 "+error);
+            }
             message.Socket = socket;
             MessageRouter(message)
         });

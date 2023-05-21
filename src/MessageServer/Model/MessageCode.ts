@@ -4,4 +4,6 @@ export enum MessageCode {
     MessageConnectResponse = 1002,
 
     Message_ChatServer = 2001,
+
+    Message_UserPlayer = 3001,
 }

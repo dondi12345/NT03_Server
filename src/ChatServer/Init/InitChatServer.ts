@@ -15,10 +15,9 @@ export let userSocketChatServer : UserSocketServer;
 export let isChatServerUseSocket : boolean;
 
 export function InitChatServer(){
-    // InitWithSocket();
-    InitWithMessageServer();
+    InitWithSocket();
+    // InitWithMessageServer();
     redisSubscriber.subscribe(variable.chatServer);
-    console.log("1684573787 Subscrib ChatServer: "+variable.chatServer)
 
     redisSubscriber.on('message', (channel, data) => {
         var chat = Chat.Parse(data);
@@ -37,8 +36,11 @@ function InitWithSocket() {
         socket.on(variable.eventSocketListening, (data) => {
             var chat = Chat.Parse(data);
             console.log("1684564028:" + JSON.stringify(chat));
-            console.log("1684564034 Save SocketUser: "+ chat.IdUserPlayer.toString()+" _ "+socket.id);
-            userSocketChatServer[chat.IdUserPlayer.toString()] = socket;
+            try {
+                userSocketChatServer[chat.IdUserPlayer.toString()] = socket;
+            } catch (error) {
+                console.log("1684642664 "+error);
+            }
             chat.Socket = socket;
             ChatRouter(chat)
         });

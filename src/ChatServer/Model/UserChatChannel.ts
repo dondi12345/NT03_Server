@@ -1,5 +1,5 @@
 import mongoose, { Types } from "mongoose";
-import { IChatChannel } from "./ChatChannel";
+import { FindGlobalChannel, IChatChannel } from "./ChatChannel";
 import { Schema } from "mongoose";
 
 export interface IUserChatChannel{
@@ -48,5 +48,15 @@ export async function UserJoinToChatChannel(idUserPlayer: Types.ObjectId, idChat
         userChatChannel.IdChatChannel = idChatChannel;
         userChatChannel.IdUserPlayer = idUserPlayer;
         UserChatChannelModel.create(userChatChannel);
+    })
+}
+
+export async function UserJoinToGlobalChannel(idUserPlayer: Types.ObjectId) {
+    await FindGlobalChannel().then((res : IChatChannel) =>{
+        try {
+            UserJoinToChatChannel(idUserPlayer, res._id);
+        } catch (error) {
+            console.log("1684663387 "+error);
+        }
     })
 }
