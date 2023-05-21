@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { variable } from '../../other/Env';
+import { variable } from '../../Other/Env';
 
 export interface IUserPlayer{
     _id : Types.ObjectId;

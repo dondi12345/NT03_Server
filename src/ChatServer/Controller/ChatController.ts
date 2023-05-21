@@ -3,7 +3,7 @@ import { Chat, IChat } from "../Model/Chat";
 import { ChatChannel, GetChatChannelById } from '../Model/ChatChannel';
 import { GetIdUserPlayerByIdChatChannel, UserChatChannel } from '../Model/UserChatChannel';
 import { ChatServerFormatData, userSocketChatServer } from '../Init/InitChatServer';
-import { variable } from '../../other/Env';
+import { variable } from '../../Other/Env';
 import { ChatCode } from '../Model/ChatCode';
 import { Socket } from 'socket.io';
 

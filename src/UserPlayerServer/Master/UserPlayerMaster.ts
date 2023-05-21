@@ -3,7 +3,7 @@ import { userSocketMessageServer } from "../../MessageServer/Init/InitMessageSer
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { UserSocketServer } from "../../UserSocket/Model/UserSocket";
-import { variable } from "../../other/Env";
+import { variable } from "../../Other/Env";
 import { IMSGUserPlayer, MSGUserPlayer } from "../Model/MSGUserPlayer";
 
 export let userSocketUserPlayerServer : UserSocketServer;
@@ -27,7 +27,7 @@ export function SendToSocket(msgUserPlayer : IMSGUserPlayer, socket : Socket){
     }else{
         msg = UserPlayerServerFormatToMessageServer(msgUserPlayer);
     }
-    
+
     try {
         socket.emit(variable.eventSocketListening, msg);
     } catch (error) {
