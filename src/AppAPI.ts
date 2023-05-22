@@ -1,5 +1,5 @@
 import {io} from "socket.io-client"
-import { port, variable } from './Others/Env';
+import { port, variable } from './Other/Env';
 import express from 'express';
 
 const app = express()
