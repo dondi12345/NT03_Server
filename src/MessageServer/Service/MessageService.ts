@@ -5,6 +5,8 @@ import { UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSo
 import { MessageRouter } from "../Router/MessageRouter";
 import { createClient } from 'redis';
 import { MessageCode } from "../Model/MessageCode";
+import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
+import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
 
 const redisSubscriber = createClient();
 
@@ -20,13 +22,30 @@ function InitWithSocket() {
     console.log(`1684424393 Worker ${process.pid} listening to MessageServer on port: ${port.portMessageServer}`);
     io.on(variable.eventSocketConnection, (socket : Socket) => {
         console.log("1684424410 Socket connec to MessageServer");
+        let userSocket = new UserSocket();
         socket.on(variable.eventSocketListening, (data) => {
-            let userSocket = new UserSocket();
             console.log("1684424442:" + data);
             var message = Message.Parse(data);
-            if(message.MessageCode == MessageCode.AccountServer_Login){
+
+            if(!userSocket.Socket) userSocket.Socket = socket;
+
+            if(message.MessageCode == MessageCode.AccountServer_Register){
+                AccountRegister(message, userSocket);
+                return;
             }
-            message.Socket = socket;
+            if(message.MessageCode == MessageCode.AccountServer_Login){
+                AccountLogin(message, userSocket);
+                return;
+            }
+            if(userSocket.IdAccount == null || userSocket.IdAccount == undefined){
+                console.log("1684769809 Not Login Acount")
+                return;
+            }
+            if(message.MessageCode == MessageCode.UserPlayerServer_Login){
+                UserPlayerLogin(message, userSocket);
+                return;
+            }
+
             MessageRouter(message)
         });
     });
@@ -37,4 +56,12 @@ function InitWithSocket() {
         var message = Message.Parse(data);
         MessageRouter(message);
     });
+}
+
+export function SendMessageToSocket(message: Message, socket : Socket){
+    try {
+        socket.emit(variable.eventSocketListening, Message.ToString(message));
+    } catch (error) {
+        console.log("1684765923 "+error);
+    }
 }

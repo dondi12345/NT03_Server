@@ -3,12 +3,14 @@ import { Socket } from "socket.io";
 import { UserPlayer } from '../../UserPlayerServer/Model/UserPlayer';
 
 export interface IUserSocket{
-    IdUserPlayer : Types.ObjectId;
-    Socket : Socket;
-    UserPlayer : UserPlayer;
+    IdAccount : Types.ObjectId,
+    IdUserPlayer : Types.ObjectId,
+    Socket : Socket,
+    UserPlayer : UserPlayer,
 }
 
 export class UserSocket implements IUserSocket{
+    IdAccount : Types.ObjectId;
     IdUserPlayer : Types.ObjectId;
     Socket : Socket;
     UserPlayer : UserPlayer;

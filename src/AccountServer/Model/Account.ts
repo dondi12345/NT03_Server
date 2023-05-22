@@ -15,6 +15,10 @@ export class Account implements IAccount{
         
     }
 
+    static ToString(data :IAccount){
+        return JSON.stringify(data);
+    }
+
     static Parse(data) : IAccount{
         try{
             data = JSON.parse(data);
@@ -51,10 +55,10 @@ export async function CreateAccount(Account:Account) {
     return newAccount
 }
 
-export async function FindByUserName(Account : Account){
-    var AccountFO;
-    await AccountModel.findOne({Username : Account.Username}).then(res=>{
-        AccountFO = res;
+export async function FindByUserName(username : String){
+    var account;
+    await AccountModel.findOne({Username : username}).then(res=>{
+        account = res;
     })
-    return AccountFO;
+    return account;
 }

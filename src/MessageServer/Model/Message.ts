@@ -4,20 +4,20 @@ import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 export interface IMessage{
-    MessageCode : MessageCode;
-    IdUserPlayer: Types.ObjectId,
-    Socket : Socket,
-    Data : any;
+    MessageCode : MessageCode,
+    Data : any,
 }
 
 export class Message implements IMessage {
     MessageCode: MessageCode;                              
-    IdUserPlayer: Types.ObjectId = new Types.ObjectId("012345678910111213141516");
-    Socket: Socket;
     Data: any;
 
     constructor() {
         
+    }
+
+    static ToString(message : IMessage){
+        return JSON.stringify(message)
     }
 
     static Parse(data) : Message{

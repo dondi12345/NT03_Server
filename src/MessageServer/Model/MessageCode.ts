@@ -3,9 +3,14 @@ export enum MessageCode {
     MessageConnect = 1001,
     MessageConnectResponse = 1002,
 
-    AccountServer_Login = 2001,
-    AccountServer_LoginFail = 2002,
-    AccountServer_LoginSuccess= 2003,
+    AccountServer_Register = 2001,
+    AccountServer_RegisterFail = 2002,
+    AccountServer_RegisterSuccess = 2003,
+    AccountServer_Login = 2004,
+    AccountServer_LoginFail = 2005,
+    AccountServer_LoginSuccess= 2006,
 
-    Message_UserPlayer = 3001,
+    UserPlayerServer_Login = 3001,
+    UserPlayerServer_LoginFail = 3002,
+    UserPlayerServer_LoginSuccess= 3003,
 }

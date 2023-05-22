@@ -17,6 +17,13 @@ export class UserPlayer implements IUserPlayer{
         
     }
 
+    static NewUserPlayer(idAccount : Types.ObjectId, serverGameCode : ServerGameCode){
+        var userPlayer = new UserPlayer();
+        userPlayer.IdAccount = idAccount;
+        userPlayer.ServerGameCode = serverGameCode;
+        return userPlayer;
+    }
+
     static ToString(data : IUserPlayer){
         var userPlayer = new UserPlayer;
         userPlayer._id = data._id;

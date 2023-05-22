@@ -1,39 +1,53 @@
 import { UserJoinToGlobalChannel } from "../../ChatServer/Model/UserChatChannel";
-import { IMSGUserPlayer, MSGUserPlayer } from "../Model/MSGUserPlayer";
-import { MSGUserPlayerCode } from "../Model/MSGUserPlayerCode";
+import { IMessage, Message } from "../../MessageServer/Model/Message";
+import { MessageCode } from "../../MessageServer/Model/MessageCode";
+import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
+import { IUserSocket } from "../../UserSocket/Model/UserSocket";
+import { ServerGame } from "../Model/ServerGame";
 import { ServerGameCode } from "../Model/ServerGameCode";
 import { CreateUserPlayer, FindByIdAccountAndServerGameCode, IUserPlayer, UserPlayer } from "../Model/UserPlayer";
-import { SendToSocket } from "../Service/UserPlayerService";
 
-export async function JoinServer(msgUserPlayer : IMSGUserPlayer){
-    var userPlayer = UserPlayer.Parse(msgUserPlayer.Data);
-    if(!(userPlayer.ServerGameCode in ServerGameCode)) return;
-    await FindByIdAccountAndServerGameCode(userPlayer.IdAccount, userPlayer.ServerGameCode).then(res=>{
+export async function UserPlayerLogin(message : IMessage, userSocket : IUserSocket) {
+    var serverGame = ServerGame.Parse(message.Data);
+    if(!(serverGame.ServerGameCode in ServerGameCode)) return;
+    await FindByIdAccountAndServerGameCode(userSocket.IdAccount, serverGame.ServerGameCode).then(res=>{
         if(res == null || res == undefined){
+            var userPlayer = UserPlayer.NewUserPlayer(userSocket.IdAccount, serverGame.ServerGameCode);
             CreateUserPlayer(userPlayer).then(res=>{
                 if(res == null || res == undefined){
-                    var backMSGUserPlayer = new MSGUserPlayer();
-                    backMSGUserPlayer.Socket = msgUserPlayer.Socket;
-                    backMSGUserPlayer.MSGUserPlayerCode = MSGUserPlayerCode.JoinFail;
-                    SendToSocket(backMSGUserPlayer, msgUserPlayer.Socket);
+                    SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
+                    return;
                 }else{
                     userPlayer = UserPlayer.Parse(res);
-                    var backMSGUserPlayer = new MSGUserPlayer();
-                    backMSGUserPlayer.IdUserPlayer = userPlayer._id;
-                    backMSGUserPlayer.Socket = msgUserPlayer.Socket;
-                    backMSGUserPlayer.Data = UserPlayer.ToString(userPlayer);
-                    backMSGUserPlayer.MSGUserPlayerCode = MSGUserPlayerCode.JoinCreateUserPlayer;
-                    UserJoinToGlobalChannel(userPlayer._id, userPlayer.ServerGameCode);
-                    SendToSocket(backMSGUserPlayer, msgUserPlayer.Socket);
+                    LoginSuccess(userPlayer, userSocket);
+                    InitNewUserPlayer(userPlayer);
+                    return;
                 }
             })
         }else{
             userPlayer = UserPlayer.Parse(res);
-            var backMSGUserPlayer = new MSGUserPlayer();
-            backMSGUserPlayer.IdUserPlayer = userPlayer._id;
-            backMSGUserPlayer.Socket = msgUserPlayer.Socket;
-            backMSGUserPlayer.MSGUserPlayerCode = MSGUserPlayerCode.JoinSucces;
-            SendToSocket(backMSGUserPlayer, msgUserPlayer.Socket);
+            LoginSuccess(userPlayer, userSocket);
+            return;
         }
     })
+}
+
+function InitNewUserPlayer(userPlayer : UserPlayer){
+    UserJoinToGlobalChannel(userPlayer._id, userPlayer.ServerGameCode);
+}
+
+function LoginSuccess(userPlayer:IUserPlayer ,userSocket : IUserSocket){
+    SendMessageToSocket(LoginSuccessMessage(userPlayer), userSocket.Socket);
+}
+
+function LoginFailMessage(){
+    var message = new Message();
+    message.MessageCode = MessageCode.UserPlayerServer_LoginFail;
+    return message;
+}
+function LoginSuccessMessage(userPlayer : IUserPlayer){
+    var message = new Message();
+    message.MessageCode = MessageCode.UserPlayerServer_LoginSuccess;
+    message.Data = UserPlayer.ToString(userPlayer);
+    return message;
 }
