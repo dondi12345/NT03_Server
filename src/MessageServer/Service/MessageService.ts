@@ -38,15 +38,22 @@ function InitWithSocket() {
                 return;
             }
             if(userSocket.IdAccount == null || userSocket.IdAccount == undefined){
-                console.log("1684769809 Not Login Acount")
+                console.log("1684769809 Logout Acount")
                 return;
             }
             if(message.MessageCode == MessageCode.UserPlayerServer_Login){
                 UserPlayerLogin(message, userSocket);
                 return;
             }
-
+            if(userSocket.IdUserPlayer == null || userSocket.IdUserPlayer == undefined){
+                console.log("1684769809 Logout Acount")
+                return;
+            } 
             MessageRouter(message)
+        });
+
+        socket.on("disconnect", () => {
+            delete userSocketDictionary[userSocket.IdUserPlayer.toString()]
         });
     });
 

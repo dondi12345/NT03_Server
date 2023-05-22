@@ -1,7 +1,7 @@
 import { UserJoinToGlobalChannel } from "../../ChatServer/Model/UserChatChannel";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
-import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
+import { SendMessageToSocket, userSocketDictionary } from "../../MessageServer/Service/MessageService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { ServerGame } from "../Model/ServerGame";
 import { ServerGameCode } from "../Model/ServerGameCode";
@@ -37,6 +37,8 @@ function InitNewUserPlayer(userPlayer : UserPlayer){
 }
 
 function LoginSuccess(userPlayer:IUserPlayer ,userSocket : IUserSocket){
+    userSocket.IdUserPlayer = userPlayer._id;
+    userSocketDictionary[userSocket.IdUserPlayer.toString()] = userSocket; 
     SendMessageToSocket(LoginSuccessMessage(userPlayer), userSocket.Socket);
 }
 
