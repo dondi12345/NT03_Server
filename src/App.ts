@@ -4,11 +4,8 @@ import cluster from 'cluster';
 import { createClient } from 'redis';
 import {AppChild} from './AppChild';
 import { CreateRacingHourse, RacingHourse, RacingHourseManager } from './MiniGame/RacingHourse/Controller/RacingHourseCtroller';
-import Init from './Service/Init';
 import mongoose, { Schema, Types } from 'mongoose';
-import { MessageRawData } from './MessageServer/Router/MessageRouter';
 import { API } from './AppAPI';
-import { AppTest } from './AppTest';
 
 // Create Redis client
 const redisClient = createClient();

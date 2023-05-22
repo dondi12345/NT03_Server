@@ -10,7 +10,7 @@ export function API(){
   //MessageServer
   let socketMessage
   app.get('/message', (req, res) => {
-    socketMessage = io("ws://localhost:"+port.portMessageServer);
+    socketMessage = io("ws://"+variable.localhost+":"+port.portMessageServer);
     socketMessage.on(variable.eventSocketListening, (arg)=>{
       console.log("1684561396 from MessageServer: "+arg);
     })
@@ -29,7 +29,7 @@ export function API(){
   //ChatServer
   let socketChat
   app.get('/chat', (req, res) =>{
-    socketChat = io("ws://localhost:"+port.portChatServer);
+    socketChat = io("ws://"+variable.localhost+":"+port.portChatServer);
     socketChat.on(variable.eventSocketListening, (arg)=>{
       console.log("1684568352 from ChatServer: "+arg);
     })
@@ -48,7 +48,7 @@ export function API(){
 
   let socketAccount;
   app.get('/account', (req, res) =>{
-    socketAccount = io("ws://localhost:"+port.portAccountServer);
+    socketAccount = io("ws://"+variable.localhost+":"+port.portAccountServer);
     socketAccount.on(variable.eventSocketListening, (arg)=>{
       console.log("1684683425 from AccountServer: "+arg);
     })
@@ -62,7 +62,7 @@ export function API(){
     }
     console.log("1684683483 "+ JSON.stringify(req.body));
     socketAccount.emit(variable.eventSocketListening, JSON.stringify(req.body));
-      res.send("suc");
+    res.send("suc");
   })
 
   app.listen(port.portAPI, () => {

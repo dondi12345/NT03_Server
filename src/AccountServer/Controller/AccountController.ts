@@ -1,36 +1,39 @@
-import { SendToSocket } from "../Service/AccountService";
-import { IMSGAccount, MSGAccount } from "../Model/MSGAccount";
-import { MSGAccountCode } from "../Model/MSGAccountCode";
 import { CreateAccount, FindByUserName, IAccount, Account, AccountModel } from "../Model/Account";
 import bcrypt from 'bcrypt'
+import { Message } from "../../MessageServer/Model/Message";
+import { MessageCode } from "../../MessageServer/Model/MessageCode";
+import { IUserSocket } from "../../UserSocket/Model/UserSocket";
+import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 const saltRounds = 10;
 
-export async function Register(msgAccount : IMSGAccount){
+export async function AccountRegister(message:Message, userSocket: IUserSocket) {
     try {
-        var account = Account.Parse(msgAccount.Data);
+        var account = Account.Parse(message.Data);
         
         var isExisten = false;
-        await FindByUserName(account).then(res=>{
+        if(account.Username == null || account.Username == undefined) {
+            SendMessageToSocket(RegisterFailMessage(), userSocket.Socket);
+            return; 
+        }
+        await FindByUserName(account.Username).then(res=>{
             if(res == null || res == undefined) return;
-            console.log("1684663921 Account Existen")
-            var backMSGAccount = new MSGAccount();
-            backMSGAccount.MSGAccountCode = MSGAccountCode.Account_Existen;
-            backMSGAccount.Socket = msgAccount.Socket;
-            SendToSocket(backMSGAccount, msgAccount.Socket);
             isExisten = true;
         })
-        if(isExisten) return;
+        if(isExisten) {
+            SendMessageToSocket(RegisterFailMessage(), userSocket.Socket);
+            return; 
+        }
 
-        if(account.Password == null || account.Password == undefined) return;
+        if(account.Password == null || account.Password == undefined){
+            SendMessageToSocket(RegisterFailMessage(), userSocket.Socket);
+            return;
+        }
         var pass = account.Password == undefined ? "" : account.Password+"";
         bcrypt.hash(pass, saltRounds, function(err, hash) {
             account.Password = hash;
             CreateAccount(account).then((res: IAccount)=>{
                 console.log("1684646335 "+ res);
-                var backMSGAccount = new MSGAccount();
-                backMSGAccount.MSGAccountCode = MSGAccountCode.Register_Successful;
-                backMSGAccount.Socket = msgAccount.Socket;
-                SendToSocket(backMSGAccount, msgAccount.Socket);
+                SendMessageToSocket(RegisterSuccessMessage(), userSocket.Socket);
             })
         });
     } catch (error) {
@@ -38,39 +41,61 @@ export async function Register(msgAccount : IMSGAccount){
     }
 }
 
-export async function Login(msgAccount : IMSGAccount) {
+function RegisterFailMessage(){
+    var message = new Message();
+    message.MessageCode = MessageCode.AccountServer_RegisterFail;
+    return message;
+}
+function RegisterSuccessMessage(){
+    var message = new Message();
+    message.MessageCode = MessageCode.AccountServer_RegisterSuccess;
+    return message;
+}
+
+export async function AccountLogin(message:Message, userSocket: IUserSocket){
     console.log("1684684863 Login")
     try {
-        var account = Account.Parse(msgAccount.Data);
+        var account = Account.Parse(message.Data);
+        if(account.Username == null || account.Username == undefined || account.Password == null || account.Password== undefined){
+            SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
+            return;
+        }
         
-        await FindByUserName(account).then((res: IAccount)=>{
-            if(res != null && res != undefined) {
-                var pass = account.Password == undefined ? "" : account.Password+"";
-                var hash = res.Password == undefined ? "" : res.Password+"";
-                bcrypt.compare(pass, hash, function(err, result) {
-                    if(result){
-                        console.log("1684684470 Login successfull")
-                        var backMSGAccount = new MSGAccount();
-                        backMSGAccount.MSGAccountCode = MSGAccountCode.Login_Success;
-                        backMSGAccount.Socket = msgAccount.Socket;
-                        SendToSocket(backMSGAccount, msgAccount.Socket);
-                    }else{
-                        console.log("1684684249 WrongPassword")
-                        var backMSGAccount = new MSGAccount();
-                        backMSGAccount.MSGAccountCode = MSGAccountCode.WrongPassword;
-                        backMSGAccount.Socket = msgAccount.Socket;
-                        SendToSocket(backMSGAccount, msgAccount.Socket);
-                    }
-                });
-            }else{
-                console.log("1684684932 WrongAccount")
-                var backMSGAccount = new MSGAccount();
-                backMSGAccount.MSGAccountCode = MSGAccountCode.Login_Fail;
-                backMSGAccount.Socket = msgAccount.Socket;
-                SendToSocket(backMSGAccount, msgAccount.Socket);
+        await FindByUserName(account.Username).then((res: IAccount)=>{
+            if(res == null || res == undefined){
+                SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
+                return;
             }
+            if(res.Password == null || res.Password == undefined || account.Password == null || account.Password== undefined){
+                SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
+                return;
+            }
+            bcrypt.compare(account.Password.toString(), res.Password.toString(), function(err, result) {
+                if(result){
+                    userSocket.IdAccount = res._id;
+                    console.log("1684684470 Login successfull: "+userSocket.IdAccount.toString())
+                    SendMessageToSocket(LoginSuccessMessage(res), userSocket.Socket);
+                return;
+                }else{
+                    console.log("1684684249 WrongPassword")
+                    SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
+                    return;
+                }
+            });
         })
     } catch (error){
         console.log("1684684560 "+error);
     }
+}
+
+function LoginFailMessage(){
+    var message = new Message();
+    message.MessageCode = MessageCode.AccountServer_LoginFail;
+    return message;
+}
+function LoginSuccessMessage(account : IAccount){
+    var message = new Message();
+    message.MessageCode = MessageCode.AccountServer_LoginSuccess;
+    message.Data = Account.ToString(account);
+    return message;
 }
