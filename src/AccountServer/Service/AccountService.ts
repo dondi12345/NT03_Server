@@ -5,7 +5,7 @@ import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { port, variable } from "../../Other/Env";
 import { IMSGAccount, MSGAccount } from "../Model/MSGAccount";
-import { AccountRouter } from "../Router/AccountRouter";
+import { AccountRouter_1 } from "../Router/AccountRouter";
 
 export let userSocketAccountServer : UserSocketServer;
 
@@ -28,7 +28,7 @@ function InitWithSocket() {
                 console.log("1684683715 "+error);
             }
             msgAccount.Socket = socket;
-            AccountRouter(msgAccount)
+            AccountRouter_1(msgAccount)
         });
     });
 }

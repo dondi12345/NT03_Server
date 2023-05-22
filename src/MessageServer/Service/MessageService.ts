@@ -1,13 +1,15 @@
 import { Server, Socket } from "socket.io";
 import {port, variable} from "../../Other/Env";
 import { Message } from "../Model/Message";
-import { UserSocket, UserSocketServer } from "../../UserSocket/Model/UserSocket";
+import { UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { MessageRouter } from "../Router/MessageRouter";
 import { createClient } from 'redis';
+import { MessageCode } from "../Model/MessageCode";
 
 const redisSubscriber = createClient();
 
 export let userSocketMessageServer : UserSocketServer = {};
+export let userSocketDictionary : UserSocketDictionary ={};
 
 export function InitMessageServer(){
     InitWithSocket();
@@ -19,12 +21,10 @@ function InitWithSocket() {
     io.on(variable.eventSocketConnection, (socket : Socket) => {
         console.log("1684424410 Socket connec to MessageServer");
         socket.on(variable.eventSocketListening, (data) => {
+            let userSocket = new UserSocket();
             console.log("1684424442:" + data);
             var message = Message.Parse(data);
-            try {
-                userSocketMessageServer[message.IdUserPlayer.toString()] = socket;
-            } catch (error) {
-                console.log("1684642567 "+error);
+            if(message.MessageCode == MessageCode.AccountServer_Login){
             }
             message.Socket = socket;
             MessageRouter(message)

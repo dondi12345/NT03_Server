@@ -22,4 +22,6 @@ export const variable = {
     maxLengthChat : 50,
     maxLandRacingHourse : 8,
     maxStepRacingHourse : 20,
+    localhost : "localhost",
+    // localhost : "45.124.95.182",
 }

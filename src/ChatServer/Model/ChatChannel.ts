@@ -59,8 +59,18 @@ export async function CreateChatChannel(chatChannel : IChatChannel){
 
 export async function FindGlobalChannel(serverGameCode : ServerGameCode) {
     var globalChannel;
-    await ChatChannelModel.findOne({TyppeChatChannelCode : TyppeChatChannelCode.Global, ServerGameCode : serverGameCode}).then(res=>{
-        globalChannel = res;
+    await ChatChannelModel.findOne({TyppeChatChannelCode : TyppeChatChannelCode.Global, ServerGameCode : serverGameCode}).then(async res=>{
+        if(res == null || res == undefined){
+            var newGlobalChannel = new ChatChannel();
+            newGlobalChannel.Detail = "Global channel of SV"+serverGameCode;
+            newGlobalChannel.ServerGameCode = serverGameCode;
+            newGlobalChannel.TyppeChatChannelCode = TyppeChatChannelCode.Global;
+            await CreateChatChannel(newGlobalChannel).then(res1=>{
+                globalChannel = res1
+            }) 
+        }else{
+            globalChannel = res;
+        }
     })
     return globalChannel;
 }
