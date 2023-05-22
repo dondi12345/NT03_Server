@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import {port, variable} from "../../Other/Env";
+import {port, variable} from "../../other1/Env";
 import { UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { createClient } from 'redis';
 import { Chat, IChat } from "../Model/Chat";
