@@ -3,7 +3,7 @@ import { userSocketMessageServer } from "../../MessageServer/Service/MessageServ
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { UserSocketServer } from "../../UserSocket/Model/UserSocket";
-import { variable } from "../../other1/Env";
+import { variable } from "../../Other/Env";
 import { IMSGUserPlayer, MSGUserPlayer } from "../Model/MSGUserPlayer";
 
 export let userSocketUserPlayerServer : UserSocketServer;
