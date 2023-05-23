@@ -2,21 +2,25 @@ import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateUserPlayerRes, FindUserPlayerResByIdUserPlayer, IRes, Res } from "../Model/Res";
+import { CreateUserPlayerRes, FindResByIdUserPlayer, IRes, Res, UpdateRes } from "../Model/Res";
 
 export async function ResLogin(message : IMessage, userSocket: IUserSocket){
-    await FindUserPlayerResByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
+    await FindResByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
         if(respone == null || respone == undefined){
             var res = new Res();
+            res.IdUserPlayer = userSocket.IdUserPlayer;
             await CreateUserPlayerRes(res).then(respone=>{
+                console.log("1684837963 " + respone)
                 userSocket.Res = respone;
+                SendMessageToSocket(LoginSuccessMessage(userSocket.Res), userSocket.Socket);
             }).catch(()=>{
                 LoginFail(userSocket);
             })
         }else{
+            console.log("1684837891 " + respone)
             userSocket.Res = respone;
+            SendMessageToSocket(LoginSuccessMessage(userSocket.Res), userSocket.Socket);
         }
-        SendMessageToSocket(LoginSuccessMessage(userSocket.Res), userSocket.Socket);
     }).catch(()=>{
         LoginFail(userSocket);
     })
@@ -36,4 +40,9 @@ function LoginSuccessMessage(res : IRes){
     message.MessageCode = MessageCode.Res_LoginSuccess;
     message.Data = res;
     return message;
+}
+
+export function GainRes(message : IMessage, userSocket: IUserSocket){
+    console.log("1684839042 "+message.Data)
+    UpdateRes(message.Data,userSocket.IdUserPlayer); 
 }

@@ -2,7 +2,7 @@ import { UserJoinToGlobalChannel } from "../../ChatServer/Model/UserChatChannel"
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket, userSocketDictionary } from "../../MessageServer/Service/MessageService";
-import { CreateUserPlayerRes, FindUserPlayerResByIdUserPlayer, Res } from "../../ResServer/Model/Res";
+import { CreateUserPlayerRes, FindResByIdUserPlayer, Res } from "../../ResServer/Model/Res";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { ServerGame } from "../Model/ServerGame";
 import { ServerGameCode } from "../Model/ServerGameCode";

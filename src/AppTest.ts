@@ -2,12 +2,24 @@ import { Types } from "mongoose";
 import { ChatChannel, ChatChannelModel, CreateChatChannel, IChatChannel, TyppeChatChannelCode } from "./ChatServer/Model/ChatChannel";
 import { UserJoinToChatChannel } from "./ChatServer/Model/UserChatChannel";
 import Init from "./Service/Init";
+import { UpdateRes } from "./ResServer/Model/Res";
 
 export function AppTest(){
     // return;
     Init.InitDatabase().then(()=>{
-        InitGlobalChatChannel();
-        InitPlayerChatChannel();
+        var data = [
+            {
+                "Name" : "Diamond",
+                "Number":1
+            },
+            {
+                "Name" : "Money",
+                "Number":100
+            }
+            ]
+        UpdateRes(data, new Types.ObjectId("646c93465a8fac2fbf4f542a"));
+        // InitGlobalChatChannel();
+        // InitPlayerChatChannel();
     })
 }
 

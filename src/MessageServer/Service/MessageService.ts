@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import {port, variable} from "../../Other/Env";
+import {port, variable} from "../../Enviroment/Env";
 import { Message } from "../Model/Message";
 import { UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { MessageRouter } from "../Router/MessageRouter";

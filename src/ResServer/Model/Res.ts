@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { DefaultRes } from "./DefaultRes";
+import { IResDetail } from "./ResDetail";
 
 export interface IRes{
     IdUserPlayer : Types.ObjectId,
@@ -54,7 +55,7 @@ export class Res implements IRes{
     }
 }
 
-const UserPlayerResSchema = new Schema<IRes>(
+const ResSchema = new Schema<IRes>(
     {
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
 
@@ -76,20 +77,34 @@ const UserPlayerResSchema = new Schema<IRes>(
     }
 );
   
-export const UserPlayerResModel = mongoose.model<IRes>('UserPlayerRes', UserPlayerResSchema);
+export const ResModel = mongoose.model<IRes>('Res', ResSchema);
 
 export async function CreateUserPlayerRes(data : IRes){
     var userPlayerRes;
-    await UserPlayerResModel.create(data).then((res)=>{
+    await ResModel.create(data).then((res)=>{
+        console.log("1684837676 "+ res)
+        userPlayerRes = Res.Parse(res);
+    }).catch((e)=>{
+        console.log("1684837715 "+ e)
+    })
+    return userPlayerRes;
+}
+
+export async function FindResByIdUserPlayer(idUserPlayer: Types.ObjectId) {
+    var userPlayerRes;
+    await ResModel.findOne({IdUserPlayer : idUserPlayer}).then((res)=>{
         userPlayerRes = Res.Parse(res);
     })
     return userPlayerRes;
 }
 
-export async function FindUserPlayerResByIdUserPlayer(idUserPlayer: Types.ObjectId) {
-    var userPlayerRes;
-    await UserPlayerResModel.find({IdUserPlayer : idUserPlayer}).then((res)=>{
-        userPlayerRes = Res.Parse(res);
-    })
-    return userPlayerRes;
+export async function UpdateRes(lsitResDetail : IResDetail[], idUserPlayer : Types.ObjectId){
+    var query = {};
+    await lsitResDetail.forEach(element => {
+        console.log("1684838900 " + ` ${element.Name} ` + `${element.Number}`);
+        query[`${element.Name}`] = element.Number;
+        console.log("1684839115 "+JSON.stringify(query))
+    });
+    console.log("1684838874 "+ JSON.stringify(await FindResByIdUserPlayer(idUserPlayer)))
+    ResModel.updateOne({IdUserPlayer : idUserPlayer}, {$set:{Diamond:1,Money:100}});
 }

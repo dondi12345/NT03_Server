@@ -1,5 +1,5 @@
 import {io} from "socket.io-client"
-import { port, variable } from './Other/Env';
+import { port, variable } from './Enviroment/Env';
 import express from 'express';
 
 const app = express()
@@ -12,7 +12,7 @@ export function API(){
   app.get('/message', (req, res) => {
     socketMessage = io("ws://"+variable.localhost+":"+port.portMessageServer);
     socketMessage.on(variable.eventSocketListening, (arg)=>{
-      console.log("1684561396 from MessageServer: "+arg);
+      console.log("1684561396 from MessageServer: "+JSON.stringify(arg));
     })
       res.send("Connect MessageServer");
     });

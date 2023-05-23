@@ -17,4 +17,5 @@ export enum MessageCode {
     Res_Login = 4001,
     Res_LoginFail = 4002,
     Res_LoginSuccess= 4003,
+    Res_GainRes = 4004,
 }

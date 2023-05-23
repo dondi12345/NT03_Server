@@ -3,7 +3,7 @@ import { Chat, IChat } from "../Model/Chat";
 import { ChatChannel, GetChatChannelById } from '../Model/ChatChannel';
 import { GetIdUserPlayerByIdChatChannel, UserChatChannel } from '../Model/UserChatChannel';
 import { SendToSocketById } from '../Service/ChatService';
-import { variable } from '../../Other/Env';
+import { variable } from '../../Enviroment/Env';
 import { MSGChatCode } from '../Model/MSGChatCode';
 import { Socket } from 'socket.io';
 import { IMSGChat, MSGChat } from '../Model/MSGChat';

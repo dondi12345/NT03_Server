@@ -6,6 +6,7 @@ import {AppChild} from './AppChild';
 import { CreateRacingHourse, RacingHourse, RacingHourseManager } from './MiniGame/RacingHourse/Controller/RacingHourseCtroller';
 import mongoose, { Schema, Types } from 'mongoose';
 import { API } from './AppAPI';
+import { AppTest } from './AppTest';
 
 // Create Redis client
 const redisClient = createClient();
@@ -15,6 +16,7 @@ const numCPUs = 1;
 // const numCPUs = require('os').cpus().length;
 
 InitApp();
+AppTest();
 
 // Check if current process is master or worker
 function InitApp(){

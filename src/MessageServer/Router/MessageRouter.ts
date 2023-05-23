@@ -1,7 +1,7 @@
 import { IMessage, Message } from "../Model/Message";
 import { MessageCode } from "../Model/MessageCode";
 import { Connect } from "../Controller/MessageController";
-import { ResLogin } from "../../ResServer/Controller/ResController";
+import { GainRes, ResLogin } from "../../ResServer/Controller/ResController";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
@@ -36,5 +36,8 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     } 
     if(message.MessageCode == MessageCode.Res_Login){
         ResLogin(message, userSocket)
+    } 
+    if(message.MessageCode == MessageCode.Res_GainRes){
+        GainRes(message, userSocket)
     } 
 }
