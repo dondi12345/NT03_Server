@@ -16,10 +16,6 @@ export class Message implements IMessage {
         
     }
 
-    static ToString(message : IMessage){
-        return JSON.stringify(message)
-    }
-
     static Parse(data) : Message{
         try{
             return JSON.parse(data);

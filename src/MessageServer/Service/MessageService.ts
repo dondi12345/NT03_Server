@@ -29,27 +29,7 @@ function InitWithSocket() {
 
             if(!userSocket.Socket) userSocket.Socket = socket;
 
-            if(message.MessageCode == MessageCode.AccountServer_Register){
-                AccountRegister(message, userSocket);
-                return;
-            }
-            if(message.MessageCode == MessageCode.AccountServer_Login){
-                AccountLogin(message, userSocket);
-                return;
-            }
-            if(userSocket.IdAccount == null || userSocket.IdAccount == undefined){
-                console.log("1684769809 Logout Acount")
-                return;
-            }
-            if(message.MessageCode == MessageCode.UserPlayerServer_Login){
-                UserPlayerLogin(message, userSocket);
-                return;
-            }
-            if(userSocket.IdUserPlayer == null || userSocket.IdUserPlayer == undefined){
-                console.log("1684769809 Logout Acount")
-                return;
-            } 
-            MessageRouter(message)
+            MessageRouter(message, userSocket);
         });
 
         socket.on("disconnect", () => {
@@ -57,17 +37,17 @@ function InitWithSocket() {
         });
     });
 
-    redisSubscriber.subscribe(variable.worker);
+    // redisSubscriber.subscribe(variable.worker);
 
-    redisSubscriber.on(variable.messageServer, (channel, data) => {
-        var message = Message.Parse(data);
-        MessageRouter(message);
-    });
+    // redisSubscriber.on(variable.messageServer, (channel, data) => {
+    //     var message = Message.Parse(data);
+    //     MessageRouter(message);
+    // });
 }
 
 export function SendMessageToSocket(message: Message, socket : Socket){
     try {
-        socket.emit(variable.eventSocketListening, Message.ToString(message));
+        socket.emit(variable.eventSocketListening, message);
     } catch (error) {
         console.log("1684765923 "+error);
     }

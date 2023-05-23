@@ -24,14 +24,6 @@ export class UserPlayer implements IUserPlayer{
         return userPlayer;
     }
 
-    static ToString(data : IUserPlayer){
-        var userPlayer = new UserPlayer;
-        userPlayer._id = data._id;
-        userPlayer.IdAccount = data.IdAccount;
-        userPlayer.ServerGameCode = data.ServerGameCode;
-        return JSON.stringify(userPlayer);
-    }
-
     static Parse(data) : IUserPlayer{
         try{
             data = JSON.parse(data);

@@ -3,7 +3,7 @@ import {port, variable} from "../../Other/Env";
 import { UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { createClient } from 'redis';
 import { Chat, IChat } from "../Model/Chat";
-import { ChatRouter } from "../Router/ChatRouter";
+import { ChatRouter, ChatRouterWithoutSocket } from "../Router/ChatRouter";
 import { userSocketMessageServer } from "../../MessageServer/Service/MessageService";
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
@@ -23,7 +23,7 @@ export function InitChatServer(){
     redisSubscriber.on('message', (channel, data) => {
         var msgChat = MSGChat.Parse(data);
         console.log("1684603001 Listent "+ JSON.stringify(msgChat));
-        ChatRouter(msgChat);
+        ChatRouterWithoutSocket(msgChat);
     });
 }
 
@@ -42,17 +42,14 @@ function InitWithSocket() {
             } catch (error) {
                 console.log("1684642664 "+error);
             }
-            msgChat.Socket = socket;
-            ChatRouter(msgChat)
+            ChatRouter(msgChat, socket)
         });
     });
 }
 
 export function SendToSocket(msgChat : IMSGChat, socket : Socket){
-    var msg = MSGChat.ToString(msgChat);
-
     try {
-        socket.emit(variable.eventSocketListening, msg);
+        socket.emit(variable.eventSocketListening, msgChat);
     } catch (error) {
         console.log("1684665082 "+error);
     }
@@ -60,7 +57,7 @@ export function SendToSocket(msgChat : IMSGChat, socket : Socket){
 
 export function SendToSocketById(idUserPlayer : string, msgChat : IMSGChat){
     try {
-        var socket = userSocketChatServer[idUserPlayer].emit(variable.eventSocketListening, MSGChat.ToString(msgChat));
+        var socket = userSocketChatServer[idUserPlayer].emit(variable.eventSocketListening, msgChat);
     } catch (error) {
         
     }

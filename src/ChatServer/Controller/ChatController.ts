@@ -2,7 +2,7 @@ import redis from 'redis';
 import { Chat, IChat } from "../Model/Chat";
 import { ChatChannel, GetChatChannelById } from '../Model/ChatChannel';
 import { GetIdUserPlayerByIdChatChannel, UserChatChannel } from '../Model/UserChatChannel';
-import { SendToSocket, SendToSocketById, userSocketChatServer } from '../Service/ChatService';
+import { SendToSocketById } from '../Service/ChatService';
 import { variable } from '../../Other/Env';
 import { MSGChatCode } from '../Model/MSGChatCode';
 import { Socket } from 'socket.io';
@@ -14,13 +14,13 @@ const redisPublisher = redis.createClient();
 
 export function SendChat(msgChat :IMSGChat){
     var chat = Chat.Parse(msgChat.Data);
-    console.log("1684569237 Sendchat: " + Chat.ToString(chat))
+    console.log("1684569237 Sendchat: " + chat)
     if(chat.Content.length == 0) return;
     msgChat.MSGChatCode = MSGChatCode.ReciveMSGChat;
     GetChatChannelById(chat.IdChatChannel).then((res : ChatChannel) => {
         if(res == null || res == undefined) return;
-        redisPublisher.publish(variable.chatServer, MSGChat.ToString(msgChat));
-        addChatToRedis(JSON.stringify(res._id), Chat.ToString(chat));
+        redisPublisher.publish(variable.chatServer, msgChat);
+        addChatToRedis(JSON.stringify(res._id), JSON.stringify(chat));
     })
 }
 

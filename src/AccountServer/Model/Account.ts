@@ -15,10 +15,6 @@ export class Account implements IAccount{
         
     }
 
-    static ToString(data :IAccount){
-        return JSON.stringify(data);
-    }
-
     static Parse(data) : IAccount{
         try{
             data = JSON.parse(data);

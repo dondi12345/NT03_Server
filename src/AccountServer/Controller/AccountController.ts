@@ -96,6 +96,6 @@ function LoginFailMessage(){
 function LoginSuccessMessage(account : IAccount){
     var message = new Message();
     message.MessageCode = MessageCode.AccountServer_LoginSuccess;
-    message.Data = Account.ToString(account);
+    message.Data = account;
     return message;
 }

@@ -13,4 +13,8 @@ export enum MessageCode {
     UserPlayerServer_Login = 3001,
     UserPlayerServer_LoginFail = 3002,
     UserPlayerServer_LoginSuccess= 3003,
+
+    Res_Login = 4001,
+    Res_LoginFail = 4002,
+    Res_LoginSuccess= 4003,
 }

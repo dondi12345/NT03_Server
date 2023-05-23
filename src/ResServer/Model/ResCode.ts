@@ -1,36 +1,36 @@
 export enum ResCode
 {
-    unknownRes = 0,
+    UnknownRes = 0,
 
     //Resource
-    diamond = 100,
-    money = 101,
-    food = 102,
-    gold = 103,
-    silver = 104,
-    enchanceStone = 105,
+    Diamond = 100,
+    Money = 101,
+    Food = 102,
+    Gold = 103,
+    Silver = 104,
+    EnchanceStone = 105,
 
     //Get when destroy hero
-    soulHero = 106,
+    SoulHero = 106,
 
     //Seed
-    unknownSeed = 200,
-    baseSeed = 201,
-    carrotSeed = 202,
-    tomatoSeed = 203,
-    cornSeed = 204,
+    UnknownSeed = 200,
+    BaseSeed = 201,
+    CarrotSeed = 202,
+    TomatoSeed = 203,
+    CornSeed = 204,
 
     //Item
-    heroScroll = 301,
-    blueprintHeroEquip_WhiteItem = 401,
-    blueprintHeroEquip_GreenItem = 402,
-    blueprintHeroEquip_BlueItem = 403,
-    blueprintHeroEquip_PurpleItem = 404,
-    blueprintHeroEquip_YellowItem = 405,
-    blueprintHeroEquip_RedItem = 406,
+    HeroScroll = 301,
+    BlueprintHeroEquip_WhiteItem = 401,
+    BlueprintHeroEquip_GreenItem = 402,
+    BlueprintHeroEquip_BlueItem = 403,
+    BlueprintHeroEquip_PurpleItem = 404,
+    BlueprintHeroEquip_YellowItem = 405,
+    BlueprintHeroEquip_RedItem = 406,
 
     //Treasure
-    baseTreasure_WhiteItem = 501,
+    BaseTreasure_WhiteItem = 501,
 
 
 }
