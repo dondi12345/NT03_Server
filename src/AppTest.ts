@@ -5,7 +5,7 @@ import Init from "./Service/Init";
 import { UpdateRes } from "./ResServer/Model/Res";
 
 export function AppTest(){
-    // return;
+    return;
     Init.InitDatabase().then(()=>{
         var data = [
             {

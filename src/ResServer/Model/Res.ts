@@ -101,10 +101,9 @@ export async function FindResByIdUserPlayer(idUserPlayer: Types.ObjectId) {
 export async function UpdateRes(lsitResDetail : IResDetail[], idUserPlayer : Types.ObjectId){
     var query = {};
     await lsitResDetail.forEach(element => {
-        console.log("1684838900 " + ` ${element.Name} ` + `${element.Number}`);
         query[`${element.Name}`] = element.Number;
-        console.log("1684839115 "+JSON.stringify(query))
     });
-    console.log("1684838874 "+ JSON.stringify(await FindResByIdUserPlayer(idUserPlayer)))
-    ResModel.updateOne({IdUserPlayer : idUserPlayer}, {$set:{Diamond:1,Money:100}});
+    ResModel.updateOne({IdUserPlayer : idUserPlayer}, {$set:query}).then(res=>{
+        console.log("1684851978 " + res)
+    })
 }
