@@ -56,33 +56,38 @@ export async function AccountLogin(message:Message, userSocket: IUserSocket){
     console.log("1684684863 Login")
     try {
         var account = Account.Parse(message.Data);
+
+
         if(account.Username == null || account.Username == undefined || account.Password == null || account.Password== undefined){
             SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
             return;
         }
-        
-        await FindByUserName(account.Username).then((res: IAccount)=>{
-            if(res == null || res == undefined){
-                SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
-                return;
-            }
-            if(res.Password == null || res.Password == undefined || account.Password == null || account.Password== undefined){
-                SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
-                return;
-            }
-            bcrypt.compare(account.Password.toString(), res.Password.toString(), function(err, result) {
-                if(result){
-                    userSocket.IdAccount = res._id;
-                    console.log("1684684470 Login successfull: "+userSocket.IdAccount.toString())
-                    SendMessageToSocket(LoginSuccessMessage(res), userSocket.Socket);
-                return;
-                }else{
-                    console.log("1684684249 WrongPassword")
+        else
+        {
+            await FindByUserName(account.Username).then((res: IAccount)=>{
+                if(res == null || res == undefined){
                     SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
                     return;
                 }
-            });
-        })
+                if(res.Password == null || res.Password == undefined){
+                    SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
+                    return;
+                }
+                bcrypt.compare(account.Password.toString(), res.Password.toString(), function(err, result) {
+                    if(result){
+                        userSocket.IdAccount = res._id;
+                        console.log("1684684470 Login successfull: "+userSocket.IdAccount.toString())
+                        SendMessageToSocket(LoginSuccessMessage(res), userSocket.Socket);
+                    return;
+                    }else{
+                        console.log("1684684249 WrongPassword")
+                        SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
+                        return;
+                    }
+                });
+            })
+        }
+       
     } catch (error){
         console.log("1684684560 "+error);
     }

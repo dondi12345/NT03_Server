@@ -21,7 +21,7 @@ function InitWithSocket() {
     const io = new Server(port.portMessageServer);
     console.log(`1684424393 Worker ${process.pid} listening to MessageServer on port: ${port.portMessageServer}`);
     io.on(variable.eventSocketConnection, (socket : Socket) => {
-        console.log("1684424410 Socket connec to MessageServer");
+        console.log("1684424410 "+socket.id+" connec to MessageServer");
         let userSocket = new UserSocket();
         socket.on(variable.eventSocketListening, (data) => {
             console.log("1684424442:" + data);
@@ -33,7 +33,11 @@ function InitWithSocket() {
         });
 
         socket.on("disconnect", () => {
-            delete userSocketDictionary[userSocket.IdUserPlayer.toString()]
+            try {
+                delete userSocketDictionary[userSocket.IdUserPlayer.toString()]
+            } catch (error) {
+                console.log("1684903275 "+error)
+            }
         });
     });
 
