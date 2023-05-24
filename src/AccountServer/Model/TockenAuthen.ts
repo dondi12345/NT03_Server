@@ -1,15 +1,17 @@
-export interface IAccountTocken{
+export interface ITockenAuthen{
     Token : String,
+    IdDevice : String,
 }
 
-export class AccountTocken implements IAccountTocken{
+export class TockenAuthen implements ITockenAuthen{
     Token : String;
+    IdDevice : String;
 
     constructor() {
         
     }
 
-    static Parse(data) : IAccountTocken{
+    static Parse(data) : ITockenAuthen{
         try{
             data = JSON.parse(data);
         }catch(err){}

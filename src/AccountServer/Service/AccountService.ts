@@ -20,19 +20,16 @@ export function InitAccountServer(){
     app.post('/account',(req, res)=>{
         var message = Message.Parse(req.body)
         if(message.MessageCode == MessageCode.AccountServer_Register){
-            AccountRegister(message).then((respone)=>{
-                res.send(respone)
-            })
+            AccountRegister(message, res);
             return;
         }
         if(message.MessageCode == MessageCode.AccountServer_Login){
-            AccountLogin(message).then((response)=>{
-                console.log("1684927636 "+response);
-                res.send(response)
-            })
+            AccountLogin(message, res)
+            return;
         }
         if(message.MessageCode == MessageCode.AccountServer_LoginToken){
-            res.send(AccountLoginTocken(message))
+            AccountLoginTocken(message, res);
+            return;
         }
     })
 

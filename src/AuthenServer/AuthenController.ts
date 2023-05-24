@@ -1,11 +1,10 @@
 import jwt from 'jsonwebtoken';
 
 // Generate a JWT token
-const userData = { userId: '240799', username: 'nthung' };
 const secretKey = 'homnaytroidepqua';
 
 export function GetToken(data){
-    let token = jwt.sign(data, secretKey, { expiresIn: '1m' });
+    let token = jwt.sign(data, secretKey, { expiresIn: '7d' });
     return token;
 }
 
