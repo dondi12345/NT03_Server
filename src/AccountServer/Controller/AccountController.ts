@@ -1,43 +1,45 @@
 import { CreateAccount, FindByUserName, IAccount, Account, AccountModel } from "../Model/Account";
 import bcrypt from 'bcrypt'
-import { Message } from "../../MessageServer/Model/Message";
+import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
+import { AccountAuthen, IAccountAuthen } from "../Model/AccountAuthen";
+import { AccountData } from "../Model/AccountData";
+import { AccountTocken } from "../Model/AccountTocken";
+import { GetToken, Verify } from "../../AuthenServer/AuthenController";
 const saltRounds = 10;
 
-export async function AccountRegister(message:Message, userSocket: IUserSocket) {
+export async function AccountRegister(message : IMessage) {
     try {
         var account = Account.Parse(message.Data);
         
         var isExisten = false;
         if(account.Username == null || account.Username == undefined) {
-            SendMessageToSocket(RegisterFailMessage(), userSocket.Socket);
-            return; 
+            return RegisterFailMessage(); 
         }
         await FindByUserName(account.Username).then(res=>{
             if(res == null || res == undefined) return;
             isExisten = true;
         })
         if(isExisten) {
-            SendMessageToSocket(RegisterFailMessage(), userSocket.Socket);
-            return; 
+            return RegisterFailMessage();
         }
 
         if(account.Password == null || account.Password == undefined){
-            SendMessageToSocket(RegisterFailMessage(), userSocket.Socket);
-            return;
+            return RegisterFailMessage();
         }
         var pass = account.Password == undefined ? "" : account.Password+"";
         bcrypt.hash(pass, saltRounds, function(err, hash) {
             account.Password = hash;
             CreateAccount(account).then((res: IAccount)=>{
                 console.log("1684646335 "+ res);
-                SendMessageToSocket(RegisterSuccessMessage(), userSocket.Socket);
+                return RegisterSuccessMessage();
             })
         });
     } catch (error) {
         console.log("1684641453 "+error);
+        return RegisterFailMessage();
     }
 }
 
@@ -52,36 +54,33 @@ function RegisterSuccessMessage(){
     return message;
 }
 
-export async function AccountLogin(message:Message, userSocket: IUserSocket){
+export async function AccountLogin(message:Message){
     console.log("1684684863 Login")
+    var backMessage;
     try {
-        var account = Account.Parse(message.Data);
+        var accountAuthen = AccountAuthen.Parse(message.Data);
+        
 
-
-        if(account.Username == null || account.Username == undefined || account.Password == null || account.Password== undefined){
-            SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
-            return;
+        if(accountAuthen.Username == null || accountAuthen.Username == undefined || accountAuthen.Password == null || accountAuthen.Password== undefined){
+            return LoginFailMessage();
         }
         else
         {
-            await FindByUserName(account.Username).then((res: IAccount)=>{
+            await FindByUserName(accountAuthen.Username).then(async (res: IAccount)=>{
                 if(res == null || res == undefined){
-                    SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
-                    return;
+                    return await LoginFailMessage();
                 }
                 if(res.Password == null || res.Password == undefined){
-                    SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
-                    return;
+                    return await LoginFailMessage();
                 }
-                bcrypt.compare(account.Password.toString(), res.Password.toString(), function(err, result) {
+                bcrypt.compare(accountAuthen.Password.toString(), res.Password.toString(), async function(err, result) {
                     if(result){
-                        userSocket.IdAccount = res._id;
-                        console.log("1684684470 Login successfull: "+userSocket.IdAccount.toString())
-                        SendMessageToSocket(LoginSuccessMessage(res), userSocket.Socket);
-                    return;
+                        console.log("1684684470 Login successfull: ")
+                        backMessage = await LoginSuccessMessage(res, accountAuthen);
+                        return;
                     }else{
                         console.log("1684684249 WrongPassword")
-                        SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
+                        backMessage = await LoginFailMessage();
                         return;
                     }
                 });
@@ -91,6 +90,8 @@ export async function AccountLogin(message:Message, userSocket: IUserSocket){
     } catch (error){
         console.log("1684684560 "+error);
     }
+    console.log("1684927912 " + backMessage);
+    return backMessage;
 }
 
 function LoginFailMessage(){
@@ -98,9 +99,35 @@ function LoginFailMessage(){
     message.MessageCode = MessageCode.AccountServer_LoginFail;
     return message;
 }
-function LoginSuccessMessage(account : IAccount){
+
+function LoginSuccessMessage(account : IAccount, accountAuthen : IAccountAuthen){
+    var accountData = new AccountData();
+    accountData.IdAccount = account._id.toString();
+    accountData.IdDevice = accountAuthen.IdDevice;
+
+    var accountTocken = new AccountTocken();
+    console.log(accountData);
+    accountTocken.Token = GetToken({IdAccount : accountData.IdAccount, IdDevice : accountData.IdDevice});
+    accountTocken.IdAccount = account._id.toString();
+
     var message = new Message();
     message.MessageCode = MessageCode.AccountServer_LoginSuccess;
-    message.Data = account;
+    message.Data = accountTocken;
     return message;
+}
+
+export function AccountLoginTocken(message : Message){
+    var accountTocken = AccountTocken.Parse(message.Data);
+    var data = Verify(accountTocken.Token);
+    if(data == null || data == undefined){
+        return LoginFailMessage();
+    }else{
+        var accountData = AccountData.Parse(data);
+        if(accountData.IdDevice != accountTocken.IdDevice) return LoginFailMessage();
+        accountTocken.IdAccount = accountData.IdAccount;
+
+        var message = new Message();
+        message.MessageCode = MessageCode.AccountServer_LoginSuccess;
+        message.Data = accountTocken;
+    }
 }

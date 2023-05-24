@@ -9,6 +9,7 @@ export enum MessageCode {
     AccountServer_Login = 2004,
     AccountServer_LoginFail = 2005,
     AccountServer_LoginSuccess= 2006,
+    AccountServer_LoginToken = 2007,
 
     UserPlayerServer_Login = 3001,
     UserPlayerServer_LoginFail = 3002,

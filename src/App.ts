@@ -7,6 +7,8 @@ import { CreateRacingHourse, RacingHourse, RacingHourseManager } from './MiniGam
 import mongoose, { Schema, Types } from 'mongoose';
 import { API } from './AppAPI';
 import { AppTest } from './AppTest';
+import { InitAccountServer } from './AccountServer/Service/AccountService';
+import Init from './Service/Init';
 
 // Create Redis client
 const redisClient = createClient();
@@ -15,8 +17,14 @@ const redisClient = createClient();
 const numCPUs = 1;
 // const numCPUs = require('os').cpus().length;
 
-InitApp();
-AppTest();
+// InitApp();
+// AppTest();
+API();
+Init.InitDatabase().then((result) => {
+  InitAccountServer();
+}).catch((err) => {
+  
+});
 
 // Check if current process is master or worker
 function InitApp(){

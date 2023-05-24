@@ -14,14 +14,14 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     if(message.MessageCode == MessageCode.MessageConnect){
         Connect(message);
     }
-    if(message.MessageCode == MessageCode.AccountServer_Register){
-        AccountRegister(message, userSocket);
-        return;
-    }
-    if(message.MessageCode == MessageCode.AccountServer_Login){
-        AccountLogin(message, userSocket);
-        return;
-    }
+    // if(message.MessageCode == MessageCode.AccountServer_Register){
+    //     AccountRegister(message, userSocket);
+    //     return;
+    // }
+    // if(message.MessageCode == MessageCode.AccountServer_Login){
+    //     AccountLogin(message, userSocket);
+    //     return;
+    // }
     if(userSocket.IdAccount == null || userSocket.IdAccount == undefined){
         console.log("1684769809 Logout Acount")
         return;

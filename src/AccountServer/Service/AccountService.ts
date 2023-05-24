@@ -1,0 +1,42 @@
+import {io} from "socket.io-client"
+import { port, variable } from '../../Enviroment/Env';
+import express from 'express';
+import { GetToken, Verify } from "../../AuthenServer/AuthenController";
+import { Account } from "../Model/Account";
+import { AccountLogin, AccountLoginTocken, AccountRegister } from "../Controller/AccountController";
+import { Message } from "../../MessageServer/Model/Message";
+import { MessageCode } from "../../MessageServer/Model/MessageCode";
+
+
+export function InitAccountServer(){
+    const app = express()
+    app.use(express.json())
+
+    app.get('/account', (req, res) =>{
+
+        res.send("Connect to AccountServer");
+    });
+
+    app.post('/account',(req, res)=>{
+        var message = Message.Parse(req.body)
+        if(message.MessageCode == MessageCode.AccountServer_Register){
+            AccountRegister(message).then((respone)=>{
+                res.send(respone)
+            })
+            return;
+        }
+        if(message.MessageCode == MessageCode.AccountServer_Login){
+            AccountLogin(message).then((response)=>{
+                console.log("1684927636 "+response);
+                res.send(response)
+            })
+        }
+        if(message.MessageCode == MessageCode.AccountServer_LoginToken){
+            res.send(AccountLoginTocken(message))
+        }
+    })
+
+    app.listen(port.portAccountServer, () => {
+        console.log(`1684475518 Example app listening on port ${port.portAccountServer}`)
+    })
+}
