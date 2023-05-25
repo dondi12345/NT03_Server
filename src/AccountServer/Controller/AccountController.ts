@@ -1,9 +1,7 @@
-import { CreateAccount, FindByUserName, IAccount, Account, AccountModel } from "../Model/Account";
 import bcrypt from 'bcrypt'
+import { CreateAccount, FindByUserName, IAccount, Account, AccountModel } from "../Model/Account";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
-import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { AccountAuthen, IAccountAuthen } from "../Model/AccountAuthen";
 import { AccountData } from "../Model/AccountData";
 import { AccountTocken } from "../Model/AccountTocken";
@@ -113,6 +111,7 @@ function LoginSuccessMessage(account : IAccount, accountAuthen : IAccountAuthen)
     var accountTocken = new AccountTocken();
     accountTocken.IdAccount = accountData.IdAccount;
     accountTocken.Token = AuthenGetToken(JSON.parse(JSON.stringify(accountData)));
+
 
     var message = new Message();
     message.MessageCode = MessageCode.AccountServer_LoginSuccess;

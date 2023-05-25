@@ -9,11 +9,13 @@ import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/Ac
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
 
 const redisSubscriber = createClient();
+const redisAccountToken = createClient();
 
 export let userSocketMessageServer : UserSocketServer = {};
 export let userSocketDictionary : UserSocketDictionary ={};
 
 export function InitMessageServer(){
+    redisAccountToken.del("Account:Token:*",()=>{});
     InitWithSocket();
 }
 
@@ -37,6 +39,11 @@ function InitWithSocket() {
                 delete userSocketDictionary[userSocket.IdUserPlayer.toString()]
             } catch (error) {
                 console.log("1684903275 "+error)
+            }
+            try {
+                redisAccountToken.getdel("Account:Token:"+userSocket.IdAccount,()=>{});
+            } catch (error) {
+                
             }
         });
     });
