@@ -37,7 +37,7 @@ function ConnectFailMessage(error){
 }
 
 export function addAccountTokenToRedis(idAccount :string, accountToken: string) {
-    redisAccountToken.mset("Account:Token:"+idAccount, accountToken, (error, result) => {
+    redisAccountToken.set("Account:Token:"+idAccount, accountToken, (error, result) => {
         if (error) {
             console.error('1685008521 Failed to save token:', error);
         } else {

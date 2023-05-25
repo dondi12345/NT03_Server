@@ -15,7 +15,26 @@ export let userSocketMessageServer : UserSocketServer = {};
 export let userSocketDictionary : UserSocketDictionary ={};
 
 export function InitMessageServer(){
-    redisAccountToken.del("Account:Token:*",()=>{});
+    redisAccountToken.keys('Account:Token:*', (error, keys) => {
+        if (error) {
+          console.error('Error retrieving keys:', error);
+          return;
+        }
+      
+        // If there are keys matching the pattern
+        if (keys.length > 0) {
+          // Delete the keys
+          redisAccountToken.del(...keys, (error, deletedCount) => {
+            if (error) {
+              console.error('Error deleting keys:', error);
+            } else {
+              console.log('Keys deleted:', deletedCount);
+            }
+          });
+        } else {
+          console.log('No keys found matching the pattern.');
+        }
+      })
     InitWithSocket();
 }
 
@@ -35,13 +54,14 @@ function InitWithSocket() {
         });
 
         socket.on("disconnect", () => {
+            console.log("1685025149 "+socket.id+" left MessageServer");
             try {
                 delete userSocketDictionary[userSocket.IdUserPlayer.toString()]
             } catch (error) {
                 console.log("1684903275 "+error)
             }
             try {
-                redisAccountToken.getdel("Account:Token:"+userSocket.IdAccount,()=>{});
+                redisAccountToken.del("Account:Token:"+userSocket.IdAccount,()=>{});
             } catch (error) {
                 
             }
