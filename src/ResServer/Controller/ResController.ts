@@ -38,7 +38,7 @@ function LoginFailMessage(){
 function LoginSuccessMessage(res : IRes){
     var message = new Message();
     message.MessageCode = MessageCode.Res_LoginSuccess;
-    message.Data = res;
+    message.Data = JSON.stringify(res);
     return message;
 }
 

@@ -51,6 +51,6 @@ function LoginFailMessage(){
 function LoginSuccessMessage(userPlayer : IUserPlayer){
     var message = new Message();
     message.MessageCode = MessageCode.UserPlayerServer_LoginSuccess;
-    message.Data = userPlayer;
+    message.Data = JSON.stringify(userPlayer);
     return message;
 }

@@ -8,20 +8,13 @@ import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerCon
 
 
 export function MessageRouter(message : IMessage, userSocket : IUserSocket){
-    if(message.MessageCode == MessageCode.MessageTest){
+    if(message.MessageCode == MessageCode.MessageServer_Test){
         console.log("1684475214 Test Message")
     }
-    if(message.MessageCode == MessageCode.MessageConnect){
-        Connect(message);
+    if(message.MessageCode == MessageCode.MessageServer_Connect){
+        Connect(message, userSocket);
+        return;
     }
-    // if(message.MessageCode == MessageCode.AccountServer_Register){
-    //     AccountRegister(message, userSocket);
-    //     return;
-    // }
-    // if(message.MessageCode == MessageCode.AccountServer_Login){
-    //     AccountLogin(message, userSocket);
-    //     return;
-    // }
     if(userSocket.IdAccount == null || userSocket.IdAccount == undefined){
         console.log("1684769809 Logout Acount")
         return;
@@ -31,7 +24,7 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
         return;
     }
     if(userSocket.IdUserPlayer == null || userSocket.IdUserPlayer == undefined){
-        console.log("1684769809 Logout Acount")
+        console.log("1685002171 Logout Acount")
         return;
     } 
     if(message.MessageCode == MessageCode.Res_Login){

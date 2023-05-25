@@ -51,7 +51,7 @@ function InitWithSocket() {
 
 export function SendMessageToSocket(message: Message, socket : Socket){
     try {
-        socket.emit(variable.eventSocketListening, message);
+        socket.emit(variable.eventSocketListening, JSON.stringify(message));
     } catch (error) {
         console.log("1684765923 "+error);
     }

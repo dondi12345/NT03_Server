@@ -7,7 +7,7 @@ import { SendMessageToSocket } from "../../MessageServer/Service/MessageService"
 import { AccountAuthen, IAccountAuthen } from "../Model/AccountAuthen";
 import { AccountData } from "../Model/AccountData";
 import { AccountTocken } from "../Model/AccountTocken";
-import { GetToken, Verify } from "../../AuthenServer/AuthenController";
+import { AuthenGetToken, AuthenVerify } from "../../AuthenServer/AuthenController";
 import { TockenAuthen } from "../Model/TockenAuthen";
 const saltRounds = 10;
 
@@ -111,7 +111,8 @@ function LoginSuccessMessage(account : IAccount, accountAuthen : IAccountAuthen)
     accountData.IdDevice = accountAuthen.IdDevice;
 
     var accountTocken = new AccountTocken();
-    accountTocken.Token = GetToken(JSON.parse(JSON.stringify(accountData)));
+    accountTocken.IdAccount = accountData.IdAccount;
+    accountTocken.Token = AuthenGetToken(JSON.parse(JSON.stringify(accountData)));
 
     var message = new Message();
     message.MessageCode = MessageCode.AccountServer_LoginSuccess;
@@ -121,7 +122,7 @@ function LoginSuccessMessage(account : IAccount, accountAuthen : IAccountAuthen)
 
 export function AccountLoginTocken(message : Message, response){
     var tockenAuthen = TockenAuthen.Parse(message.Data);
-    var data = Verify(tockenAuthen.Token);
+    var data = AuthenVerify(tockenAuthen.Token);
     if(data == null || data == undefined){
         response.send(LoginFailMessage());
         console.log("1684937265 wrong token")
@@ -135,6 +136,7 @@ export function AccountLoginTocken(message : Message, response){
         }
 
         var accountTocken = new AccountTocken();
+        accountTocken.IdAccount = accountData.IdAccount;
         accountTocken.Token = tockenAuthen.Token;
 
         var message = new Message();

@@ -1,8 +1,10 @@
 export interface IAccountTocken{
+    IdAccount: String,
     Token : String,
 }
 
 export class AccountTocken implements IAccountTocken{
+    IdAccount: String;
     Token : String;
 
     constructor() {

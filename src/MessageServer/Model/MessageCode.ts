@@ -1,7 +1,10 @@
 export enum MessageCode {
-    MessageTest = 1000,
-    MessageConnect = 1001,
+    MessageServer_Test = 1000,
+    MessageServer_Connect = 1001,
     MessageConnectResponse = 1002,
+    MessageServer_ConnectFail = 1003,
+    MessageServer_ConnectSuccess = 1004,
+
 
     AccountServer_Register = 2001,
     AccountServer_RegisterFail = 2002,

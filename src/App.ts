@@ -17,14 +17,8 @@ const redisClient = createClient();
 const numCPUs = 1;
 // const numCPUs = require('os').cpus().length;
 
-// InitApp();
-// AppTest();
-API();
-Init.InitDatabase().then((result) => {
-  InitAccountServer();
-}).catch((err) => {
-  
-});
+InitApp();
+AppTest();
 
 // Check if current process is master or worker
 function InitApp(){
@@ -43,7 +37,11 @@ function InitApp(){
       console.log(`1684475542 worker ${worker.process.pid} died`);
     });
     API();
-    // AppTest();
+    Init.InitDatabase().then((result) => {
+      InitAccountServer();
+    }).catch((err) => {
+      
+    });
   } else {
     AppChild();
   }
