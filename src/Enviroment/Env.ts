@@ -14,6 +14,7 @@ export const Mongo = {
 export const variable = {
     eventSocketConnection : "connection",
     eventSocketListening : "listening",
+    eventSocketDisconnect : "disconnect",
     worker : "worker",
     messageServer : "MessageServer",
     chatServer: "ChatServer",
@@ -24,4 +25,13 @@ export const variable = {
     maxStepRacingHourse : 20,
     localhost : "localhost",
     // localhost : "45.124.95.182",
+}
+
+export const Redis = {
+    EventMessage : "message",
+
+    AccountChannel : "AccountChannel",
+    UserPlayerChannel : "UserPlayerChannel",
+
+    KeyUserPlayerSession : "UserPlayer:Session:"
 }

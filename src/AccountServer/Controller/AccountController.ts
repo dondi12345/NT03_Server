@@ -7,6 +7,7 @@ import { AccountData } from "../Model/AccountData";
 import { AccountTocken } from "../Model/AccountTocken";
 import { AuthenGetToken, AuthenVerify } from "../../AuthenServer/AuthenController";
 import { TockenAuthen } from "../Model/TockenAuthen";
+
 const saltRounds = 10;
 
 export async function AccountRegister(message : IMessage, response) {
@@ -80,7 +81,15 @@ export async function AccountLogin(message:Message, response){
                 bcrypt.compare(accountAuthen.Password.toString(), res.Password.toString(), async function(err, result) {
                     if(result){
                         console.log("1684684470 Login successfull: ")
-                        response.send(JSON.stringify(LoginSuccessMessage(res, accountAuthen)));
+                        var accountData = new AccountData();
+                        accountData.IdAccount = res._id.toString();
+                        accountData.IdDevice = accountAuthen.IdDevice;
+
+                        var accountTocken = new AccountTocken();
+                        accountTocken.IdAccount = accountData.IdAccount;
+                        accountTocken.Token = AuthenGetToken(JSON.parse(JSON.stringify(accountData)));
+
+                        LoginSuccess(accountTocken, response);
                         return;
                     }else{
                         console.log("1684684249 WrongPassword")
@@ -103,22 +112,6 @@ function LoginFailMessage(){
     return message;
 }
 
-function LoginSuccessMessage(account : IAccount, accountAuthen : IAccountAuthen){
-    var accountData = new AccountData();
-    accountData.IdAccount = account._id.toString();
-    accountData.IdDevice = accountAuthen.IdDevice;
-
-    var accountTocken = new AccountTocken();
-    accountTocken.IdAccount = accountData.IdAccount;
-    accountTocken.Token = AuthenGetToken(JSON.parse(JSON.stringify(accountData)));
-
-
-    var message = new Message();
-    message.MessageCode = MessageCode.AccountServer_LoginSuccess;
-    message.Data = JSON.stringify(accountTocken);
-    return message;
-}
-
 export function AccountLoginTocken(message : Message, response){
     var tockenAuthen = TockenAuthen.Parse(message.Data);
     var data = AuthenVerify(tockenAuthen.Token);
@@ -138,9 +131,14 @@ export function AccountLoginTocken(message : Message, response){
         accountTocken.IdAccount = accountData.IdAccount;
         accountTocken.Token = tockenAuthen.Token;
 
-        var message = new Message();
-        message.MessageCode = MessageCode.AccountServer_LoginSuccess;
-        message.Data = JSON.stringify(accountTocken);
-        response.send(JSON.stringify(message));
+        LoginSuccess(accountTocken, response);
     }
 }
+
+export function LoginSuccess(accountTocken : AccountTocken, response){
+
+    var message = new Message();
+    message.MessageCode = MessageCode.AccountServer_LoginSuccess;
+    message.Data = JSON.stringify(accountTocken);
+    response.send(JSON.stringify(message));
+} 

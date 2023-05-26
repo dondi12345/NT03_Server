@@ -1,21 +1,23 @@
 import { Server, Socket } from "socket.io";
-import {port, variable} from "../../Enviroment/Env";
+import {port, Redis, variable} from "../../Enviroment/Env";
 import { Message } from "../Model/Message";
-import { UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
+import { IUserSocket, UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { MessageRouter } from "../Router/MessageRouter";
 import { createClient } from 'redis';
 import { MessageCode } from "../Model/MessageCode";
 import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
+import { AccountData } from "../../AccountServer/Model/AccountData";
+import { UserSocketData } from "../../UserSocket/Model/UserSocketData";
 
 const redisSubscriber = createClient();
 const redisAccountToken = createClient();
+const redisUserPlayerChannelSub = createClient();
 
-export let userSocketMessageServer : UserSocketServer = {};
 export let userSocketDictionary : UserSocketDictionary ={};
 
 export function InitMessageServer(){
-    redisAccountToken.keys('Account:Token:*', (error, keys) => {
+    redisAccountToken.keys(Redis.KeyUserPlayerSession+'*', (error, keys) => {
         if (error) {
           console.error('Error retrieving keys:', error);
           return;
@@ -28,7 +30,7 @@ export function InitMessageServer(){
             if (error) {
               console.error('Error deleting keys:', error);
             } else {
-              console.log('Keys deleted:', deletedCount);
+              console.log('1685077153 Keys deleted:', deletedCount);
             }
           });
         } else {
@@ -56,14 +58,15 @@ function InitWithSocket() {
         socket.on("disconnect", () => {
             console.log("1685025149 "+socket.id+" left MessageServer");
             try {
+                console.log("1685086000 ")
+                redisAccountToken.del(Redis.KeyUserPlayerSession + userSocket.IdUserPlayer,()=>{});
+            } catch (error) {
+                console.log("1685080913 "+error)
+            }
+            try {
                 delete userSocketDictionary[userSocket.IdUserPlayer.toString()]
             } catch (error) {
                 console.log("1684903275 "+error)
-            }
-            try {
-                redisAccountToken.del("Account:Token:"+userSocket.IdAccount,()=>{});
-            } catch (error) {
-                
             }
         });
     });
@@ -74,6 +77,25 @@ function InitWithSocket() {
     //     var message = Message.Parse(data);
     //     MessageRouter(message);
     // });
+
+    redisUserPlayerChannelSub.subscribe(Redis.UserPlayerChannel);
+    redisUserPlayerChannelSub.on('message', (channel, data)=>{
+        console.log("1685078357"+data)
+        var message = Message.Parse(data);
+        if(message.MessageCode == MessageCode.MessageServer_Disconnect){
+            try {
+                var userSocketData = UserSocketData.Parse(message.Data);
+                console.log("1685077463 Disconnect: "+userSocketData.IdUserPlayer.toString());
+                userSocketDictionary[userSocketData.IdUserPlayer.toString()].Socket.disconnect();
+            } catch (error) {
+                console.log("1685074144 "+error)
+            }
+        }
+    });
+}
+
+export function AddUserSocketDictionary(userSocket : IUserSocket){
+    userSocketDictionary[userSocket.IdUserPlayer.toString()] = userSocket;
 }
 
 export function SendMessageToSocket(message: Message, socket : Socket){

@@ -15,6 +15,9 @@ export function API(){
     socketMessage.on(variable.eventSocketListening, (arg)=>{
       console.log("1684561396 from MessageServer: "+JSON.stringify(arg));
     })
+    socketMessage.on(variable.eventSocketDisconnect,()=>{
+      console.log("1685084052 Drop connect from server");
+    })
       res.send("Connect MessageServer");
     });
   app.post('/message',(req, res)=>{
