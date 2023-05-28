@@ -1,7 +1,7 @@
 import redis from 'redis';
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHero, Hero, HeroModel, IHero } from "../Model/Hero";
+import { CreateHero, FindHeroByIdUserPlayer, Hero, HeroModel, IHero } from "../Model/Hero";
 import { HeroCode } from "../Model/HeroCode";
 import { ISummonHero, ISummonHeroSlot, SummonHero, SummonHeroSlot } from "../Model/SummonHero";
 import { RateSummon } from "../Model/VariableHero";
@@ -20,6 +20,28 @@ export function CreateNewHero(){
         console.log(JSON.stringify(hero));
         
     }
+}
+
+export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
+    userSocket.Heroes = {};
+    await FindHeroByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
+        for (let index = 0; index < respone.length; index++) {
+            const element = respone[index];
+            var hero = Hero.NewHero(element)
+            userSocket.Heroes[hero._id.toString()] = hero;
+        }
+        console.log("1685293708 "+JSON.stringify(userSocket.Heroes))
+        var message = new Message();
+        message.MessageCode = MessageCode.Hero_LoginSuccess;
+        message.Data = JSON.stringify(userSocket.Heroes);
+        SendMessageToSocket(message, userSocket.Socket);
+    }).catch(e=>{
+        var message = new Message();
+        message.MessageCode = MessageCode.Hero_LoginFail;
+        message.Data = "Hero login fail";
+        console.log("1685293337 "+ e);
+        SendMessageToSocket(message, userSocket.Socket);
+    })
 }
 
 export function Summon(message : IMessage, userSocket: IUserSocket){
@@ -100,8 +122,11 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
                 var summonHero = SummonHero.Parse(result);
                 summonHero.Slots[hero._id.toString()].Hired = true;
                 redisHero.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
+
                 hero.HeroCode = summonHero.Slots[hero._id.toString()].HeroCode
                 hero.IdUserPlayer = userSocket.IdUserPlayer;
+                hero.Lv = 1;
+
                 var message = new Message();
                 message.MessageCode = MessageCode.Hero_HireHeroSuccess;
                 message.Data = JSON.stringify(hero);

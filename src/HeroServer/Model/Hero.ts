@@ -37,8 +37,11 @@ export class Hero implements IHero{
         if(data._id) hero._id = data._id;
         else hero._id = new Types.ObjectId();
 
-        hero.Lv = 1;
-        hero.HeroCode = HeroCode.Dummy_WhiteItem;
+        if(data.Lv) hero.Lv = data.Lv;
+        else hero.Lv = 1;
+
+        if(data.HeroCode) hero.HeroCode = data.HeroCode;
+        else hero.HeroCode = HeroCode.Dummy_WhiteItem;
 
         if(data.HeroName) hero.HeroName = data.HeroName;
         else hero.HeroName = FashionHero.FirstNames[Math.floor(Math.random() * FashionHero.FirstNames.length)]
@@ -103,4 +106,12 @@ export async function CreateHero(hero : IHero){
         data = null;
     })
     return data;
+}
+
+export async function FindHeroByIdUserPlayer(idUserPlayer: Types.ObjectId){
+    var heroes;
+    await HeroModel.find({IdUserPlayer : idUserPlayer}).then((res)=>{
+        heroes = res;
+    })
+    return heroes;
 }
