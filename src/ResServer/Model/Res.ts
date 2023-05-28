@@ -103,7 +103,8 @@ export async function UpdateRes(lsitResDetail : IResDetail[], idUserPlayer : Typ
     await lsitResDetail.forEach(element => {
         query[`${element.Name}`] = element.Number;
     });
+    console.log("1685289158 "+JSON.stringify(query));
     ResModel.updateOne({IdUserPlayer : idUserPlayer}, {$set:query}).then(res=>{
-        console.log("1684851978 " + res)
+        console.log("1684851978 " + JSON.stringify(res))
     })
 }

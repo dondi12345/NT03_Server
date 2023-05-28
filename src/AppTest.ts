@@ -6,6 +6,7 @@ import { UpdateRes } from "./ResServer/Model/Res";
 import { CreateNewHero } from "./HeroServer/Controller/HeroController";
 
 export function AppTest(){
+    CreateNewHero()
     return;
     Init.InitDatabase().then(()=>{
         var data = [

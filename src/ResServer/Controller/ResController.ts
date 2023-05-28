@@ -3,6 +3,7 @@ import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { CreateUserPlayerRes, FindResByIdUserPlayer, IRes, Res, UpdateRes } from "../Model/Res";
+import { IResDetail } from "../Model/ResDetail";
 
 export async function ResLogin(message : IMessage, userSocket: IUserSocket){
     await FindResByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
@@ -42,7 +43,13 @@ function LoginSuccessMessage(res : IRes){
     return message;
 }
 
-export function GainRes(message : IMessage, userSocket: IUserSocket){
+export function UpdateResCtrl(message : IMessage, userSocket: IUserSocket){
     console.log("1684839042 "+message.Data)
-    UpdateRes(message.Data,userSocket.IdUserPlayer); 
+
+    var listResDetal : IResDetail[] = JSON.parse(message.Data)
+    UpdateRes(listResDetal, userSocket.IdUserPlayer); 
+    var messageBack : Message = new Message();
+    messageBack.MessageCode = MessageCode.Res_UpdateRes;
+    messageBack.Data = JSON.stringify(listResDetal);
+    SendMessageToSocket(messageBack, userSocket.Socket);
 }

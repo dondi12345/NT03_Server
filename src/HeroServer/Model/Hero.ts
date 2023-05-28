@@ -17,8 +17,10 @@ export interface IHero{
     Mouths : Number,
 }
 
+export type Heroes = Record<string, Hero>
+
 export class Hero implements IHero{
-    _id: Types.ObjectId;
+    _id: Types.ObjectId = new Types.ObjectId();
     IdUserPlayer: Types.ObjectId;
     Lv : Number;
     HeroCode : HeroCode;
@@ -30,25 +32,48 @@ export class Hero implements IHero{
     HairColor : String;
     Mouths : Number;
 
-    static NewHero(){
+    static NewHero(data){
         var hero = new Hero();
+        if(data._id) hero._id = data._id;
+        else hero._id = new Types.ObjectId();
+
         hero.Lv = 1;
         hero.HeroCode = HeroCode.Dummy_WhiteItem;
-        hero.HeroName = FashionHero.FirstNames[Math.floor(Math.random() * FashionHero.FirstNames.length)]
+
+        if(data.HeroName) hero.HeroName = data.HeroName;
+        else hero.HeroName = FashionHero.FirstNames[Math.floor(Math.random() * FashionHero.FirstNames.length)]
                         +" "+FashionHero.LastNames[Math.floor(Math.random() * FashionHero.LastNames.length)];
+        
         if(Math.random() > 0.5) {
+            if(data.GenderCode) hero.GenderCode = data.GenderCode; else
             hero.GenderCode = GenderCode.Female;
+            if(data.Eyes) hero.Eyes = data.Eyes; else
             hero.Eyes = FashionHero.FemaleEyes[Math.floor(Math.random() * FashionHero.FemaleEyes.length)]
+            if(data.Hair) hero.Hair = data.Hair; else
             hero.Hair = FashionHero.FemaleHair[Math.floor(Math.random() * FashionHero.FemaleHair.length)]
         }else {
+            if(data.GenderCode) hero.GenderCode = data.GenderCode; else
             hero.GenderCode = GenderCode.Male;
+            if(data.Eyes) hero.Eyes = data.Eyes; else
             hero.Eyes = FashionHero.MaleEyes[Math.floor(Math.random() * FashionHero.MaleEyes.length)]
+            if(data.Hair) hero.Hair = data.Hair; else
             hero.Hair = FashionHero.MaleHair[Math.floor(Math.random() * FashionHero.MaleHair.length)]
         }
+        if(data.Eyebrow) hero.Eyebrow = data.Eyebrow; else
         hero.Eyebrow = FashionHero.Eyebrow[Math.floor(Math.random() * FashionHero.Eyebrow.length)]
+        if(data.Mouths) hero.Mouths = data.Mouths; else
         hero.Mouths = FashionHero.Mouths[Math.floor(Math.random() * FashionHero.Mouths.length)]
+        if(data.HairColor) hero.HairColor = data.HairColor; else
         hero.HairColor = FashionHero.HairColor[Math.floor(Math.random() * FashionHero.HairColor.length)]
         return hero;
+    }
+
+    static Parse(data) : IHero{
+        try{
+            return JSON.parse(data);
+        }catch{
+            return data;
+        }
     }
 }
 
@@ -65,5 +90,17 @@ const HeroSchema = new Schema<IHero>(
         Mouths : { type : Number},
     }
 );
-  
+
 export const HeroModel = mongoose.model<IHero>('Hero', HeroSchema);
+
+export async function CreateHero(hero : IHero){
+    var data;
+    await HeroModel.create(hero).then((res)=>{
+        console.log("1685285706 "+ res)
+        data = Hero.Parse(res);
+    }).catch((e)=>{
+        console.log("1685285714 "+ e)
+        data = null;
+    })
+    return data;
+}

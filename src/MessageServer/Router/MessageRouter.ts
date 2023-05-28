@@ -1,11 +1,11 @@
 import { IMessage, Message } from "../Model/Message";
 import { MessageCode } from "../Model/MessageCode";
 import { Connect } from "../Controller/MessageController";
-import { GainRes, ResLogin } from "../../ResServer/Controller/ResController";
+import { UpdateResCtrl, ResLogin } from "../../ResServer/Controller/ResController";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
-import { GetSummonResult, Summon } from "../../HeroServer/Controller/HeroController";
+import { GetSummonResult, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
 
 
 export function MessageRouter(message : IMessage, userSocket : IUserSocket){
@@ -31,8 +31,8 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     if(message.MessageCode == MessageCode.Res_Login){
         ResLogin(message, userSocket)
     } 
-    if(message.MessageCode == MessageCode.Res_GainRes){
-        GainRes(message, userSocket)
+    if(message.MessageCode == MessageCode.Res_UpdateRes){
+        UpdateResCtrl(message, userSocket)
     }
     if(message.MessageCode == MessageCode.Hero_Summon){
         Summon(message, userSocket);
@@ -40,6 +40,10 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     }
     if(message.MessageCode == MessageCode.Hero_GetSummonResult){
         GetSummonResult(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.Hero_HireHero){
+        HireHero(message, userSocket);
         return;
     }
 }
