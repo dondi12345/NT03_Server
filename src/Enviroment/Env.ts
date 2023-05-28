@@ -8,6 +8,7 @@ export const port = {
 export const Mongo = {
     dbLink : "mongodb://45.124.95.182:27017",
     // dbLink : "mongodb+srv://dondi1412:Trunghung24@cluster0.vj24px5.mongodb.net/",
+    // dbLink : "mongodb://localhost:27017,
     DbName : "NT03",
 }
 
@@ -33,5 +34,7 @@ export const Redis = {
     AccountChannel : "AccountChannel",
     UserPlayerChannel : "UserPlayerChannel",
 
-    KeyUserPlayerSession : "UserPlayer:Session:"
+    KeyUserPlayerSession : "UserPlayer:Session:",
+    KeyHeroSummon : "Hero:Summon:",
+
 }

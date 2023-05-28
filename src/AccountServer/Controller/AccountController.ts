@@ -71,10 +71,12 @@ export async function AccountLogin(message:Message, response){
         {
             await FindByUserName(accountAuthen.Username).then((res: IAccount)=>{
                 if(res == null || res == undefined){
+                    console.log("1685266848 Account not found")
                     response.send(JSON.stringify(LoginFailMessage()));
                     return;
                 }
                 if(res.Password == null || res.Password == undefined){
+                    console.log("1685266848 Error password")
                     response.send(JSON.stringify(LoginFailMessage()));
                     return;
                 }

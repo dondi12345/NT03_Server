@@ -3,6 +3,7 @@ import { ChatChannel, ChatChannelModel, CreateChatChannel, IChatChannel, TyppeCh
 import { UserJoinToChatChannel } from "./ChatServer/Model/UserChatChannel";
 import Init from "./Service/Init";
 import { UpdateRes } from "./ResServer/Model/Res";
+import { CreateNewHero } from "./HeroServer/Controller/HeroController";
 
 export function AppTest(){
     return;

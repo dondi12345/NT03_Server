@@ -9,8 +9,6 @@ import { IMessage, Message } from "../Model/Message";
 import { MessageCode } from "../Model/MessageCode";
 import { SendMessageToSocket } from "../Service/MessageService";
 
-const redisAccountToken = redis.createClient();
-
 export async function Connect(message : IMessage, userSocket : IUserSocket){
     var tockenAuthen = TockenAuthen.Parse(message.Data);
     var data = AuthenVerify(tockenAuthen.Token);

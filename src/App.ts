@@ -18,7 +18,7 @@ const numCPUs = 1;
 // const numCPUs = require('os').cpus().length;
 
 InitApp();
-AppTest();
+// AppTest();
 
 // Check if current process is master or worker
 function InitApp(){

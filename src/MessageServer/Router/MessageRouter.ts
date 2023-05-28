@@ -5,6 +5,7 @@ import { GainRes, ResLogin } from "../../ResServer/Controller/ResController";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
+import { GetSummonResult, Summon } from "../../HeroServer/Controller/HeroController";
 
 
 export function MessageRouter(message : IMessage, userSocket : IUserSocket){
@@ -32,5 +33,13 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     } 
     if(message.MessageCode == MessageCode.Res_GainRes){
         GainRes(message, userSocket)
-    } 
+    }
+    if(message.MessageCode == MessageCode.Hero_Summon){
+        Summon(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.Hero_GetSummonResult){
+        GetSummonResult(message, userSocket);
+        return;
+    }
 }

@@ -14,7 +14,7 @@ export interface IRes{
     EnchanceStone : number,
 
     //Item
-    heroScroll : number,
+    HeroScroll : number,
     BlueprintHeroEquip_WhiteItem : number,
     BlueprintHeroEquip_GreenItem : number,
     BlueprintHeroEquip_BlueItem : number,
@@ -35,7 +35,7 @@ export class Res implements IRes{
     EnchanceStone : number;
 
     //Item
-    heroScroll : number;
+    HeroScroll : number;
     BlueprintHeroEquip_WhiteItem : number;
     BlueprintHeroEquip_GreenItem : number;
     BlueprintHeroEquip_BlueItem : number;
@@ -67,7 +67,7 @@ const ResSchema = new Schema<IRes>(
         EnchanceStone : { type : Number, default : DefaultRes.EnchanceStone},
 
         //Item
-        heroScroll : { type : Number, default : DefaultRes.heroScroll},
+        HeroScroll : { type : Number, default : DefaultRes.heroScroll},
         BlueprintHeroEquip_WhiteItem : { type : Number, default : DefaultRes.BlueprintHeroEquip_WhiteItem},
         BlueprintHeroEquip_GreenItem : { type : Number, default : DefaultRes.BlueprintHeroEquip_GreenItem},
         BlueprintHeroEquip_BlueItem : { type : Number, default : DefaultRes.BlueprintHeroEquip_BlueItem},

@@ -21,6 +21,14 @@ export enum MessageCode {
 
     Res_Login = 4001,
     Res_LoginFail = 4002,
-    Res_LoginSuccess= 4003,
+    Res_LoginSuccess = 4003,
     Res_GainRes = 4004,
+
+    Hero_Login = 5001,
+    Hero_LoginFail = 5002,
+    Hero_LoginSuccess = 5003,
+    Hero_GetSummonResult = 5011,
+    Hero_SendSummonResult = 5012,
+    Hero_Summon = 5013,
+    Hero_ResultSummon = 5014,
 }
