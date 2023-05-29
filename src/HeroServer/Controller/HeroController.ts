@@ -74,15 +74,17 @@ export function Summon(message : IMessage, userSocket: IUserSocket){
     }
     var summonHero = new SummonHero();
     summonHero.IdUserPlayer = userSocket.IdUserPlayer;
+    summonHero.Slots = [];
     for (let index = 0; index < 10; index++) {
         var rate = Math.floor(Math.random()*totalRate);
         
         for (let property in rateSummon) {
             if(rate < rateSummon[property]){
                 var summonHeroSlot = new SummonHeroSlot();
-                summonHeroSlot.HeroCode = HeroCode[property];
+                var hero : Hero = Hero.NewHero({IdUserPlayer : userSocket.IdUserPlayer, Lv : 1, HeroCode : HeroCode[property]})
+                summonHeroSlot.Hero = hero;
                 summonHeroSlot.Hired = false;
-                summonHero.Slots[summonHeroSlot._id.toString()] = summonHeroSlot;
+                summonHero.Slots.push(summonHeroSlot);
                 break;
             }
             rate -= rateSummon[property];
@@ -112,19 +114,21 @@ export function GetSummonResult(message : IMessage, userSocket: IUserSocket){
 }
 
 export function HireHero(message : IMessage, userSocket: IUserSocket){
-    var hero : Hero = Hero.NewHero(message.Data);
+    var summonHeroSlot : SummonHeroSlot = SummonHeroSlot.Parse(message.Data);
     redisHero.get(Redis.KeyHeroSummon + userSocket.IdUserPlayer,  (error, result)=>{
         if(error || result == null || result == undefined){
             SendMessageToSocket(HireFailMessage(), userSocket.Socket);
         }else{
             try {
                 var summonHero = SummonHero.Parse(result);
-                summonHero.Slots[hero._id.toString()].Hired = true;
+                for (let index = 0; index < summonHero.Slots.length; index++) {
+                    const element = summonHero.Slots[index];
+                    if(element._id.equals(summonHeroSlot._id))
+                        element.Hired = true;
+                }
                 redisHero.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
 
-                hero.HeroCode = summonHero.Slots[hero._id.toString()].HeroCode
-                hero.IdUserPlayer = userSocket.IdUserPlayer;
-                hero.Lv = 1;
+                var hero = Hero.NewHero(summonHero.Slots[summonHeroSlot._id.toString()].Hero);
 
                 var message = new Message();
                 message.MessageCode = MessageCode.Hero_HireHeroSuccess;
