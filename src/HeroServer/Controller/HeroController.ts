@@ -96,16 +96,17 @@ export function Summon(message : IMessage, userSocket: IUserSocket){
 }
 
 export function GetSummonResult(message : IMessage, userSocket: IUserSocket){
-    var heroSummon = redisHero.get(Redis.KeyHeroSummon + userSocket.IdUserPlayer,  (error, result)=>{
+    redisHero.get(Redis.KeyHeroSummon + userSocket.IdUserPlayer,  (error, result)=>{
         var data;
         if(error || result == null || result == undefined){
-            data == null;
+            data = {};
         }else{
             data = result;
         }
         var message = new Message();
         message.MessageCode = MessageCode.Hero_SendSummonResult;
         message.Data = data;
+        console.log(data);
         SendMessageToSocket(message, userSocket.Socket);
     })
 }
