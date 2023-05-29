@@ -2,7 +2,7 @@ import mongoose, { Schema, Types } from 'mongoose';
 import { Socket } from "socket.io";
 import { UserPlayer } from '../../UserPlayerServer/Model/UserPlayer';
 import { Res } from '../../ResServer/Model/Res';
-import { Heroes } from '../../HeroServer/Model/Hero';
+import { HeroDictionary } from '../../HeroServer/Model/Hero';
 
 export interface IUserSocket{
     IdAccount : Types.ObjectId,
@@ -10,7 +10,7 @@ export interface IUserSocket{
     Socket : Socket,
     UserPlayer : UserPlayer,
     Res : Res,
-    Heroes : Heroes,
+    HeroDictionary : HeroDictionary,
 
 }
 
@@ -20,7 +20,7 @@ export class UserSocket implements IUserSocket{
     Socket : Socket;
     UserPlayer : UserPlayer;
     Res : Res;
-    Heroes : Heroes = {};
+    HeroDictionary : HeroDictionary;
 }
 
 export type UserSocketServer = Record<string, Socket>;

@@ -16,8 +16,7 @@ export interface IHero{
     HairColor : String,
     Mouths : Number,
 }
-
-export type Heroes = Record<string, Hero>
+export type HeroDictionary = Record<string, IHero>;
 
 export class Hero implements IHero{
     _id: Types.ObjectId = new Types.ObjectId();

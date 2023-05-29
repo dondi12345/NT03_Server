@@ -23,17 +23,15 @@ export function CreateNewHero(){
 }
 
 export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
-    userSocket.Heroes = {};
+    userSocket.HeroDictionary = {};
     await FindHeroByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
-        for (let index = 0; index < respone.length; index++) {
-            const element = respone[index];
-            var hero = Hero.NewHero(element)
-            userSocket.Heroes[hero._id.toString()] = hero;
+        console.log("1685293708 "+respone)
+        for (const item of respone) {
+            userSocket.HeroDictionary[item.id] = item;
         }
-        console.log("1685293708 "+JSON.stringify(userSocket.Heroes))
         var message = new Message();
         message.MessageCode = MessageCode.Hero_LoginSuccess;
-        message.Data = JSON.stringify(userSocket.Heroes);
+        message.Data = JSON.stringify(userSocket.HeroDictionary);
         SendMessageToSocket(message, userSocket.Socket);
     }).catch(e=>{
         var message = new Message();
@@ -143,7 +141,7 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
 export function HeroComming(hero : IHero, userSocket: IUserSocket){
     CreateHero(hero).then((res)=>{
         var hero = Hero.Parse(res);
-        userSocket.Heroes[hero._id.toString()] = hero;
+        userSocket.HeroDictionary[hero._id.toString()] = hero;
         var message = new Message();
         message.MessageCode = MessageCode.Hero_Coming;
         message.Data = JSON.stringify(hero);
