@@ -1,7 +1,7 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { HeroCode } from "./HeroCode";
-import { FashionHero } from "./VariableHero";
 import { GenderCode } from "./GenderCode";
+import { HeroFashion, HeroFashionVar } from "../../HeroFashion/HeroFashion";
 
 export interface IHero{
     _id : Types.ObjectId,
@@ -10,11 +10,10 @@ export interface IHero{
     HeroCode : HeroCode,
     HeroName : String,
     GenderCode : GenderCode,
-    Eyes : Number,
-    Eyebrow : Number,
-    Hair : Number,
-    HairColor : String,
-    Mouths : Number,
+    Eyes : HeroFashion,
+    Eyebrow : HeroFashion,
+    Hair : HeroFashion,
+    Mouths : HeroFashion,
 }
 export type HeroDictionary = Record<string, IHero>;
 
@@ -25,48 +24,42 @@ export class Hero implements IHero{
     HeroCode : HeroCode;
     HeroName : String;
     GenderCode : GenderCode;
-    Eyes : Number;
-    Eyebrow : Number;
-    Hair : Number;
-    HairColor : String;
-    Mouths : Number;
+    Eyes : HeroFashion;
+    Eyebrow : HeroFashion;
+    Hair : HeroFashion;
+    Mouths : HeroFashion;
+
+    constructor() {
+        this._id = new Types.ObjectId();
+        this.Lv = 1;
+        this.HeroCode = HeroCode.Dummy_WhiteItem;
+        this.HeroName = HeroFashionVar.FirstNames[Math.floor(Math.random() * HeroFashionVar.FirstNames.length)]
+                      +" "+HeroFashionVar.LastNames[Math.floor(Math.random() * HeroFashionVar.LastNames.length)];
+        this.GenderCode = Math.random() < 0.5 ? GenderCode.Male : GenderCode.Female;
+        if(this.GenderCode == GenderCode.Male ){
+            this.Eyes = HeroFashion.NewHero(HeroFashionVar.FemaleEyes[Math.floor(Math.random() * HeroFashionVar.FemaleEyes.length)])
+            this.Hair = HeroFashion.NewHero1(HeroFashionVar.FemaleHair[Math.floor(Math.random() * HeroFashionVar.FemaleHair.length)],
+                                                HeroFashionVar.Color[Math.floor(Math.random() * HeroFashionVar.Color.length)]);
+        }else{
+            this.Eyes = HeroFashion.NewHero(HeroFashionVar.MaleEyes[Math.floor(Math.random() * HeroFashionVar.MaleEyes.length)])
+            this.Hair = HeroFashion.NewHero1(HeroFashionVar.MaleHair[Math.floor(Math.random() * HeroFashionVar.MaleHair.length)],
+                                                HeroFashionVar.Color[Math.floor(Math.random() * HeroFashionVar.Color.length)]);
+        }
+        this.Eyebrow = HeroFashion.NewHero(HeroFashionVar.Eyebrow[Math.floor(Math.random() * HeroFashionVar.Eyebrow.length)]);                            
+        this.Mouths = HeroFashion.NewHero(HeroFashionVar.Mouths[Math.floor(Math.random() * HeroFashionVar.Mouths.length)]);
+    }
 
     static NewHero(data){
         var hero = new Hero();
         if(data._id) hero._id = data._id;
-        else hero._id = new Types.ObjectId();
-
         if(data.Lv) hero.Lv = data.Lv;
-        else hero.Lv = 1;
-
         if(data.HeroCode) hero.HeroCode = data.HeroCode;
-        else hero.HeroCode = HeroCode.Dummy_WhiteItem;
-
         if(data.HeroName) hero.HeroName = data.HeroName;
-        else hero.HeroName = FashionHero.FirstNames[Math.floor(Math.random() * FashionHero.FirstNames.length)]
-                        +" "+FashionHero.LastNames[Math.floor(Math.random() * FashionHero.LastNames.length)];
-        
-        if(Math.random() > 0.5) {
-            if(data.GenderCode) hero.GenderCode = data.GenderCode; else
-            hero.GenderCode = GenderCode.Female;
-            if(data.Eyes) hero.Eyes = data.Eyes; else
-            hero.Eyes = FashionHero.FemaleEyes[Math.floor(Math.random() * FashionHero.FemaleEyes.length)]
-            if(data.Hair) hero.Hair = data.Hair; else
-            hero.Hair = FashionHero.FemaleHair[Math.floor(Math.random() * FashionHero.FemaleHair.length)]
-        }else {
-            if(data.GenderCode) hero.GenderCode = data.GenderCode; else
-            hero.GenderCode = GenderCode.Male;
-            if(data.Eyes) hero.Eyes = data.Eyes; else
-            hero.Eyes = FashionHero.MaleEyes[Math.floor(Math.random() * FashionHero.MaleEyes.length)]
-            if(data.Hair) hero.Hair = data.Hair; else
-            hero.Hair = FashionHero.MaleHair[Math.floor(Math.random() * FashionHero.MaleHair.length)]
-        }
-        if(data.Eyebrow) hero.Eyebrow = data.Eyebrow; else
-        hero.Eyebrow = FashionHero.Eyebrow[Math.floor(Math.random() * FashionHero.Eyebrow.length)]
-        if(data.Mouths) hero.Mouths = data.Mouths; else
-        hero.Mouths = FashionHero.Mouths[Math.floor(Math.random() * FashionHero.Mouths.length)]
-        if(data.HairColor) hero.HairColor = data.HairColor; else
-        hero.HairColor = FashionHero.HairColor[Math.floor(Math.random() * FashionHero.HairColor.length)]
+        if(data.GenderCode) hero.GenderCode = data.GenderCode
+        if(data.Eyes) hero.Eyes = data.Eyes;
+        if(data.Eyebrow) hero.Eyebrow = data.Eyebrow;
+        if(data.Hair) hero.Hair = data.Hair;
+        if(data.Mouths) hero.Mouths = data.Mouths;
         return hero;
     }
 
@@ -84,12 +77,12 @@ const HeroSchema = new Schema<IHero>(
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
         Lv : { type : Number, default : 1},
         HeroCode : { type : Number, enum : HeroCode},
+        GenderCode : { type : Number, enum : GenderCode},
         HeroName : { type : String},
-        Eyes : { type : Number},
-        Eyebrow : { type : Number},
-        Hair : { type : Number},
-        HairColor : { type : String},
-        Mouths : { type : Number},
+        Eyes : { Index : { type : String}, Color : { type : String}, },
+        Eyebrow : { Index : { type : String}, Color : { type : String}, },
+        Hair : { Index : { type : String}, Color : { type : String}, },
+        Mouths : { Index : { type : String}, Color : { type : String}, },
     }
 );
 

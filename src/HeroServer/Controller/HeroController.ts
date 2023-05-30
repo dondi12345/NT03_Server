@@ -16,7 +16,7 @@ const redisHero = redis.createClient();
 
 export function CreateNewHero(){
     for (let index = 0; index < 10; index++) {
-        var hero = Hero.NewHero({});
+        var hero = new Hero();
         console.log(JSON.stringify(hero));
         
     }
@@ -81,7 +81,7 @@ export function Summon(message : IMessage, userSocket: IUserSocket){
         for (let property in rateSummon) {
             if(rate < rateSummon[property]){
                 var summonHeroSlot = new SummonHeroSlot();
-                var hero : Hero = Hero.NewHero({IdUserPlayer : userSocket.IdUserPlayer, Lv : 1, HeroCode : HeroCode[property]})
+                var hero : Hero = Hero.NewHero({IdUserPlayer : userSocket.IdUserPlayer, HeroCode : HeroCode[property]})
                 summonHeroSlot.Hero = hero;
                 summonHeroSlot.Hired = false;
                 summonHero.Slots.push(summonHeroSlot);
