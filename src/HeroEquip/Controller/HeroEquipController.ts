@@ -6,7 +6,7 @@ import { UpdateRes } from "../../ResServer/Model/Res";
 import { ResCode } from "../../ResServer/Model/ResCode";
 import { ResDetail } from "../../ResServer/Model/ResDetail";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHeroEquip, FindHeroEquipByIdUserPlayer, HeroEquip } from "../Model/HeroEquip";
+import { CreateHeroEquip, FindHeroEquipByIdUserPlayer, HeroEquip, IHeroEquip } from "../Model/HeroEquip";
 import { RateCraftWhite } from "../Model/VariableHeroEquip";
 
 export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket){
@@ -36,7 +36,7 @@ export async function CraftWhiteHeroEquip(message : IMessage, userSocket: IUserS
         CraftHeroEquipFail(userSocket);
         return;
     }
-    
+
     userSocket.Res.BlueprintHeroEquip_WhiteItem --;
     var messageUpdateRes = new Message();
     messageUpdateRes.MessageCode = MessageCode.Res_UpdateRes;
@@ -58,11 +58,12 @@ export async function CraftWhiteHeroEquip(message : IMessage, userSocket: IUserS
     heroEquip.Index = index;
     heroEquip.HeroEquipType = HeroEquip.ParseToHeroEquipType(index);
     heroEquip.IdUserPlayer = userSocket.IdUserPlayer;
-    var data = await CreateHeroEquip(heroEquip);
+    var data : IHeroEquip = await CreateHeroEquip(heroEquip);
     if(data == null || data == undefined){
         CraftHeroEquipFail(userSocket);
         return;
     }
+    userSocket.HeroEquipDictionary[data._id.toHexString()] = data;
     var message = new Message();
     message.MessageCode = MessageCode.HeroEquip_CraftSuccess;
     message.Data = JSON.stringify(heroEquip);
