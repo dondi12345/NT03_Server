@@ -6,6 +6,7 @@ import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
 import { GetSummonResult, HeroLogin, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
+import { CraftWhiteHeroEquip, HeroEquipLogin } from "../../HeroEquip/Controller/HeroEquipController";
 
 
 export function MessageRouter(message : IMessage, userSocket : IUserSocket){
@@ -48,6 +49,14 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     }
     if(message.MessageCode == MessageCode.Hero_Login){
         HeroLogin(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.HeroEquip_Login){
+        HeroEquipLogin(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.HeroEquip_CraftWhite){
+        CraftWhiteHeroEquip(message, userSocket);
         return;
     }
 }

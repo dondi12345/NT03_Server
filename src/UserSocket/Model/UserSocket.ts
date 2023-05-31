@@ -3,6 +3,7 @@ import { Socket } from "socket.io";
 import { UserPlayer } from '../../UserPlayerServer/Model/UserPlayer';
 import { Res } from '../../ResServer/Model/Res';
 import { HeroDictionary } from '../../HeroServer/Model/Hero';
+import { HeroEquipDictionary } from '../../HeroEquip/Model/HeroEquip';
 
 export interface IUserSocket{
     IdAccount : Types.ObjectId,
@@ -11,7 +12,7 @@ export interface IUserSocket{
     UserPlayer : UserPlayer,
     Res : Res,
     HeroDictionary : HeroDictionary,
-
+    HeroEquipDictionary : HeroEquipDictionary,
 }
 
 export class UserSocket implements IUserSocket{
@@ -21,6 +22,7 @@ export class UserSocket implements IUserSocket{
     UserPlayer : UserPlayer;
     Res : Res;
     HeroDictionary : HeroDictionary;
+    HeroEquipDictionary : HeroEquipDictionary;
 }
 
 export type UserSocketServer = Record<string, Socket>;

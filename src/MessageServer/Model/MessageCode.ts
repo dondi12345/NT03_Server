@@ -6,7 +6,6 @@ export enum MessageCode {
     MessageServer_ConnectSuccess = 1004,
     MessageServer_Disconnect = 1005,
 
-
     AccountServer_Register = 2001,
     AccountServer_RegisterFail = 2002,
     AccountServer_RegisterSuccess = 2003,
@@ -36,4 +35,11 @@ export enum MessageCode {
     Hero_HireHeroSuccess = 5016,
     Hero_HireHeroFail = 5017,
     Hero_Coming = 5018,
+
+    HeroEquip_Login = 6001,
+    HeroEquip_LoginFail = 6002,
+    HeroEquip_LoginSuccess = 6003,
+    HeroEquip_CraftWhite = 6004,
+    HeroEquip_CraftFail = 6005,
+    HeroEquip_CraftSuccess = 6006,
 }

@@ -3,6 +3,12 @@ import { HeroCode } from "./HeroCode";
 import { GenderCode } from "./GenderCode";
 import { HeroFashion, HeroFashionVar } from "../../HeroFashion/HeroFashion";
 
+export interface IGear{
+    IdWeapon ?: Types.ObjectId,
+    IdArmor ?: Types.ObjectId,
+    IdHelmet ?: Types.ObjectId,
+}
+
 export interface IHero{
     _id : Types.ObjectId,
     IdUserPlayer : Types.ObjectId,
@@ -14,6 +20,7 @@ export interface IHero{
     Eyebrow : HeroFashion,
     Hair : HeroFashion,
     Mouths : HeroFashion,
+    Gear : IGear,
 }
 export type HeroDictionary = Record<string, IHero>;
 
@@ -28,6 +35,7 @@ export class Hero implements IHero{
     Eyebrow : HeroFashion;
     Hair : HeroFashion;
     Mouths : HeroFashion;
+    Gear : IGear;
 
     constructor() {
         this._id = new Types.ObjectId();
@@ -83,6 +91,11 @@ const HeroSchema = new Schema<IHero>(
         Eyebrow : { Index : { type : String}, Color : { type : String}, },
         Hair : { Index : { type : String}, Color : { type : String}, },
         Mouths : { Index : { type : String}, Color : { type : String}, },
+        Gear :{
+            IdWeapon : { type : Types.ObjectId, ref: 'HeroEquip'},
+            IdArmor : { type : Types.ObjectId, ref: 'HeroEquip'},
+            IdHelmet : { type : Types.ObjectId, ref: 'HeroEquip'},
+        }
     }
 );
 

@@ -7,7 +7,7 @@ export const HeroFashionVar = {
     Eyebrow : ["EB000","EB001","EB002","EB003","EB004","EB005","EB006"],
     FemaleHair : ["HA100","HA101","HA102","HA103","HA104","HA105","HA106",],
     MaleHair : ["HA200","HA201","HA202","HA203","HA204","HA205","HA206",],
-    Mouths : ["MO100","MO101","MO102","MO103","MO104","MO105","MO106",],
+    Mouths : ["MO000","MO001","MO002","MO003","MO004","MO005","MO006",],
     FirstNames : ["Sofia","Emma","Anna","Alexander","Max","Lucas","Liam","Julia"],
     LastNames : ["Lindberg","Huguenin","Kovalchuk","Giannini","Wahlberg","Sorensen","Deschamps","Berglund"],
     Color : ["7D7878","3A4050","A73032","CC83BE","C1E2FB","82AE62","E5E38B","986438"],

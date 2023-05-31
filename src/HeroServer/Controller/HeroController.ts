@@ -121,14 +121,19 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
         }else{
             try {
                 var summonHero = SummonHero.Parse(result);
+                var indexFindout = -1;
                 for (let index = 0; index < summonHero.Slots.length; index++) {
                     const element = summonHero.Slots[index];
-                    if(element._id.equals(summonHeroSlot._id))
+                    console.log("1685507029 "+ element._id.toString() + " - "+summonHeroSlot._id.toString());
+                    if(element._id.toString() === summonHeroSlot._id.toString()){
                         element.Hired = true;
+                        indexFindout = index;
+                        break;
+                    }
                 }
                 redisHero.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
 
-                var hero = Hero.NewHero(summonHero.Slots[summonHeroSlot._id.toString()].Hero);
+                var hero = Hero.NewHero(summonHero.Slots[indexFindout].Hero);
 
                 var message = new Message();
                 message.MessageCode = MessageCode.Hero_HireHeroSuccess;
