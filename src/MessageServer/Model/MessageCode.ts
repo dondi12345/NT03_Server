@@ -18,10 +18,12 @@ export enum MessageCode {
     UserPlayerServer_LoginFail = 3002,
     UserPlayerServer_LoginSuccess= 3003,
 
+    Res_Start = 4000,
     Res_Login = 4001,
     Res_LoginFail = 4002,
     Res_LoginSuccess = 4003,
     Res_UpdateRes = 4004,
+    Res_End = 4999,
 
     Hero_Login = 5001,
     Hero_LoginFail = 5002,
@@ -42,4 +44,6 @@ export enum MessageCode {
     HeroEquip_CraftWhite = 6004,
     HeroEquip_CraftFail = 6005,
     HeroEquip_CraftSuccess = 6006,
+    HeroEquip_Wearing = 6007,
+    
 }

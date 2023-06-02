@@ -1,9 +1,17 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { HeroEquipType } from "./HeroEquipType";
 
-export interface HeroWearEquip{
-    IdHero : Types.ObjectId,
-    IdHeroEquip : Types.ObjectId,
+export class HeroWearEquip{
+    IdHero : Types.ObjectId;
+    IdHeroEquip : Types.ObjectId;
+
+    static Parse(data) : HeroWearEquip{
+        try{
+            return JSON.parse(data);
+        }catch{
+            return data;
+        }
+    }
 }
 
 export interface IHeroEquip{

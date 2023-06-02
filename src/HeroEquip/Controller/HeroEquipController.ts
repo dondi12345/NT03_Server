@@ -1,3 +1,4 @@
+import { Hero } from "../../HeroServer/Model/Hero";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
@@ -6,7 +7,7 @@ import { UpdateRes } from "../../ResServer/Model/Res";
 import { ResCode } from "../../ResServer/Model/ResCode";
 import { ResDetail } from "../../ResServer/Model/ResDetail";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHeroEquip, FindHeroEquipByIdUserPlayer, HeroEquip, IHeroEquip } from "../Model/HeroEquip";
+import { CreateHeroEquip, FindHeroEquipByIdUserPlayer, HeroEquip, HeroWearEquip, IHeroEquip } from "../Model/HeroEquip";
 import { RateCraftWhite } from "../Model/VariableHeroEquip";
 
 export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket){
@@ -75,4 +76,27 @@ function CraftHeroEquipFail(userSocket: IUserSocket){
     message.MessageCode = MessageCode.HeroEquip_CraftFail;
     message.Data = "Craft Fail";
     SendMessageToSocket(message, userSocket.Socket);
+}
+
+export function WearingEquip(message : Message, userSocket : IUserSocket){
+    var heroWearEquip = HeroWearEquip.Parse(message.Data);
+    var hero : Hero = userSocket.HeroDictionary[heroWearEquip.IdHero.toString()];
+    if(hero == null || hero == undefined){
+        WearingEquipFail(userSocket);
+        return;
+    }
+    var equip : HeroEquip = userSocket.HeroEquipDictionary[heroWearEquip.IdHeroEquip.toString()];
+    if(equip == null || equip == undefined){
+        WearingEquipFail(userSocket);
+        return;
+    }
+    if(equip.IdHero != null && equip.IdHero != undefined){
+
+    }
+}
+ 
+
+
+export function WearingEquipFail(userSocket : IUserSocket){
+
 }
