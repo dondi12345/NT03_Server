@@ -36,7 +36,6 @@ export enum MessageCode {
     Hero_HireHero = 5015,
     Hero_HireHeroSuccess = 5016,
     Hero_HireHeroFail = 5017,
-    Hero_Coming = 5018,
 
     HeroEquip_Login = 6001,
     HeroEquip_LoginFail = 6002,
@@ -45,5 +44,10 @@ export enum MessageCode {
     HeroEquip_CraftFail = 6005,
     HeroEquip_CraftSuccess = 6006,
     HeroEquip_Wearing = 6007,
+    HeroEquip_Unwearing = 6008,
+    HeroEquip_WearingSuccess = 6009,
+    HeroEquip_WearingFail = 6010,
+    HeroEquip_UnwearingSuccess = 6011,
+    HeroEquip_UnwearingFail = 6012,
     
 }

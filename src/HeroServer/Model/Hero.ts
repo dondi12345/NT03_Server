@@ -9,6 +9,10 @@ export interface IGear{
     IdHelmet ?: Types.ObjectId,
 }
 
+export class DataHeroes{
+    Heroes : Hero[] = [];
+}
+
 export interface IHero{
     _id : Types.ObjectId,
     IdUserPlayer : Types.ObjectId,
@@ -60,6 +64,7 @@ export class Hero implements IHero{
     static NewHero(data){
         var hero = new Hero();
         if(data._id) hero._id = data._id;
+        if(data.IdUserPlayer) hero.IdUserPlayer = data.IdUserPlayer;
         if(data.Lv) hero.Lv = data.Lv;
         if(data.HeroCode) hero.HeroCode = data.HeroCode;
         if(data.HeroName) hero.HeroName = data.HeroName;
@@ -115,8 +120,14 @@ export async function CreateHero(hero : IHero){
 
 export async function FindHeroByIdUserPlayer(idUserPlayer: Types.ObjectId){
     var heroes;
-    await HeroModel.find({IdUserPlayer : idUserPlayer}).then((res)=>{
+    await HeroModel.find({IdUserPlayer : idUserPlayer}).then((res : [])=>{
         heroes = res;
     })
     return heroes;
+}
+
+export async function UpdateHero(hero:IHero) {
+    HeroModel.updateOne(hero).then((res)=>{
+        console.log("1685723759 "+res);
+    })
 }
