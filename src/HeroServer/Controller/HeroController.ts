@@ -1,7 +1,7 @@
 import redis from 'redis';
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHero, FindHeroByIdUserPlayer, Hero, HeroModel, IHero } from "../Model/Hero";
+import { CreateHero, DataHeroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero } from "../Model/Hero";
 import { HeroCode } from "../Model/HeroCode";
 import { ISummonHero, ISummonHeroSlot, SummonHero, SummonHeroSlot } from "../Model/SummonHero";
 import { RateSummon } from "../Model/VariableHero";
@@ -26,12 +26,16 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
     userSocket.HeroDictionary = {};
     await FindHeroByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
         console.log("1685293708 "+respone)
-        for (const item of respone) {
-            userSocket.HeroDictionary[item.id] = item;
+        var dataHeroes = new DataHeroes();
+        for (let item of respone) {
+            var hero = Hero.Parse(item);
+            console.log("1685979990 "+ JSON.stringify(hero));
+            dataHeroes.Heroes.push(hero);
+            userSocket.HeroDictionary[hero._id.toString()] = hero;
         }
         var message = new Message();
         message.MessageCode = MessageCode.Hero_LoginSuccess;
-        message.Data = JSON.stringify(userSocket.HeroDictionary);
+        message.Data = JSON.stringify(dataHeroes);
         SendMessageToSocket(message, userSocket.Socket);
     }).catch(e=>{
         var message = new Message();
@@ -75,7 +79,7 @@ export function Summon(message : IMessage, userSocket: IUserSocket){
     var summonHero = new SummonHero();
     summonHero.IdUserPlayer = userSocket.IdUserPlayer;
     summonHero.Slots = [];
-    for (let index = 0; index < 10; index++) {
+    for (let index = 0; index < 7; index++) {
         var rate = Math.floor(Math.random()*totalRate);
         
         for (let property in rateSummon) {
@@ -134,12 +138,7 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
                 redisHero.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
 
                 var hero = Hero.NewHero(summonHero.Slots[indexFindout].Hero);
-
-                var message = new Message();
-                message.MessageCode = MessageCode.Hero_HireHeroSuccess;
-                message.Data = JSON.stringify(hero);
-                SendMessageToSocket(message, userSocket.Socket);
-                HeroComming(hero, userSocket);
+                HireHeroSuccess(hero, userSocket);
             } catch (error) {
                 console.log("1685284455 "+error)
                 SendMessageToSocket(HireFailMessage(), userSocket.Socket); 
@@ -148,12 +147,12 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
     })
 }
 
-export function HeroComming(hero : IHero, userSocket: IUserSocket){
-    CreateHero(hero).then((res)=>{
-        var hero = Hero.Parse(res);
-        userSocket.HeroDictionary[hero._id.toString()] = hero;
+export function HireHeroSuccess(hero : IHero, userSocket: IUserSocket){
+    CreateHero(hero).then((res : IHero)=>{
+        userSocket.HeroDictionary[res._id.toString()] = res;
+        console.log("1685974556 Adding Hero")
         var message = new Message();
-        message.MessageCode = MessageCode.Hero_Coming;
+        message.MessageCode = MessageCode.Hero_HireHeroSuccess;
         message.Data = JSON.stringify(hero);
         SendMessageToSocket(message, userSocket.Socket); 
     })

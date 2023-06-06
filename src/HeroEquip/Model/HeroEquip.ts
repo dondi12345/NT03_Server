@@ -86,3 +86,9 @@ export async function CreateHeroEquip(heroEquip : IHeroEquip){
     })
     return data;
 }
+
+export async function UpdateHeroEquip(heroEquip:IHeroEquip) {
+    HeroEquipModel.updateOne(heroEquip).then((res)=>{
+        console.log("1685723716 "+res);
+    })
+}
