@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { HeroEquipType } from "./HeroEquipType";
+import { ResCode } from "../../ResServer/Model/ResCode";
 
 export class HeroWearEquip{
     IdHero : Types.ObjectId;
@@ -12,6 +13,22 @@ export class HeroWearEquip{
             return data;
         }
     }
+}
+
+export class CraftHeroEquip{
+    ResCode : ResCode;
+
+    static Parse(data) : CraftHeroEquip{
+        try{
+            return JSON.parse(data);
+        }catch{
+            return data;
+        }
+    }
+}
+
+export class HeroEquips{
+    Elements : HeroEquip[] = [];
 }
 
 export interface IHeroEquip{
@@ -38,6 +55,14 @@ export class HeroEquip implements IHeroEquip{
         this.Lv = 1;
     }
 
+    static HeroEquip(index:string, idUserPlayer: Types.ObjectId) {
+        var heroEquip = new HeroEquip();
+        heroEquip.Index = index;
+        heroEquip.IdUserPlayer = idUserPlayer;
+        heroEquip.HeroEquipType = HeroEquip.ParseToHeroEquipType(index);
+        return heroEquip;
+    }
+
     static Parse(data) : IHeroEquip{
         try{
             return JSON.parse(data);
@@ -46,8 +71,8 @@ export class HeroEquip implements IHeroEquip{
         }
     }
 
-    static ParseToHeroEquipType(id : string){
-        var type = id[0] + id[1];
+    static ParseToHeroEquipType(index : string){
+        var type = index[0] + index[1];
         if(type === "WP") return HeroEquipType.Weapon;
         if(type === "AR") return HeroEquipType.Armor;
         if(type === "HM") return HeroEquipType.Helmet;

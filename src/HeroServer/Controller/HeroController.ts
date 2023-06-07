@@ -1,7 +1,7 @@
 import redis from 'redis';
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHero, DataHeroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero } from "../Model/Hero";
+import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero } from "../Model/Hero";
 import { HeroCode } from "../Model/HeroCode";
 import { ISummonHero, ISummonHeroSlot, SummonHero, SummonHeroSlot } from "../Model/SummonHero";
 import { RateSummon } from "../Model/VariableHero";
@@ -26,11 +26,11 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
     userSocket.HeroDictionary = {};
     await FindHeroByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
         console.log("1685293708 "+respone)
-        var dataHeroes = new DataHeroes();
+        var dataHeroes = new Heroes();
         for (let item of respone) {
             var hero = Hero.Parse(item);
             console.log("1685979990 "+ JSON.stringify(hero));
-            dataHeroes.Heroes.push(hero);
+            dataHeroes.Elements.push(hero);
             userSocket.HeroDictionary[hero._id.toString()] = hero;
         }
         var message = new Message();

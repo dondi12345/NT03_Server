@@ -76,7 +76,6 @@ export async function CheckUserLoginedFromRedis(userPlayer:IUserPlayer, userSock
             console.log("1685080451 "+Object.keys(userSocketDictionary).length)
             SendMessageToSocket(LoginSuccessMessage(userPlayer), userSocket.Socket);
         }else{
-            console.log("1685010370 "+result);
             var message = new Message();
             message.MessageCode = MessageCode.MessageServer_Disconnect;
             var userSocketData = new UserSocketData();

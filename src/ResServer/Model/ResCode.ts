@@ -22,15 +22,15 @@ export enum ResCode
 
     //Item
     HeroScroll = 301,
-    BlueprintHeroEquip_WhiteItem = 401,
-    BlueprintHeroEquip_GreenItem = 402,
-    BlueprintHeroEquip_BlueItem = 403,
-    BlueprintHeroEquip_PurpleItem = 404,
-    BlueprintHeroEquip_YellowItem = 405,
-    BlueprintHeroEquip_RedItem = 406,
+    BlueprintHeroEquip_White = 401,
+    BlueprintHeroEquip_Green = 402,
+    BlueprintHeroEquip_Blue = 403,
+    BlueprintHeroEquip_Purple = 404,
+    BlueprintHeroEquip_Yellow = 405,
+    BlueprintHeroEquip_Red = 406,
 
     //Treasure
-    BaseTreasure_WhiteItem = 501,
+    BaseTreasure_White = 501,
 
 
 }

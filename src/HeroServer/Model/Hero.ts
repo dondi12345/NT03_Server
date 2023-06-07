@@ -9,8 +9,8 @@ export interface IGear{
     IdHelmet ?: Types.ObjectId,
 }
 
-export class DataHeroes{
-    Heroes : Hero[] = [];
+export class Heroes{
+    Elements : Hero[] = [];
 }
 
 export interface IHero{

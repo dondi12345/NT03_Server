@@ -2,25 +2,29 @@ import { Hero, UpdateHero } from "../../HeroServer/Model/Hero";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
-import { UpdateResCtrl } from "../../ResServer/Controller/ResController";
+import { UpdateResByResCode, UpdateResCtrl } from "../../ResServer/Controller/ResController";
+import { DataRes } from "../../ResServer/DataRes";
 import { UpdateRes } from "../../ResServer/Model/Res";
 import { ResCode } from "../../ResServer/Model/ResCode";
 import { ResDetail } from "../../ResServer/Model/ResDetail";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHeroEquip, FindHeroEquipByIdUserPlayer, HeroEquip, HeroWearEquip, IHeroEquip, UpdateHeroEquip } from "../Model/HeroEquip";
+import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipByIdUserPlayer, HeroEquip, HeroEquips, HeroWearEquip, IHeroEquip, UpdateHeroEquip } from "../Model/HeroEquip";
 import { HeroEquipType } from "../Model/HeroEquipType";
-import { RateCraftWhite } from "../Model/VariableHeroEquip";
+import { IndexHeroEquipCraft, RateCraft, RateCraftWhite } from "../Model/VariableHeroEquip";
 
 export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket){
     userSocket.HeroEquipDictionary = {};
     await FindHeroEquipByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
         console.log("1685514345 "+respone)
+        var heroEquips : HeroEquips = new HeroEquips;
         for (const item of respone) {
-            userSocket.HeroEquipDictionary[item.id] = item;
+            var heroEquip = HeroEquip.Parse(item);
+            userSocket.HeroEquipDictionary[heroEquip._id.toString()] = heroEquip;
+            heroEquips.Elements.push(heroEquip);
         }
         var message = new Message();
         message.MessageCode = MessageCode.HeroEquip_LoginSuccess;
-        message.Data = JSON.stringify(userSocket.HeroEquipDictionary);
+        message.Data = JSON.stringify(heroEquips);
         SendMessageToSocket(message, userSocket.Socket);
     }).catch(e=>{
         var message = new Message();
@@ -32,19 +36,55 @@ export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket
 }
 
 // 10f;80f;800f;10000f;100000f;1000000f;1000000f;
+export async function CraftEquip(message : IMessage, userSocket: IUserSocket) {
+    var craftHeroEquip = CraftHeroEquip.Parse(message.Data);
+    if(userSocket.Res[ResCode[craftHeroEquip.ResCode]] <= 0){
+        CraftHeroEquipFail(userSocket);
+        return;
+    }
+    userSocket.Res[ResCode[craftHeroEquip.ResCode]] --;
+    UpdateResByResCode([craftHeroEquip.ResCode], userSocket);
+    var maxRate = RateCraft[ResCode[craftHeroEquip.ResCode]];
+    var totalRate = 0;
+    DataRes.forEach(element => {
+        if(element.ResCode == ResCode[craftHeroEquip.ResCode]){
+            totalRate += element.CraftHeroEquip;
+        }
+    });
+    var rand = Math.random()*maxRate;
+    console.log(rand +" - "+ totalRate+" - "+maxRate);
+    if(rand > totalRate){
+        CraftHeroEquipFail(userSocket);
+        return;
+    }
+    IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]]
+    var index = IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]][Math.floor(Math.random()*IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]].length)];
+    var heroEquip = new HeroEquip();
+    heroEquip = HeroEquip.HeroEquip(index, userSocket.IdUserPlayer)
+    var data : IHeroEquip = await CreateHeroEquip(heroEquip);
+    if(data == null || data == undefined){
+        CraftHeroEquipFail(userSocket);
+        return;
+    }
+    userSocket.HeroEquipDictionary[data._id.toHexString()] = data;
+    var message = new Message();
+    message.MessageCode = MessageCode.HeroEquip_CraftSuccess;
+    message.Data = JSON.stringify(heroEquip);
+    SendMessageToSocket(message, userSocket.Socket);
+}
 
 export async function CraftWhiteHeroEquip(message : IMessage, userSocket: IUserSocket){
-    if(userSocket.Res.BlueprintHeroEquip_WhiteItem <=0){
+    if(userSocket.Res.BlueprintHeroEquip_White <=0){
         CraftHeroEquipFail(userSocket);
         return;
     }
 
-    userSocket.Res.BlueprintHeroEquip_WhiteItem --;
+    userSocket.Res.BlueprintHeroEquip_White --;
     var messageUpdateRes = new Message();
     messageUpdateRes.MessageCode = MessageCode.Res_UpdateRes;
     var resDetail = new ResDetail();
-    resDetail.Name = ResCode[ResCode.BlueprintHeroEquip_WhiteItem];
-    resDetail.Number = userSocket.Res.BlueprintHeroEquip_WhiteItem;
+    resDetail.Name = ResCode[ResCode.BlueprintHeroEquip_White];
+    resDetail.Number = userSocket.Res.BlueprintHeroEquip_White;
     var listResDetal : ResDetail[] = [];
     listResDetal.push(resDetail);
     messageUpdateRes.Data = JSON.stringify(listResDetal)

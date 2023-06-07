@@ -8,10 +8,10 @@ export const DefaultRes = {
 
     //Item
     heroScroll : 0,
-    BlueprintHeroEquip_WhiteItem : 0,
-    BlueprintHeroEquip_GreenItem : 0,
-    BlueprintHeroEquip_BlueItem : 0,
-    BlueprintHeroEquip_PurpleItem : 0,
-    BlueprintHeroEquip_YellowItem : 0,
-    BlueprintHeroEquip_RedItem : 0,
+    BlueprintHeroEquip_White : 0,
+    BlueprintHeroEquip_Green : 0,
+    BlueprintHeroEquip_Blue : 0,
+    BlueprintHeroEquip_Purple : 0,
+    BlueprintHeroEquip_Yellow : 0,
+    BlueprintHeroEquip_Red : 0,
   };

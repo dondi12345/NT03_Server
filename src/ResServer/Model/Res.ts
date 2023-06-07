@@ -15,12 +15,12 @@ export interface IRes{
 
     //Item
     HeroScroll : number,
-    BlueprintHeroEquip_WhiteItem : number,
-    BlueprintHeroEquip_GreenItem : number,
-    BlueprintHeroEquip_BlueItem : number,
-    BlueprintHeroEquip_PurpleItem : number,
-    BlueprintHeroEquip_YellowItem : number,
-    BlueprintHeroEquip_RedItem : number,
+    BlueprintHeroEquip_White : number,
+    BlueprintHeroEquip_Green : number,
+    BlueprintHeroEquip_Blue : number,
+    BlueprintHeroEquip_Purple : number,
+    BlueprintHeroEquip_Yellow : number,
+    BlueprintHeroEquip_Red : number,
 }
 
 export class Res implements IRes{
@@ -36,12 +36,12 @@ export class Res implements IRes{
 
     //Item
     HeroScroll : number;
-    BlueprintHeroEquip_WhiteItem : number;
-    BlueprintHeroEquip_GreenItem : number;
-    BlueprintHeroEquip_BlueItem : number;
-    BlueprintHeroEquip_PurpleItem : number;
-    BlueprintHeroEquip_YellowItem : number;
-    BlueprintHeroEquip_RedItem : number;
+    BlueprintHeroEquip_White : number;
+    BlueprintHeroEquip_Green : number;
+    BlueprintHeroEquip_Blue : number;
+    BlueprintHeroEquip_Purple : number;
+    BlueprintHeroEquip_Yellow : number;
+    BlueprintHeroEquip_Red : number;
 
     constructor() {
         
@@ -68,12 +68,12 @@ const ResSchema = new Schema<IRes>(
 
         //Item
         HeroScroll : { type : Number, default : DefaultRes.heroScroll},
-        BlueprintHeroEquip_WhiteItem : { type : Number, default : DefaultRes.BlueprintHeroEquip_WhiteItem},
-        BlueprintHeroEquip_GreenItem : { type : Number, default : DefaultRes.BlueprintHeroEquip_GreenItem},
-        BlueprintHeroEquip_BlueItem : { type : Number, default : DefaultRes.BlueprintHeroEquip_BlueItem},
-        BlueprintHeroEquip_PurpleItem : { type : Number, default : DefaultRes.BlueprintHeroEquip_PurpleItem},
-        BlueprintHeroEquip_YellowItem : { type : Number, default : DefaultRes.BlueprintHeroEquip_YellowItem},
-        BlueprintHeroEquip_RedItem : { type : Number, default : DefaultRes.BlueprintHeroEquip_RedItem},
+        BlueprintHeroEquip_White : { type : Number, default : DefaultRes.BlueprintHeroEquip_White},
+        BlueprintHeroEquip_Green : { type : Number, default : DefaultRes.BlueprintHeroEquip_Green},
+        BlueprintHeroEquip_Blue : { type : Number, default : DefaultRes.BlueprintHeroEquip_Blue},
+        BlueprintHeroEquip_Purple : { type : Number, default : DefaultRes.BlueprintHeroEquip_Purple},
+        BlueprintHeroEquip_Yellow : { type : Number, default : DefaultRes.BlueprintHeroEquip_Yellow},
+        BlueprintHeroEquip_Red : { type : Number, default : DefaultRes.BlueprintHeroEquip_Red},
     }
 );
   

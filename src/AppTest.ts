@@ -4,10 +4,20 @@ import { UserJoinToChatChannel } from "./ChatServer/Model/UserChatChannel";
 import Init from "./Service/Init";
 import { UpdateRes } from "./ResServer/Model/Res";
 import { CreateNewHero } from "./HeroServer/Controller/HeroController";
+import { CraftEquip } from "./HeroEquip/Controller/HeroEquipController";
+import { Message } from "./MessageServer/Model/Message";
+import { CraftHeroEquip } from "./HeroEquip/Model/HeroEquip";
+import { ResCode } from "./ResServer/Model/ResCode";
 
 export function AppTest(){
-    CreateNewHero()
     return;
+    var message = new Message();
+    var craftHeroEquip = new CraftHeroEquip();
+    craftHeroEquip.ResCode = ResCode.BlueprintHeroEquip_White;
+    message.Data = craftHeroEquip;
+    for (let index = 0; index < 10; index++) {
+        // CraftEquip(message);
+    }
     Init.InitDatabase().then(()=>{
         var data = [
             {

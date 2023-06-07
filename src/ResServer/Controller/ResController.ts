@@ -3,7 +3,8 @@ import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { CreateUserPlayerRes, FindResByIdUserPlayer, IRes, Res, UpdateRes } from "../Model/Res";
-import { IResDetail } from "../Model/ResDetail";
+import { ResCode } from "../Model/ResCode";
+import { IResDetail, ResDetail } from "../Model/ResDetail";
 
 export async function ResLogin(message : IMessage, userSocket: IUserSocket){
     await FindResByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
@@ -52,4 +53,19 @@ export function UpdateResCtrl(message : IMessage, userSocket: IUserSocket){
     messageBack.MessageCode = MessageCode.Res_UpdateRes;
     messageBack.Data = JSON.stringify(listResDetal);
     SendMessageToSocket(messageBack, userSocket.Socket);
+}
+
+export function UpdateResByResCode(resCodes : ResCode[], userSocket: IUserSocket){
+    var messageUpdateRes = new Message();
+    messageUpdateRes.MessageCode = MessageCode.Res_UpdateRes;
+    var listResDetal : ResDetail[] = [];
+    for (let index = 0; index < resCodes.length; index++) {
+        const element = resCodes[index];
+        var resDetail = new ResDetail();
+        resDetail.Name = ResCode[element];
+        resDetail.Number = userSocket.Res[ResCode[element]];
+        listResDetal.push(resDetail);  
+    }
+    messageUpdateRes.Data = JSON.stringify(listResDetal)
+    UpdateResCtrl(messageUpdateRes, userSocket);
 }
