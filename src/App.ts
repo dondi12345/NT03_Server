@@ -36,7 +36,7 @@ function InitApp(){
     cluster.on('1684475534 exit', (worker, code, signal) => {
       console.log(`1684475542 worker ${worker.process.pid} died`);
     });
-    API();
+    // API();
     Init.InitDatabase().then((result) => {
       InitAccountServer();
     }).catch((err) => {

@@ -3,7 +3,7 @@
     "configurations": [
     
       {
-        "command": "npm run start-dev",
+        "command": "npm run start",
         "name": "Run npm start-dev",
         "request": "launch",
         "type": "node-terminal",

@@ -1,42 +1,7 @@
-export const DataRes = [
+export const ResData = [
     {
-      "ResCode": "Diamond",
-      "Price": 10,
-      "CanSell": 0,
-      "QualityItemCode": "Blue",
-      "IconName": "Diamond",
-      "IconBorderName": "Diamond",
-      "CraftHeroEquip": 0
-    },
-    {
-      "ResCode": "Gold",
-      "Price": 10,
-      "CanSell": 0,
-      "QualityItemCode": "Yellow",
-      "IconName": "Gold",
-      "IconBorderName": "Gold",
-      "CraftHeroEquip": 0
-    },
-    {
-      "ResCode": "Money",
-      "Price": 10,
-      "CanSell": 0,
-      "QualityItemCode": "Green",
-      "IconName": "Money",
-      "IconBorderName": "Money",
-      "CraftHeroEquip": 0
-    },
-    {
-      "ResCode": "Food",
-      "Price": 10,
-      "CanSell": 0,
-      "QualityItemCode": "Red",
-      "IconName": "Food",
-      "IconBorderName": "Food",
-      "CraftHeroEquip": 0
-    },
-    {
-      "ResCode": "HeroScroll",
+      "ResCode": 301,
+      "Name": "HeroScroll",
       "Price": 10,
       "CanSell": 1,
       "QualityItemCode": "White",
@@ -45,7 +10,8 @@ export const DataRes = [
       "CraftHeroEquip": 0
     },
     {
-      "ResCode": "BlueprintHeroEquip_White",
+      "ResCode": 401,
+      "Name": "BlueprintHeroEquip_White",
       "Price": 10,
       "CanSell": 1,
       "QualityItemCode": "White",
@@ -54,7 +20,8 @@ export const DataRes = [
       "CraftHeroEquip": 5
     },
     {
-      "ResCode": "BlueprintHeroEquip_Green",
+      "ResCode": 402,
+      "Name": "BlueprintHeroEquip_Green",
       "Price": 10,
       "CanSell": 1,
       "QualityItemCode": "Green",
@@ -63,7 +30,8 @@ export const DataRes = [
       "CraftHeroEquip": 30
     },
     {
-      "ResCode": "BlueprintHeroEquip_Blue",
+      "ResCode": 403,
+      "Name": "BlueprintHeroEquip_Blue",
       "Price": 10,
       "CanSell": 1,
       "QualityItemCode": "Blue",
@@ -72,7 +40,8 @@ export const DataRes = [
       "CraftHeroEquip": 100
     },
     {
-      "ResCode": "BlueprintHeroEquip_Purple",
+      "ResCode": 404,
+      "Name": "BlueprintHeroEquip_Purple",
       "Price": 10,
       "CanSell": 1,
       "QualityItemCode": "Purple",
@@ -81,7 +50,8 @@ export const DataRes = [
       "CraftHeroEquip": 500
     },
     {
-      "ResCode": "BlueprintHeroEquip_Yellow",
+      "ResCode": 405,
+      "Name": "BlueprintHeroEquip_Yellow",
       "Price": 10,
       "CanSell": 1,
       "QualityItemCode": "Yellow",
@@ -90,7 +60,8 @@ export const DataRes = [
       "CraftHeroEquip": 2000
     },
     {
-      "ResCode": "BlueprintHeroEquip_Red",
+      "ResCode": 406,
+      "Name": "BlueprintHeroEquip_Red",
       "Price": 10,
       "CanSell": 1,
       "QualityItemCode": "Red",
@@ -99,7 +70,8 @@ export const DataRes = [
       "CraftHeroEquip": 5000
     },
     {
-      "ResCode": "BlueprintHeroEquip_Orange",
+      "ResCode": 407,
+      "Name": "BlueprintHeroEquip_Orange",
       "Price": 10,
       "CanSell": 1,
       "QualityItemCode": "Orange",

@@ -2,12 +2,12 @@ import { Types } from "mongoose";
 import { ChatChannel, ChatChannelModel, CreateChatChannel, IChatChannel, TyppeChatChannelCode } from "./ChatServer/Model/ChatChannel";
 import { UserJoinToChatChannel } from "./ChatServer/Model/UserChatChannel";
 import Init from "./Service/Init";
-import { UpdateRes } from "./ResServer/Model/Res";
+import { UpdateRes } from "./Res/Model/Res";
 import { CreateNewHero } from "./HeroServer/Controller/HeroController";
 import { CraftEquip } from "./HeroEquip/Controller/HeroEquipController";
 import { Message } from "./MessageServer/Model/Message";
 import { CraftHeroEquip } from "./HeroEquip/Model/HeroEquip";
-import { ResCode } from "./ResServer/Model/ResCode";
+import { ResCode } from "./Res/Model/ResCode";
 
 export function AppTest(){
     return;
@@ -29,7 +29,7 @@ export function AppTest(){
                 "Number":100
             }
             ]
-        UpdateRes(data, new Types.ObjectId("646c93465a8fac2fbf4f542a"));
+        // UpdateRes(data, new Types.ObjectId("646c93465a8fac2fbf4f542a"));
         // InitGlobalChatChannel();
         // InitPlayerChatChannel();
     })

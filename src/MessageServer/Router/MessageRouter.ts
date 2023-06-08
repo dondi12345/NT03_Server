@@ -1,12 +1,13 @@
 import { IMessage, Message } from "../Model/Message";
 import { MessageCode } from "../Model/MessageCode";
 import { Connect } from "../Controller/MessageController";
-import { UpdateResCtrl, ResLogin } from "../../ResServer/Controller/ResController";
+import { UpdateCurrencyCtrl, CurrencyLogin } from "../../Currency/Controller/CurrencyController";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
 import { GetSummonResult, HeroLogin, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
-import { CraftEquip, CraftWhiteHeroEquip, HeroEquipLogin, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
+import { CraftEquip, HeroEquipLogin, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
+import { ResLogin } from "../../Res/Controller/ResController";
 
 
 export function MessageRouter(message : IMessage, userSocket : IUserSocket){
@@ -29,11 +30,11 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
         console.log("1685002171 Logout Acount")
         return;
     }
-    if(message.MessageCode == MessageCode.Res_Login){
-        ResLogin(message, userSocket)
+    if(message.MessageCode == MessageCode.Currency_Login){
+        CurrencyLogin(message, userSocket)
     } 
-    if(message.MessageCode == MessageCode.Res_UpdateRes){
-        UpdateResCtrl(message, userSocket)
+    if(message.MessageCode == MessageCode.Currency_Update){
+        UpdateCurrencyCtrl(message, userSocket)
     }
     if(message.MessageCode == MessageCode.Hero_Summon){
         Summon(message, userSocket);
@@ -55,16 +56,16 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
         HeroEquipLogin(message, userSocket);
         return;
     }
-    if(message.MessageCode == MessageCode.HeroEquip_CraftWhite){
-        CraftWhiteHeroEquip(message, userSocket);
-        return;
-    }
     if(message.MessageCode == MessageCode.HeroEquip_Craft){
         CraftEquip(message, userSocket);
         return;
     }
     if(message.MessageCode == MessageCode.HeroEquip_Wearing){
         WearingEquip(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.Res_Login){
+        ResLogin(message, userSocket);
         return;
     }
 }

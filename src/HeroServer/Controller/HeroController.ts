@@ -8,9 +8,10 @@ import { RateSummon } from "../Model/VariableHero";
 import { Redis } from '../../Enviroment/Env';
 import { MessageCode } from '../../MessageServer/Model/MessageCode';
 import { SendMessageToSocket } from '../../MessageServer/Service/MessageService';
-import { ResLogin, UpdateResCtrl } from '../../ResServer/Controller/ResController';
-import { ResDetail } from '../../ResServer/Model/ResDetail';
-import { ResCode } from '../../ResServer/Model/ResCode';
+import { CurrencyLogin, UpdateCurrencyCtrl } from '../../Currency/Controller/CurrencyController';
+import { MinusRes, ResLogin } from '../../Res/Controller/ResController';
+import { ResCode } from '../../Res/Model/ResCode';
+import { Res } from '../../Res/Model/Res';
 
 const redisHero = redis.createClient();
 
@@ -47,30 +48,25 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
 }
 
 export function Summon(message : IMessage, userSocket: IUserSocket){
-    if(userSocket.Res == null || userSocket.Res == undefined){
+    if(userSocket.Currency == null || userSocket.Currency == undefined){
         ResLogin(new Message(), userSocket);
         console.log("1685287568 Not connect to Res")
         return;
     }
-    if(userSocket.Res.HeroScroll <= 0) {
-        var message = new Message();
-        message.MessageCode = MessageCode.Hero_SummonFail;
-        message.Data = "Dont enough HeroScroll";
-        SendMessageToSocket(message, userSocket.Socket);
-        return;
-    }else{
-        userSocket.Res.HeroScroll --;
-        var messageUpdateRes = new Message();
-        messageUpdateRes.MessageCode = MessageCode.Res_UpdateRes;
-        var resDetail = new ResDetail();
-        resDetail.Name = ResCode[ResCode.HeroScroll];
-        resDetail.Number = userSocket.Res.HeroScroll;
-        var listResDetal : ResDetail[] = [];
-        listResDetal.push(resDetail);
-        messageUpdateRes.Data = JSON.stringify(listResDetal)
-        UpdateResCtrl(messageUpdateRes, userSocket);
-    }
+    MinusRes(ResCode.HeroScroll_White, 1, userSocket).then(respone=>{
+        console.log("1686208980 "+ respone);
+        if(respone){
+            RandomeHero(userSocket);
+        }else{
+            var message = new Message();
+            message.MessageCode = MessageCode.Hero_SummonFail;
+            message.Data = "Dont enough HeroScroll";
+            SendMessageToSocket(message, userSocket.Socket);
+        }
+    });
+}
 
+export function RandomeHero(userSocket: IUserSocket){
     var rateSummon = RateSummon[0]
     var totalRate = 0;
     for (let property in rateSummon) {

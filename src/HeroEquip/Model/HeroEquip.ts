@@ -1,6 +1,6 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { HeroEquipType } from "./HeroEquipType";
-import { ResCode } from "../../ResServer/Model/ResCode";
+import { ResCode } from "../../Res/Model/ResCode";
 
 export class HeroWearEquip{
     IdHero : Types.ObjectId;
