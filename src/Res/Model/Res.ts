@@ -73,12 +73,14 @@ export const ResModel = mongoose.model<IRes>('Res', ResSchema);
 export async function CreateRes(res : IRes){
     var data;
     await ResModel.create(res).then((respone)=>{
-        console.log("1685285706 "+ respone)
+        console.log("1686240002 "+ respone)
         data = Res.Parse(respone);
     }).catch((e)=>{
-        console.log("1685285714 "+ e)
+        console.log("1686240018 "+ e)
         data = null;
     })
+    console.log("1686239656 "+ data);
+    
     return data;
 }
 
