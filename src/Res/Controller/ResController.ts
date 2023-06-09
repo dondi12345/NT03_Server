@@ -14,7 +14,7 @@ export async function ResLogin(message : IMessage, userSocket: IUserSocket){
             var res = Res.Parse(item);
             console.log("1686238820 "+ JSON.stringify(item));
             reses.Elements.push(res);
-            userSocket.ResDictionary[res.ResCode] = res;
+            userSocket.ResDictionary[res.Code] = res;
         }
         var message = new Message();
         message.MessageCode = MessageCode.Res_LoginSuccess;
@@ -29,12 +29,12 @@ export async function ResLogin(message : IMessage, userSocket: IUserSocket){
     })
 }
 
-export async function MinusRes(resCode : ResCode, number: number, userSocket: IUserSocket) {
+export async function MinusRes(code : ResCode, number: number, userSocket: IUserSocket) {
     console.log("1686239535 MinusRes");
     
     var data;
-    if( userSocket.ResDictionary[resCode] == null ||  userSocket.ResDictionary[resCode] == undefined){
-        var res = new Res(resCode, userSocket.IdUserPlayer, 0);
+    if( userSocket.ResDictionary[code] == null ||  userSocket.ResDictionary[code] == undefined){
+        var res = new Res(code, userSocket.IdUserPlayer, 0);
         await CreateNewRes(res, userSocket).then(respone=>{
             console.log("1686240263 " + respone);
             data = Res.Parse(respone);
@@ -42,10 +42,10 @@ export async function MinusRes(resCode : ResCode, number: number, userSocket: IU
             console.log("1686239001 "+e);
         })
     }else{
-        data = userSocket.ResDictionary[resCode];
+        data = userSocket.ResDictionary[code];
         console.log("1686239666 " + data);
     }
-    if(data.ResCode == ResCode.Unknown) return false;
+    if(data.Code == ResCode.Unknown) return false;
     data.Number--;
     UpdateResCtrl(data, userSocket);
     return true;
@@ -55,7 +55,7 @@ export async function CreateNewRes(res : Res ,userSocket: IUserSocket) {
     var resback = new Res(ResCode.Unknown, userSocket.IdUserPlayer, 0);
     await CreateRes(res).then(respone =>{
         resback = Res.Parse(respone);
-        userSocket.ResDictionary[resback.ResCode] = resback;
+        userSocket.ResDictionary[resback.Code] = resback;
         
     }).catch(e=>{
         console.log("1686240493 "+e);
@@ -64,7 +64,7 @@ export async function CreateNewRes(res : Res ,userSocket: IUserSocket) {
 }
 
 export async function UpdateResCtrl(res : Res ,userSocket: IUserSocket) {
-    userSocket.ResDictionary[res.ResCode] = res;
+    userSocket.ResDictionary[res.Code] = res;
     UpdateRes(res);
     var message = new Message();
     message.MessageCode = MessageCode.Res_Update;

@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { ResCode } from "./ResCode";
+import { QualityItemCode } from "../../QualityItem/QualityItem";
 
 export class Reses{
     Elements : IRes[] = [];
@@ -8,11 +9,11 @@ export class Reses{
 export type DataResDictionary = Record<string, DataRes>;
 
 export class DataRes{
-    ResCode : ResCode;
-    Name : string;
+    Index : string;
+    Code : ResCode;
     Price : number;
     CanSell : boolean;
-    QualityItemCode : string;
+    QualityItemCode : QualityItemCode;
     IconName : string;
     IconBorderName : string;
     CraftHeroEquip : number;
@@ -30,21 +31,21 @@ export type ResDictionary = Record<string, IRes>;
 
 export interface IRes{
     _id : Types.ObjectId,
-    Name : String,
-    ResCode : ResCode,
+    Index : string;
+    Code : ResCode,
     IdUserPlayer : Types.ObjectId,
     Number : number,
 }
 
 export class Res implements IRes{
     _id : Types.ObjectId;
-    Name : String;
-    ResCode : ResCode;
+    Index : string;
+    Code : ResCode;
     IdUserPlayer : Types.ObjectId;
     Number : number;
 
     constructor(resCode: ResCode, idUserPlayer : Types.ObjectId, number : number){
-        this.ResCode= resCode;
+        this.Code= resCode;
         this.IdUserPlayer = idUserPlayer;
         this.Number = number;
     }
@@ -60,9 +61,8 @@ export class Res implements IRes{
 
 const ResSchema = new Schema<IRes>(
     {
-
-        Name : { type : String},
-        ResCode : { type : Number, enum : ResCode},
+        Index : { type : String},
+        Code : { type : Number, enum : ResCode},
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
         Number : { type : Number, default : 0},
     }

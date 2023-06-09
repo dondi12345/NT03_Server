@@ -1,6 +1,6 @@
 export enum HeroEquipType{
-    Unknow = 100,
-    Weapon = 101,
-    Armor = 102,
-    Helmet = 103,
+    Unknow = 0,
+    Weapon = 1,
+    Armor = 2,
+    Helmet = 3,
 }

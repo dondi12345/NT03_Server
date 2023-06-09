@@ -1,6 +1,8 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { HeroEquipType } from "./HeroEquipType";
 import { ResCode } from "../../Res/Model/ResCode";
+import { HeroEquipCode } from "./HeroEquipCode";
+import { QualityItemCode } from "../../QualityItem/QualityItem";
 
 export class HeroWearEquip{
     IdHero : Types.ObjectId;
@@ -26,6 +28,32 @@ export class CraftHeroEquip{
         }
     }
 }
+export type DataHeroEquipDictionary = Record<string, DataHeroEquip>;
+
+export class DataHeroEquip{
+    Index : string; 
+    Code : HeroEquipCode;
+    HeroEquipType : HeroEquipType;
+    ModelName : string;
+    QualityItemCode : QualityItemCode;
+    IconName : string;
+    IconBorderName : string;
+    Atk : number;
+    Def : number;
+    Agi : number;
+    Dex : number;
+    Hp : number;
+    Crt : number;
+    CrtRate : number;
+
+    static Parse(data) : DataHeroEquip{
+        try{
+            return JSON.parse(data);
+        }catch{
+            return data;
+        }
+    }
+}
 
 export class HeroEquips{
     Elements : HeroEquip[] = [];
@@ -34,6 +62,7 @@ export class HeroEquips{
 export interface IHeroEquip{
     _id : Types.ObjectId,
     Index : String;
+    Code : HeroEquipCode,
     IdUserPlayer: Types.ObjectId,
     IdHero ?: Types.ObjectId,
     HeroEquipType : HeroEquipType,
@@ -45,6 +74,7 @@ export type HeroEquipDictionary = Record<string, IHeroEquip>;
 export class HeroEquip implements IHeroEquip{
     _id : Types.ObjectId;
     Index : String;
+    Code : HeroEquipCode;
     IdUserPlayer: Types.ObjectId;
     IdHero ?: Types.ObjectId;
     HeroEquipType : HeroEquipType;
@@ -83,6 +113,7 @@ export class HeroEquip implements IHeroEquip{
 const HeroEquipSchema = new Schema<IHeroEquip>(
     {
         Index : { type : String},
+        Code : { type : Number, enum : HeroEquipCode},
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
         IdHero: { type: mongoose.Schema.Types.ObjectId, ref: 'Hero' },
         HeroEquipType : { type : Number, enum : HeroEquipType},

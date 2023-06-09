@@ -5,6 +5,7 @@ import { InitChatServer } from "./ChatServer/Service/ChatService";
 import { GetIdUserPlayerByIdChatChannel } from "./ChatServer/Model/UserChatChannel";
 import { Types } from "mongoose";
 import { InitRes } from "./Res/Service/ResService";
+import { InitHeroEquip } from "./HeroEquip/Service/HeroEquipService";
 
 // Function to create app child instance
 export function AppChild() {
@@ -13,6 +14,7 @@ export function AppChild() {
         InitMessageServer();
         InitChatServer();
         InitRes();
+        InitHeroEquip();
     }).catch(err=>{
         console.log(err);
     })
