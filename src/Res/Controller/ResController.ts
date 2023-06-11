@@ -45,7 +45,9 @@ export async function MinusRes(code : ResCode, number: number, userSocket: IUser
         data = userSocket.ResDictionary[code];
         console.log("1686239666 " + data);
     }
+    if(data == null || data == undefined) return false;
     if(data.Code == ResCode.Unknown) return false;
+    if(data.Number <= 0) return false;
     data.Number--;
     UpdateResCtrl(data, userSocket);
     return true;

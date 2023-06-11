@@ -10,7 +10,6 @@ export function InitRes(){
     ResData.forEach(element => {
         var dataRes = DataRes.Parse(element);
         DataResService[element.Index] = dataRes;
-        console.log("1686292216 "+JSON.stringify(dataRes));
     });
     console.log("1686211076 InitRes "+ Object.keys(DataResService).length);
     
