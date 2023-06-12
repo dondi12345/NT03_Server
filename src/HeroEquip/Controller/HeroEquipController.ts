@@ -12,13 +12,11 @@ import { HeroEquipType } from "../Model/HeroEquipType";
 import { IndexHeroEquipCraft, RateCraft, RateCraftWhite } from "../Model/VariableHeroEquip";
 
 export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket){
-    userSocket.HeroEquipDictionary = {};
     await FindHeroEquipByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
         console.log("1685514345 "+respone)
         var heroEquips : HeroEquips = new HeroEquips;
         for (const item of respone) {
             var heroEquip = HeroEquip.Parse(item);
-            userSocket.HeroEquipDictionary[heroEquip._id.toString()] = heroEquip;
             heroEquips.Elements.push(heroEquip);
         }
         var message = new Message();
@@ -37,10 +35,6 @@ export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket
 // 10f;80f;800f;10000f;100000f;1000000f;1000000f;
 export async function CraftEquip(message : IMessage, userSocket: IUserSocket) {
     var craftHeroEquip = CraftHeroEquip.Parse(message.Data);
-    if(userSocket.ResDictionary[craftHeroEquip.ResCode].Number <= 0){
-        CraftHeroEquipFail(userSocket);
-        return;
-    }
     MinusRes(craftHeroEquip.ResCode, 1, userSocket).then(respone=>{
         console.log("1686209545 "+ respone);
         if(respone){
@@ -71,7 +65,6 @@ export function RandomHeroEquip(craftHeroEquip : CraftHeroEquip, userSocket: IUs
             return;
         }
         var newEquip = HeroEquip.Parse(respone);
-        userSocket.HeroEquipDictionary[newEquip._id.toHexString()] = newEquip;
         var message = new Message();
         message.MessageCode = MessageCode.HeroEquip_CraftSuccess;
         message.Data = JSON.stringify(newEquip);

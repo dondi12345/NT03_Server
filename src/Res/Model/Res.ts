@@ -84,12 +84,20 @@ export async function CreateRes(res : IRes){
     return data;
 }
 
-export async function FindItemByIdUserPlayer(idUserPlayer: Types.ObjectId){
+export async function FindResByIdUserPlayer(idUserPlayer: Types.ObjectId){
     var itemes;
     await ResModel.find({IdUserPlayer : idUserPlayer}).then((res : [])=>{
         itemes = res;
     })
     return itemes;
+}
+
+export async function FindItemByIdUserPlayerAndCode(idUserPlayer: Types.ObjectId, code : ResCode) {
+    var item;
+    await ResModel.findOne({IdUserPlayer : idUserPlayer, Code : code}).then((res)=>{
+        item = res;
+    })
+    return item;
 }
 
 export async function UpdateRes(res:IRes) {

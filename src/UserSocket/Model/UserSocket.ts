@@ -12,9 +12,6 @@ export interface IUserSocket{
     Socket : Socket,
     UserPlayer : UserPlayer,
     Currency : Currency,
-    HeroDictionary : HeroDictionary,
-    HeroEquipDictionary : HeroEquipDictionary,
-    ResDictionary : ResDictionary,
 }
 
 export class UserSocket implements IUserSocket{
@@ -23,9 +20,6 @@ export class UserSocket implements IUserSocket{
     Socket : Socket;
     UserPlayer : UserPlayer;
     Currency : Currency;
-    HeroDictionary : HeroDictionary;
-    HeroEquipDictionary : HeroEquipDictionary;
-    ResDictionary : ResDictionary;
 }
 
 export type UserSocketServer = Record<string, Socket>;
