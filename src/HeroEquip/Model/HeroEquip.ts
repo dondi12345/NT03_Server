@@ -148,3 +148,11 @@ export async function UpdateHeroEquip(heroEquip:IHeroEquip) {
         console.log("1685723716 "+res);
     })
 }
+
+export async function FindHeroEquipById(id : Types.ObjectId){
+    var heroEquip;
+    await HeroEquipModel.findById(id).then((res)=>{
+        heroEquip = HeroEquip.Parse(res);
+    })
+    return heroEquip;
+}

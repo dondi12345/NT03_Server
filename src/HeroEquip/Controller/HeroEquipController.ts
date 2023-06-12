@@ -1,5 +1,5 @@
 
-import { Hero, UpdateHero } from "../../HeroServer/Model/Hero";
+import { FindHeroById, Hero, UpdateHero } from "../../HeroServer/Model/Hero";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
@@ -7,7 +7,7 @@ import { MinusRes } from "../../Res/Controller/ResController";
 import { ResCode } from "../../Res/Model/ResCode";
 import { DataResService } from "../../Res/Service/ResService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipByIdUserPlayer, HeroEquip, HeroEquips, HeroWearEquip, IHeroEquip, UpdateHeroEquip } from "../Model/HeroEquip";
+import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipById, FindHeroEquipByIdUserPlayer, HeroEquip, HeroEquips, HeroWearEquip, IHeroEquip, UpdateHeroEquip } from "../Model/HeroEquip";
 import { HeroEquipType } from "../Model/HeroEquipType";
 import { IndexHeroEquipCraft, RateCraft, RateCraftWhite } from "../Model/VariableHeroEquip";
 
@@ -90,28 +90,34 @@ function CraftHeroEquipFail(userSocket: IUserSocket){
     SendMessageToSocket(message, userSocket.Socket);
 }
 
-export function WearingEquip(message : Message, userSocket : IUserSocket){
+export async function WearingEquip(message : Message, userSocket : IUserSocket){
     var heroWearEquip = HeroWearEquip.Parse(message.Data);
-    var hero : Hero = userSocket.HeroDictionary[heroWearEquip.IdHero.toString()];
+    var hero;
+    await FindHeroById(heroWearEquip.IdHero).then(res =>{
+        hero = res;
+    });
     if(hero == null || hero == undefined){
         WearingEquipFail(userSocket);
         return;
     }
-    var equip : HeroEquip = userSocket.HeroEquipDictionary[heroWearEquip.IdHeroEquip.toString()];
-    if(equip == null || equip == undefined){
+    var heroEquip;
+    await FindHeroEquipById(heroWearEquip.IdHeroEquip).then(res =>{
+        heroEquip = res;
+    })
+    if(heroEquip == null || heroEquip == undefined){
         WearingEquipFail(userSocket);
         return;
     }
-    if(equip.IdHero != null && equip.IdHero != undefined){
+    if(heroEquip.IdHero != null && heroEquip.IdHero != undefined){
         var heroWearEquipUnwear = new HeroWearEquip();
-        heroWearEquipUnwear.IdHero = equip.IdHero;
-        heroWearEquipUnwear.IdHeroEquip = equip._id;
+        heroWearEquipUnwear.IdHero = heroEquip.IdHero;
+        heroWearEquipUnwear.IdHeroEquip = heroEquip._id;
         var messageUnwear  = new Message();
         messageUnwear.MessageCode = MessageCode.HeroEquip_Unwearing;
         messageUnwear.Data = JSON.stringify(heroWearEquipUnwear);
         UnwearingEquip(messageUnwear, userSocket);
     }
-    if(equip.HeroEquipType == HeroEquipType.Weapon && hero.Gear.IdWeapon != null && hero.Gear.IdWeapon != undefined){
+    if(heroEquip.HeroEquipType == HeroEquipType.Weapon && hero.Gear.IdWeapon != null && hero.Gear.IdWeapon != undefined){
         var heroWearEquipUnwear = new HeroWearEquip();
         heroWearEquipUnwear.IdHero = hero._id;
         heroWearEquipUnwear.IdHeroEquip = hero.Gear.IdWeapon;
@@ -119,10 +125,10 @@ export function WearingEquip(message : Message, userSocket : IUserSocket){
         messageUnwear.MessageCode = MessageCode.HeroEquip_Unwearing;
         messageUnwear.Data = JSON.stringify(heroWearEquipUnwear);
         UnwearingEquip(messageUnwear, userSocket);
-        hero.Gear.IdWeapon = equip._id;
-        equip.IdHero = hero._id;
+        hero.Gear.IdWeapon = heroEquip._id;
+        heroEquip.IdHero = hero._id;
     }
-    if(equip.HeroEquipType == HeroEquipType.Armor && hero.Gear.IdArmor != null && hero.Gear.IdArmor != undefined){
+    if(heroEquip.HeroEquipType == HeroEquipType.Armor && hero.Gear.IdArmor != null && hero.Gear.IdArmor != undefined){
         var heroWearEquipUnwear = new HeroWearEquip();
         heroWearEquipUnwear.IdHero = hero._id;
         heroWearEquipUnwear.IdHeroEquip = hero.Gear.IdArmor;
@@ -130,10 +136,10 @@ export function WearingEquip(message : Message, userSocket : IUserSocket){
         messageUnwear.MessageCode = MessageCode.HeroEquip_Unwearing;
         messageUnwear.Data = JSON.stringify(heroWearEquipUnwear);
         UnwearingEquip(messageUnwear, userSocket);
-        hero.Gear.IdArmor = equip._id;
-        equip.IdHero = hero._id;
+        hero.Gear.IdArmor = heroEquip._id;
+        heroEquip.IdHero = hero._id;
     }
-    if(equip.HeroEquipType == HeroEquipType.Helmet && hero.Gear.IdHelmet != null && hero.Gear.IdHelmet != undefined){
+    if(heroEquip.HeroEquipType == HeroEquipType.Helmet && hero.Gear.IdHelmet != null && hero.Gear.IdHelmet != undefined){
         var heroWearEquipUnwear = new HeroWearEquip();
         heroWearEquipUnwear.IdHero = hero._id;
         heroWearEquipUnwear.IdHeroEquip = hero.Gear.IdHelmet;
@@ -141,12 +147,12 @@ export function WearingEquip(message : Message, userSocket : IUserSocket){
         messageUnwear.MessageCode = MessageCode.HeroEquip_Unwearing;
         messageUnwear.Data = JSON.stringify(heroWearEquipUnwear);
         UnwearingEquip(messageUnwear, userSocket);
-        hero.Gear.IdHelmet = equip._id;
-        equip.IdHero = hero._id;
+        hero.Gear.IdHelmet = heroEquip._id;
+        heroEquip.IdHero = hero._id;
     }
     UpdateHero(hero);
-    UpdateHeroEquip(equip);
-    WearingEquipSuccess(message, userSocket);
+    UpdateHeroEquip(heroEquip);
+    WearingEquipSuccess(heroWearEquip, userSocket);
 }
  
 
@@ -156,31 +162,39 @@ export function WearingEquipFail(userSocket : IUserSocket){
     message.MessageCode = MessageCode.HeroEquip_UnwearingFail;
     SendMessageToSocket(message, userSocket.Socket);
 }
-export function WearingEquipSuccess(message : Message,userSocket : IUserSocket){
+export function WearingEquipSuccess(heroWearEquip : HeroWearEquip,userSocket : IUserSocket){
+    var message = new Message();
     message.MessageCode = MessageCode.HeroEquip_WearingSuccess;
+    message.Data = JSON.stringify(heroWearEquip);
     SendMessageToSocket(message, userSocket.Socket);
 }
 
-export function UnwearingEquip(message : Message, userSocket : IUserSocket){
+export async function UnwearingEquip(message : Message, userSocket : IUserSocket){
     var heroWearEquip = HeroWearEquip.Parse(message.Data);
-    var hero : Hero = userSocket.HeroDictionary[heroWearEquip.IdHero.toString()];
+    var hero; 
+    await FindHeroById(heroWearEquip.IdHero).then(res=>{
+        hero = res;
+    })
     if(hero == null || hero == undefined){
         UnwearingEquipFail(userSocket);
         return;
     }
-    var equip : HeroEquip = userSocket.HeroEquipDictionary[heroWearEquip.IdHeroEquip.toString()];
-    if(equip == null || equip == undefined){
+    var heroEquip;
+    await FindHeroEquipById(heroWearEquip.IdHeroEquip).then(res=>{
+        heroEquip = res;
+    })
+    if(heroEquip == null || heroEquip == undefined){
         UnwearingEquipFail(userSocket);
         return;
     }
 
-    if(hero.Gear.IdWeapon == equip._id) hero.Gear.IdWeapon = undefined;
-    if(hero.Gear.IdArmor == equip._id) hero.Gear.IdArmor = undefined;
-    if(hero.Gear.IdHelmet == equip._id) hero.Gear.IdHelmet = undefined;
-    equip.IdHero = undefined;
+    if(hero.Gear.IdWeapon == heroEquip._id) hero.Gear.IdWeapon = undefined;
+    if(hero.Gear.IdArmor == heroEquip._id) hero.Gear.IdArmor = undefined;
+    if(hero.Gear.IdHelmet == heroEquip._id) hero.Gear.IdHelmet = undefined;
+    heroEquip.IdHero = undefined;
     UpdateHero(hero);
-    UpdateHeroEquip(equip);
-    UnwearingEquipSuccess(message, userSocket);    
+    UpdateHeroEquip(heroEquip);
+    UnwearingEquipSuccess(heroWearEquip, userSocket);    
 }
 
 export function UnwearingEquipFail(userSocket : IUserSocket){
@@ -188,7 +202,9 @@ export function UnwearingEquipFail(userSocket : IUserSocket){
     message.MessageCode = MessageCode.HeroEquip_UnwearingFail;
     SendMessageToSocket(message, userSocket.Socket);
 }
-export function UnwearingEquipSuccess(message : Message, userSocket : IUserSocket){
+export function UnwearingEquipSuccess(heroWearEquip : HeroWearEquip, userSocket : IUserSocket){
+    var message = new Message();
     message.MessageCode = MessageCode.HeroEquip_UnwearingSuccess;
+    message.Data = JSON.stringify(heroWearEquip);
     SendMessageToSocket(message, userSocket.Socket);
 }

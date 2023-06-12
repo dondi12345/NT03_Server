@@ -126,6 +126,14 @@ export async function FindHeroByIdUserPlayer(idUserPlayer: Types.ObjectId){
     return heroes;
 }
 
+export async function FindHeroById(id : Types.ObjectId){
+    var hero;
+    await HeroModel.findById(id).then((res)=>{
+        hero = Hero.Parse(res);
+    })
+    return hero;
+}
+
 export async function UpdateHero(hero:IHero) {
     HeroModel.updateOne(hero).then((res)=>{
         console.log("1685723759 "+res);
