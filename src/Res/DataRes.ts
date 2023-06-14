@@ -1,12 +1,13 @@
-export const ResData = [
+export const DataRes = [
   {
     "Index": "HeroScroll_White",
     "Code": 3001,
     "Price": 10,
     "CanSell": 1,
-    "QualityItemCode": "White",
-    "IconName": "HeroScroll_White_Icon",
-    "IconBorderName": "HeroScroll_White_Border",
+    "QualityItemCode": 1,
+    "Type": 1001,
+    "IconName": "HeroScroll_Icon",
+    "IconBorderName": "HeroScroll_Border",
     "CraftHeroEquip": 0
   },
   {
@@ -14,7 +15,8 @@ export const ResData = [
     "Code": 4001,
     "Price": 10,
     "CanSell": 1,
-    "QualityItemCode": "White",
+    "QualityItemCode": 1,
+    "Type": 2001,
     "IconName": "BlueprintHeroEquip_Icon",
     "IconBorderName": "BlueprintHeroEquip_Border",
     "CraftHeroEquip": 5
@@ -24,7 +26,8 @@ export const ResData = [
     "Code": 4002,
     "Price": 10,
     "CanSell": 1,
-    "QualityItemCode": "Green",
+    "QualityItemCode": 2,
+    "Type": 2001,
     "IconName": "BlueprintHeroEquip_Icon",
     "IconBorderName": "BlueprintHeroEquip_Border",
     "CraftHeroEquip": 30
@@ -34,7 +37,8 @@ export const ResData = [
     "Code": 4003,
     "Price": 10,
     "CanSell": 1,
-    "QualityItemCode": "Blue",
+    "QualityItemCode": 3,
+    "Type": 2001,
     "IconName": "BlueprintHeroEquip_Icon",
     "IconBorderName": "BlueprintHeroEquip_Border",
     "CraftHeroEquip": 100
@@ -44,7 +48,8 @@ export const ResData = [
     "Code": 4004,
     "Price": 10,
     "CanSell": 1,
-    "QualityItemCode": "Purple",
+    "QualityItemCode": 4,
+    "Type": 2001,
     "IconName": "BlueprintHeroEquip_Icon",
     "IconBorderName": "BlueprintHeroEquip_Border",
     "CraftHeroEquip": 500
@@ -54,7 +59,8 @@ export const ResData = [
     "Code": 4005,
     "Price": 10,
     "CanSell": 1,
-    "QualityItemCode": "Yellow",
+    "QualityItemCode": 5,
+    "Type": 2001,
     "IconName": "BlueprintHeroEquip_Icon",
     "IconBorderName": "BlueprintHeroEquip_Border",
     "CraftHeroEquip": 2000
@@ -64,7 +70,8 @@ export const ResData = [
     "Code": 4006,
     "Price": 10,
     "CanSell": 1,
-    "QualityItemCode": "Red",
+    "QualityItemCode": 6,
+    "Type": 2001,
     "IconName": "BlueprintHeroEquip_Icon",
     "IconBorderName": "BlueprintHeroEquip_Border",
     "CraftHeroEquip": 5000
@@ -74,7 +81,8 @@ export const ResData = [
     "Code": 4007,
     "Price": 10,
     "CanSell": 1,
-    "QualityItemCode": "Orange",
+    "QualityItemCode": 7,
+    "Type": 2001,
     "IconName": "BlueprintHeroEquip_Icon",
     "IconBorderName": "BlueprintHeroEquip_Border",
     "CraftHeroEquip": 15000

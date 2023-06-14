@@ -14,7 +14,3 @@ export enum ResCode
     //Treasure
     BaseTreasure_White = 501,
 }
-
-export function ParseResCodeToIndex(resCode : ResCode){
-
-}

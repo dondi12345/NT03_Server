@@ -1,23 +1,25 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { ResCode } from "./ResCode";
 import { QualityItemCode } from "../../QualityItem/QualityItem";
+import { ResType } from "./ResType";
 
 export class Reses{
     Elements : IRes[] = [];
 }
 
-export type DataResDictionary = Record<string, DataRes>;
+export type ResDataDictionary = Record<string, ResData>;
 
-export class DataRes{
+export class ResData{
     Code : ResCode;
+    Type : ResType;
+    QualityItemCode : QualityItemCode;
     Price : number;
     CanSell : boolean;
-    QualityItemCode : QualityItemCode;
     IconName : string;
     IconBorderName : string;
     CraftHeroEquip : number;
 
-    static Parse(data) : DataRes{
+    static Parse(data) : ResData{
         try{
             return JSON.parse(data);
         }catch{
