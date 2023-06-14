@@ -97,7 +97,18 @@ export async function FindItemByIdUserPlayerAndCode(idUserPlayer: Types.ObjectId
 }
 
 export async function UpdateRes(res:IRes) {
-    ResModel.updateOne(res).then((res)=>{
+    console.log("1685723760 " + res);
+    ResModel.updateOne({
+        _id : res._id
+    },{
+        Number : res.Number,
+    }).then((res)=>{
         console.log("1685723759 "+res);
+    })
+}
+
+export async function IncreaseNumber(id : Types.ObjectId, number : number){
+    await ResModel.updateOne({_id : id}, {$inc:{Number : number}}).then(res=>{
+        console.log("1686728204 " , res);
     })
 }

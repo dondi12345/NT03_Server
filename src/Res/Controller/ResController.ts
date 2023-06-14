@@ -2,7 +2,7 @@ import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateRes, FindItemByIdUserPlayerAndCode as FindResByIdUserPlayerAndCode, FindResByIdUserPlayer, IRes, Res, Reses, UpdateRes } from "../Model/Res";
+import { CreateRes, FindItemByIdUserPlayerAndCode as FindResByIdUserPlayerAndCode, FindResByIdUserPlayer, IRes, Res, Reses, UpdateRes, IncreaseNumber } from "../Model/Res";
 import { ResCode } from "../Model/ResCode";
 
 export async function ResLogin(message : IMessage, userSocket: IUserSocket){
@@ -34,7 +34,7 @@ export async function ChangeRes(code : ResCode, number: number, userSocket: IUse
         res = respone;
     })
     if(res == null || res == undefined){
-        await CreateNewRes(res, userSocket).then(respone=>{
+        await CreateNewRes(code, userSocket).then(respone=>{
             console.log("1686240263 " + respone);
             res = Res.Parse(respone);
         }).catch(e=>{
@@ -45,11 +45,16 @@ export async function ChangeRes(code : ResCode, number: number, userSocket: IUse
     if(res.Code == ResCode.Unknown) return false;
     if(res.Number + number <= 0) return false;
     res.Number += number;
+    var result = true;
+    console.log("1686728016 ", res);
+    IncreaseNumber(res._id, number);
     UpdateResCtrl(res, userSocket);
-    return true;
+    return result;
 }
 
-export async function CreateNewRes(res : Res ,userSocket: IUserSocket) {
+export async function CreateNewRes(resCode : ResCode ,userSocket: IUserSocket) {
+    var res = new Res(resCode, userSocket.IdUserPlayer, 0);
+    console.log("1686725503 "+ res);
     var resback = new Res(ResCode.Unknown, userSocket.IdUserPlayer, 0);
     await CreateRes(res).then(respone =>{
         resback = Res.Parse(respone);        
@@ -60,7 +65,6 @@ export async function CreateNewRes(res : Res ,userSocket: IUserSocket) {
 }
 
 export async function UpdateResCtrl(res : Res ,userSocket: IUserSocket) {
-    UpdateRes(res);
     var message = new Message();
     message.MessageCode = MessageCode.Res_Update;
     message.Data = JSON.stringify(res);

@@ -73,3 +73,9 @@ export async function UpdateCurrency(currency : ICurrency, idUserPlayer : Types.
         console.log("1684851978 " + JSON.stringify(res))
     })
 }
+
+export async function IncreaseNumber(nameCurrency : string, number : number, idUserPlayer : Types.ObjectId) {
+    CurrencyModel.updateOne({IdUserPlayer : idUserPlayer}, {$inc:{[nameCurrency] : number}}).then(respone=>{
+        console.log("1686733379 ",respone);
+    })
+}

@@ -2,7 +2,7 @@ import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateUserPlayerCurrency, FindCurrencyByIdUserPlayer, ICurrency, Currency, UpdateCurrency } from "../Model/Currency";
+import { CreateUserPlayerCurrency, FindCurrencyByIdUserPlayer, ICurrency, Currency, UpdateCurrency, IncreaseNumber } from "../Model/Currency";
 
 export async function CurrencyLogin(message : IMessage, userSocket: IUserSocket){
     await FindCurrencyByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
@@ -43,7 +43,6 @@ function LoginSuccessMessage(res : ICurrency){
 }
 
 export function UpdateCurrencyCtrl(message : IMessage, userSocket: IUserSocket){
-    UpdateCurrency(userSocket.Currency, userSocket.IdUserPlayer); 
     var messageBack : Message = new Message();
     messageBack.MessageCode = MessageCode.Currency_Update;
     messageBack.Data = JSON.stringify(userSocket.Currency);
@@ -54,6 +53,7 @@ export function ChangeCurrency(nameCurrency : string, number : number, userSocke
     try {
         if(userSocket.Currency[nameCurrency] + number < 0) return false;
         userSocket.Currency[nameCurrency] += number;
+        IncreaseNumber(nameCurrency, number, userSocket.IdUserPlayer);
         UpdateCurrencyCtrl(new Message(), userSocket);
         return true;
     } catch (error) {
