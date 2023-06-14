@@ -3,7 +3,7 @@ import { FindHeroById, Hero, UpdateHero } from "../../HeroServer/Model/Hero";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
-import { MinusRes } from "../../Res/Controller/ResController";
+import { ChangeRes } from "../../Res/Controller/ResController";
 import { ResCode } from "../../Res/Model/ResCode";
 import { DataResService } from "../../Res/Service/ResService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
@@ -35,7 +35,7 @@ export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket
 // 10f;80f;800f;10000f;100000f;1000000f;1000000f;
 export async function CraftEquip(message : IMessage, userSocket: IUserSocket) {
     var craftHeroEquip = CraftHeroEquip.Parse(message.Data);
-    MinusRes(craftHeroEquip.ResCode, 1, userSocket).then(respone=>{
+    ChangeRes(craftHeroEquip.ResCode, -1, userSocket).then(respone=>{
         console.log("1686209545 "+ respone);
         if(respone){
             RandomHeroEquip(craftHeroEquip, userSocket);

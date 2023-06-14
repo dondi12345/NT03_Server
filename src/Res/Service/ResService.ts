@@ -9,7 +9,7 @@ export function InitRes(){
     DataResService = {}
     ResData.forEach(element => {
         var dataRes = DataRes.Parse(element);
-        DataResService[element.Index] = dataRes;
+        DataResService[element.Code] = dataRes;
     });
     console.log("1686211076 InitRes "+ Object.keys(DataResService).length);
     

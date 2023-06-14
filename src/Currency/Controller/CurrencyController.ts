@@ -49,3 +49,15 @@ export function UpdateCurrencyCtrl(message : IMessage, userSocket: IUserSocket){
     messageBack.Data = JSON.stringify(userSocket.Currency);
     SendMessageToSocket(messageBack, userSocket.Socket);
 }
+
+export function ChangeCurrency(nameCurrency : string, number : number, userSocket: IUserSocket){
+    try {
+        if(userSocket.Currency[nameCurrency] + number < 0) return false;
+        userSocket.Currency[nameCurrency] += number;
+        UpdateCurrencyCtrl(new Message(), userSocket);
+        return true;
+    } catch (error) {
+        console.log("1686722594 "+error);
+        return false;
+    }
+}

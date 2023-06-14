@@ -27,7 +27,7 @@ export async function ResLogin(message : IMessage, userSocket: IUserSocket){
     })
 }
 
-export async function MinusRes(code : ResCode, number: number, userSocket: IUserSocket) {
+export async function ChangeRes(code : ResCode, number: number, userSocket: IUserSocket) {
     console.log("1686239535 MinusRes");
     var res
     await FindResByIdUserPlayerAndCode(userSocket.IdUserPlayer, code).then(respone =>{
@@ -43,8 +43,8 @@ export async function MinusRes(code : ResCode, number: number, userSocket: IUser
     }
     if(res == null || res == undefined) return false;
     if(res.Code == ResCode.Unknown) return false;
-    if(res.Number <= 0) return false;
-    res.Number--;
+    if(res.Number + number <= 0) return false;
+    res.Number += number;
     UpdateResCtrl(res, userSocket);
     return true;
 }

@@ -6,6 +6,9 @@ import { GetIdUserPlayerByIdChatChannel } from "./ChatServer/Model/UserChatChann
 import { Types } from "mongoose";
 import { InitRes } from "./Res/Service/ResService";
 import { InitHeroEquip } from "./HeroEquip/Service/HeroEquipService";
+import { HeroModel } from "./HeroServer/Model/Hero";
+import { InitHero } from "./HeroServer/Service/HeroService";
+import { InitShop } from "./Shop/Service/ShopService";
 
 // Function to create app child instance
 export function AppChild() {
@@ -13,8 +16,10 @@ export function AppChild() {
     Init.InitDatabase().then(()=>{
         InitMessageServer();
         InitChatServer();
+        InitHero();
         InitRes();
         InitHeroEquip();
+        InitShop();
     }).catch(err=>{
         console.log(err);
     })

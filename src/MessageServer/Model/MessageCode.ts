@@ -58,5 +58,10 @@ export enum MessageCode {
     Res_LoginFail = 7002,
     Res_LoginSuccess = 7003,
     Res_Update = 7004,
+
+    Shop_Test = 8000,
+    Shop_BuyResByCurrency = 8001,
+    Shop_BuySuccess = 8100,
+    Shop_BuyFail = 8100,
     
 }

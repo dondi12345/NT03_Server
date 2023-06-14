@@ -8,6 +8,7 @@ import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerCon
 import { GetSummonResult, HeroLogin, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
 import { CraftEquip, HeroEquipLogin, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
 import { ResLogin } from "../../Res/Controller/ResController";
+import { BuyResCtrlByCurrency } from "../../Shop/Controller/ShopController";
 
 
 export function MessageRouter(message : IMessage, userSocket : IUserSocket){
@@ -66,6 +67,10 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     }
     if(message.MessageCode == MessageCode.Res_Login){
         ResLogin(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.Shop_BuyResByCurrency){
+        BuyResCtrlByCurrency(message, userSocket);
         return;
     }
 }

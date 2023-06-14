@@ -9,7 +9,7 @@ import { Redis } from '../../Enviroment/Env';
 import { MessageCode } from '../../MessageServer/Model/MessageCode';
 import { SendMessageToSocket } from '../../MessageServer/Service/MessageService';
 import { CurrencyLogin, UpdateCurrencyCtrl } from '../../Currency/Controller/CurrencyController';
-import { MinusRes, ResLogin } from '../../Res/Controller/ResController';
+import { ChangeRes, ResLogin } from '../../Res/Controller/ResController';
 import { ResCode } from '../../Res/Model/ResCode';
 import { Res } from '../../Res/Model/Res';
 
@@ -51,7 +51,7 @@ export function Summon(message : IMessage, userSocket: IUserSocket){
         console.log("1685287568 Not connect to Res")
         return;
     }
-    MinusRes(ResCode.HeroScroll_White, 1, userSocket).then(respone=>{
+    ChangeRes(ResCode.HeroScroll_White, -1, userSocket).then(respone=>{
         console.log("1686208980 "+ respone);
         if(respone){
             RandomeHero(userSocket);

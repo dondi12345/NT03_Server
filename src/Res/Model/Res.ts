@@ -9,7 +9,6 @@ export class Reses{
 export type DataResDictionary = Record<string, DataRes>;
 
 export class DataRes{
-    Index : string;
     Code : ResCode;
     Price : number;
     CanSell : boolean;
@@ -31,7 +30,6 @@ export type ResDictionary = Record<string, IRes>;
 
 export interface IRes{
     _id : Types.ObjectId,
-    Index : string;
     Code : ResCode,
     IdUserPlayer : Types.ObjectId,
     Number : number,
@@ -39,7 +37,6 @@ export interface IRes{
 
 export class Res implements IRes{
     _id : Types.ObjectId;
-    Index : string;
     Code : ResCode;
     IdUserPlayer : Types.ObjectId;
     Number : number;
@@ -61,7 +58,6 @@ export class Res implements IRes{
 
 const ResSchema = new Schema<IRes>(
     {
-        Index : { type : String},
         Code : { type : Number, enum : ResCode},
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
         Number : { type : Number, default : 0},
