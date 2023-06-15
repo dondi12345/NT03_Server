@@ -1,13 +1,13 @@
 import { HeroEquipData } from "../HeroEquipData";
-import { DataHeroEquip } from "../Model/HeroEquip";
+import { DataHeroEquip, DataHeroEquipDictionary } from "../Model/HeroEquip";
 
-export var DataHeroEquipDictionary;
+export var dataHeroEquipDictionary : DataHeroEquipDictionary;
 
 export function InitHeroEquip(){
-    DataHeroEquipDictionary = {};
+    dataHeroEquipDictionary = {};
     HeroEquipData.forEach(element => {
         var dataHeroEquip = DataHeroEquip.Parse(element);
-        DataHeroEquipDictionary[element.Index] = dataHeroEquip;
+        dataHeroEquipDictionary[element.Code] = dataHeroEquip;
     });
-    console.log("1686293177 InitHeroEquip "+Object.keys(DataHeroEquipDictionary).length);
+    console.log("1686293177 InitHeroEquip "+Object.keys(dataHeroEquipDictionary).length);
 }  

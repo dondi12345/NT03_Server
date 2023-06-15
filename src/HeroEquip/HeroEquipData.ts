@@ -2,7 +2,7 @@ export const HeroEquipData = [
     {
       "Index": "WP1001",
       "Code": 1001,
-      "HeroEquipType": 1,
+      "Type": 1,
       "ModelName": "1001_Model",
       "QualityItemCode": "White",
       "IconName": "1001_Icon",
@@ -18,7 +18,7 @@ export const HeroEquipData = [
     {
       "Index": "WP1002",
       "Code": 1002,
-      "HeroEquipType": 1,
+      "Type": 1,
       "ModelName": "1002_Model",
       "QualityItemCode": "White",
       "IconName": "1002_Icon",
@@ -34,7 +34,7 @@ export const HeroEquipData = [
     {
       "Index": "WP1003",
       "Code": 1003,
-      "HeroEquipType": 1,
+      "Type": 1,
       "ModelName": "1003_Model",
       "QualityItemCode": "White",
       "IconName": "1003_Icon",
@@ -50,7 +50,7 @@ export const HeroEquipData = [
     {
       "Index": "AR2001",
       "Code": 2001,
-      "HeroEquipType": 2,
+      "Type": 2,
       "ModelName": "2001_Model",
       "QualityItemCode": "White",
       "IconName": "2001_Icon",
@@ -66,7 +66,7 @@ export const HeroEquipData = [
     {
       "Index": "AR2002",
       "Code": 2002,
-      "HeroEquipType": 2,
+      "Type": 2,
       "ModelName": "2002_Model",
       "QualityItemCode": "White",
       "IconName": "2002_Icon",
@@ -82,7 +82,7 @@ export const HeroEquipData = [
     {
       "Index": "AR2003",
       "Code": 2003,
-      "HeroEquipType": 2,
+      "Type": 2,
       "ModelName": "2003_Model",
       "QualityItemCode": "White",
       "IconName": "2003_Icon",
@@ -98,7 +98,7 @@ export const HeroEquipData = [
     {
       "Index": "HM3001",
       "Code": 3001,
-      "HeroEquipType": 3,
+      "Type": 3,
       "ModelName": "3001_Model",
       "QualityItemCode": "White",
       "IconName": "3001_Icon",
@@ -114,7 +114,7 @@ export const HeroEquipData = [
     {
       "Index": "HM3002",
       "Code": 3002,
-      "HeroEquipType": 3,
+      "Type": 3,
       "ModelName": "3002_Model",
       "QualityItemCode": "White",
       "IconName": "3002_Icon",
@@ -130,7 +130,7 @@ export const HeroEquipData = [
     {
       "Index": "HM3003",
       "Code": 3003,
-      "HeroEquipType": 3,
+      "Type": 3,
       "ModelName": "3003_Model",
       "QualityItemCode": "White",
       "IconName": "3003_Icon",

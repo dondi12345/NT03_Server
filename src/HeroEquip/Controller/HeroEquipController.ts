@@ -56,9 +56,9 @@ export function RandomHeroEquip(craftHeroEquip : CraftHeroEquip, userSocket: IUs
         return;
     }
     IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]]
-    var index = IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]][Math.floor(Math.random()*IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]].length)];
+    var code = IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]][Math.floor(Math.random()*IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]].length)];
     var heroEquip = new HeroEquip();
-    heroEquip = HeroEquip.HeroEquip(index, userSocket.IdUserPlayer)
+    heroEquip = HeroEquip.HeroEquip(code, userSocket.IdUserPlayer)
     CreateHeroEquip(heroEquip).then(respone=>{
         if(respone == null || respone == undefined){
             CraftHeroEquipFail(userSocket);
@@ -110,7 +110,7 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
         messageUnwear.Data = JSON.stringify(heroWearEquipUnwear);
         UnwearingEquip(messageUnwear, userSocket);
     }
-    if(heroEquip.HeroEquipType == HeroEquipType.Weapon && hero.Gear.IdWeapon != null && hero.Gear.IdWeapon != undefined){
+    if(heroEquip.Type == HeroEquipType.Weapon && hero.Gear.IdWeapon != null && hero.Gear.IdWeapon != undefined){
         var heroWearEquipUnwear = new HeroWearEquip();
         heroWearEquipUnwear.IdHero = hero._id;
         heroWearEquipUnwear.IdHeroEquip = hero.Gear.IdWeapon;
@@ -121,7 +121,7 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
         hero.Gear.IdWeapon = heroEquip._id;
         heroEquip.IdHero = hero._id;
     }
-    if(heroEquip.HeroEquipType == HeroEquipType.Armor && hero.Gear.IdArmor != null && hero.Gear.IdArmor != undefined){
+    if(heroEquip.Type == HeroEquipType.Armor && hero.Gear.IdArmor != null && hero.Gear.IdArmor != undefined){
         var heroWearEquipUnwear = new HeroWearEquip();
         heroWearEquipUnwear.IdHero = hero._id;
         heroWearEquipUnwear.IdHeroEquip = hero.Gear.IdArmor;
@@ -132,7 +132,7 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
         hero.Gear.IdArmor = heroEquip._id;
         heroEquip.IdHero = hero._id;
     }
-    if(heroEquip.HeroEquipType == HeroEquipType.Helmet && hero.Gear.IdHelmet != null && hero.Gear.IdHelmet != undefined){
+    if(heroEquip.Type == HeroEquipType.Helmet && hero.Gear.IdHelmet != null && hero.Gear.IdHelmet != undefined){
         var heroWearEquipUnwear = new HeroWearEquip();
         heroWearEquipUnwear.IdHero = hero._id;
         heroWearEquipUnwear.IdHeroEquip = hero.Gear.IdHelmet;

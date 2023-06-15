@@ -1,6 +1,6 @@
 export const RateCraftWhite = ["WP1000","WP1001","WP1002","AR1000","AR1001","AR1002","HM1000","HM1001","HM1002"]
 export const IndexHeroEquipCraft ={
-    "BlueprintHeroEquip_White": ["WP1000","WP1001","WP1002","AR1000","AR1001","AR1002","HM1000","HM1001","HM1002"],
+    "BlueprintHeroEquip_White": [1001,1002,1003,2001,2002,2003,3001,3002,3003],
 }
 export const RateCraft = {
     "BlueprintHeroEquip_White": 10,

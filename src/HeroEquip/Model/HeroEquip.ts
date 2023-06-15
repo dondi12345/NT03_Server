@@ -3,6 +3,8 @@ import { HeroEquipType } from "./HeroEquipType";
 import { ResCode } from "../../Res/Model/ResCode";
 import { HeroEquipCode } from "./HeroEquipCode";
 import { QualityItemCode } from "../../QualityItem/QualityItem";
+import { HeroCode } from "../../HeroServer/Model/HeroCode";
+import { dataHeroEquipDictionary } from "../Service/HeroEquipService";
 
 export class HeroWearEquip{
     IdHero : Types.ObjectId;
@@ -33,7 +35,7 @@ export type DataHeroEquipDictionary = Record<string, DataHeroEquip>;
 export class DataHeroEquip{
     Index : string; 
     Code : HeroEquipCode;
-    HeroEquipType : HeroEquipType;
+    Type : HeroEquipType;
     ModelName : string;
     QualityItemCode : QualityItemCode;
     IconName : string;
@@ -61,11 +63,10 @@ export class HeroEquips{
 
 export interface IHeroEquip{
     _id : Types.ObjectId,
-    Index : String;
     Code : HeroEquipCode,
     IdUserPlayer: Types.ObjectId,
     IdHero ?: Types.ObjectId,
-    HeroEquipType : HeroEquipType,
+    Type : HeroEquipType,
     Lv : Number,
 }
 
@@ -73,11 +74,10 @@ export type HeroEquipDictionary = Record<string, IHeroEquip>;
 
 export class HeroEquip implements IHeroEquip{
     _id : Types.ObjectId;
-    Index : String;
     Code : HeroEquipCode;
     IdUserPlayer: Types.ObjectId;
     IdHero ?: Types.ObjectId;
-    HeroEquipType : HeroEquipType;
+    Type : HeroEquipType;
     Lv : Number;
 
     constructor(){
@@ -85,11 +85,14 @@ export class HeroEquip implements IHeroEquip{
         this.Lv = 1;
     }
 
-    static HeroEquip(index:string, idUserPlayer: Types.ObjectId) {
+    static HeroEquip(code : HeroEquipCode, idUserPlayer : Types.ObjectId) {
         var heroEquip = new HeroEquip();
-        heroEquip.Index = index;
+        var dataHeroEquip = dataHeroEquipDictionary[code];
+        heroEquip.Code = code;
         heroEquip.IdUserPlayer = idUserPlayer;
-        heroEquip.HeroEquipType = HeroEquip.ParseToHeroEquipType(index);
+        heroEquip.Type = dataHeroEquip.Type;
+        heroEquip.Lv = 1;
+        console.log("1686842053 ", JSON.stringify(heroEquip));
         return heroEquip;
     }
 
@@ -101,7 +104,7 @@ export class HeroEquip implements IHeroEquip{
         }
     }
 
-    static ParseToHeroEquipType(index : string){
+    static ParseToType(index : string){
         var type = index[0] + index[1];
         if(type === "WP") return HeroEquipType.Weapon;
         if(type === "AR") return HeroEquipType.Armor;
@@ -112,11 +115,10 @@ export class HeroEquip implements IHeroEquip{
 
 const HeroEquipSchema = new Schema<IHeroEquip>(
     {
-        Index : { type : String},
         Code : { type : Number, enum : HeroEquipCode},
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
         IdHero: { type: mongoose.Schema.Types.ObjectId, ref: 'Hero' },
-        HeroEquipType : { type : Number, enum : HeroEquipType},
+        Type : { type : Number, enum : HeroEquipType},
         Lv : { type : Number, default : 1},
     }
 );
