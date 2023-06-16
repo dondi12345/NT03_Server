@@ -25,13 +25,13 @@ export function CreateNewHero(){
 
 export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
     await FindHeroByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
-        console.log("1685293708 "+respone)
         var dataHeroes = new Heroes();
         for (let item of respone) {
             var hero = Hero.Parse(item);
-            console.log("1685979990 "+ JSON.stringify(hero));
             dataHeroes.Elements.push(hero);
         }
+        console.log("1685979990 "+ dataHeroes.Elements.length);
+        if(dataHeroes.Elements.length > 0) console.log("1685293708 "+JSON.stringify(dataHeroes.Elements[0]))
         var message = new Message();
         message.MessageCode = MessageCode.Hero_LoginSuccess;
         message.Data = JSON.stringify(dataHeroes);

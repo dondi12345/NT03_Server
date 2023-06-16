@@ -8,30 +8,16 @@ import { CraftEquip } from "./HeroEquip/Controller/HeroEquipController";
 import { Message } from "./MessageServer/Model/Message";
 import { CraftHeroEquip } from "./HeroEquip/Model/HeroEquip";
 import { ResCode } from "./Res/Model/ResCode";
+import { CreateHero, Hero, HeroModel } from "./HeroServer/Model/Hero";
 
 export function AppTest(){
-    return;
-    var message = new Message();
-    var craftHeroEquip = new CraftHeroEquip();
-    craftHeroEquip.ResCode = ResCode.BlueprintHeroEquip_White;
-    message.Data = craftHeroEquip;
-    for (let index = 0; index < 10; index++) {
-        // CraftEquip(message);
-    }
     Init.InitDatabase().then(()=>{
-        var data = [
-            {
-                "Name" : "Diamond",
-                "Number":1
-            },
-            {
-                "Name" : "Money",
-                "Number":100
-            }
-            ]
-        // UpdateRes(data, new Types.ObjectId("646c93465a8fac2fbf4f542a"));
-        // InitGlobalChatChannel();
-        // InitPlayerChatChannel();
+        // for (let index = 0; index < 100; index++) {
+        //     var hero = new Hero();
+        //     hero.IdUserPlayer = new Types.ObjectId("64756a7bba1f27631b54fa85");
+        //     hero.HeroName = "Clone";
+        //     CreateHero(hero);
+        // }
     })
 }
 
