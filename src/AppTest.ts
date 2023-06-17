@@ -12,12 +12,9 @@ import { CreateHero, Hero, HeroModel } from "./HeroServer/Model/Hero";
 
 export function AppTest(){
     Init.InitDatabase().then(()=>{
-        // for (let index = 0; index < 100; index++) {
-        //     var hero = new Hero();
-        //     hero.IdUserPlayer = new Types.ObjectId("64756a7bba1f27631b54fa85");
-        //     hero.HeroName = "Clone";
-        //     CreateHero(hero);
-        // }
+        // HeroModel.deleteMany({HeroName : "Clone"}).then(res=>{
+        //     // console.log(res);
+        // })
     })
 }
 
