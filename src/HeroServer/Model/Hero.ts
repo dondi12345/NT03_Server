@@ -17,7 +17,7 @@ export interface IHero{
     _id : Types.ObjectId,
     IdUserPlayer : Types.ObjectId,
     Lv : Number,
-    HeroCode : HeroCode,
+    Code : HeroCode,
     HeroName : String,
     GenderCode : GenderCode,
     Eyes : HeroFashion,
@@ -32,7 +32,7 @@ export class Hero implements IHero{
     _id: Types.ObjectId = new Types.ObjectId();
     IdUserPlayer: Types.ObjectId;
     Lv : Number;
-    HeroCode : HeroCode;
+    Code : HeroCode;
     HeroName : String;
     GenderCode : GenderCode;
     Eyes : HeroFashion;
@@ -44,7 +44,7 @@ export class Hero implements IHero{
     constructor() {
         this._id = new Types.ObjectId();
         this.Lv = 1;
-        this.HeroCode = HeroCode.Dummy_WhiteItem;
+        this.Code = HeroCode.Dummy_WhiteItem;
         this.HeroName = HeroFashionVar.FirstNames[Math.floor(Math.random() * HeroFashionVar.FirstNames.length)]
                       +" "+HeroFashionVar.LastNames[Math.floor(Math.random() * HeroFashionVar.LastNames.length)];
         this.GenderCode = Math.random() < 0.5 ? GenderCode.Male : GenderCode.Female;
@@ -66,7 +66,7 @@ export class Hero implements IHero{
         if(data._id) hero._id = data._id;
         if(data.IdUserPlayer) hero.IdUserPlayer = data.IdUserPlayer;
         if(data.Lv) hero.Lv = data.Lv;
-        if(data.HeroCode) hero.HeroCode = data.HeroCode;
+        if(data.HeroCode) hero.Code = data.HeroCode;
         if(data.HeroName) hero.HeroName = data.HeroName;
         if(data.GenderCode) hero.GenderCode = data.GenderCode
         if(data.Eyes) hero.Eyes = data.Eyes;
@@ -89,7 +89,7 @@ const HeroSchema = new Schema<IHero>(
     {
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
         Lv : { type : Number, default : 1},
-        HeroCode : { type : Number, enum : HeroCode},
+        Code : { type : Number, enum : HeroCode},
         GenderCode : { type : Number, enum : GenderCode},
         HeroName : { type : String},
         Eyes : { Index : { type : String}, Color : { type : String}, },

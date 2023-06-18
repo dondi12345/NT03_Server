@@ -13,12 +13,12 @@ import { IndexHeroEquipCraft, RateCraft, RateCraftWhite } from "../Model/Variabl
 
 export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket){
     await FindHeroEquipByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
-        console.log("1685514345 "+respone)
         var heroEquips : HeroEquips = new HeroEquips;
         for (const item of respone) {
             var heroEquip = HeroEquip.Parse(item);
             heroEquips.Elements.push(heroEquip);
         }
+        console.log("1685514345 "+respone.length)
         var message = new Message();
         message.MessageCode = MessageCode.HeroEquip_LoginSuccess;
         message.Data = JSON.stringify(heroEquips);

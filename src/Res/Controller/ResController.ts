@@ -7,13 +7,13 @@ import { ResCode } from "../Model/ResCode";
 
 export async function ResLogin(message : IMessage, userSocket: IUserSocket){
     await FindResByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
-        console.log("1685293708 "+respone)
         var reses = new Reses();
         for (let item of respone) {
             var res = Res.Parse(item);
             console.log("1686238820 "+ JSON.stringify(item));
             reses.Elements.push(res);
         }
+        console.log("1685293709 "+respone.length)
         var message = new Message();
         message.MessageCode = MessageCode.Res_LoginSuccess;
         message.Data = JSON.stringify(reses);
