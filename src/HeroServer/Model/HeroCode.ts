@@ -1,6 +1,6 @@
 export enum HeroCode
 {
-    UnknownHero = 0,
+    Unknown = 0,
     
     //Dummy
     Dummy_WhiteItem = 101,

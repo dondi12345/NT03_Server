@@ -1,5 +1,6 @@
 
-import { FindHeroById, Hero, UpdateHero } from "../../HeroServer/Model/Hero";
+import { FindHeroById, Gear, Hero, IHero, UpdateHero } from "../../HeroServer/Model/Hero";
+import { HeroCode } from "../../HeroServer/Model/HeroCode";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
@@ -85,11 +86,11 @@ function CraftHeroEquipFail(userSocket: IUserSocket){
 
 export async function WearingEquip(message : Message, userSocket : IUserSocket){
     var heroWearEquip = HeroWearEquip.Parse(message.Data);
-    var hero;
+    var hero  = new Hero();
     await FindHeroById(heroWearEquip.IdHero).then(res =>{
         hero = res;
     });
-    if(hero == null || hero == undefined){
+    if(hero == null || hero == undefined || hero.Code == HeroCode.Unknown){
         WearingEquipFail(userSocket);
         return;
     }
@@ -118,9 +119,6 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
         messageUnwear.MessageCode = MessageCode.HeroEquip_Unwearing;
         messageUnwear.Data = JSON.stringify(heroWearEquipUnwear);
         await UnwearingEquip(messageUnwear, userSocket);
-        hero.Gear.IdWeapon = heroEquip._id;
-        heroEquip.IdHero = hero._id;
-        console.log("1687174442 ", heroEquip);
     }
     if(heroEquip.Type == HeroEquipType.Armor && hero.Gear.IdArmor != null && hero.Gear.IdArmor != undefined){
         var heroWearEquipUnwear = new HeroWearEquip();
@@ -130,9 +128,6 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
         messageUnwear.MessageCode = MessageCode.HeroEquip_Unwearing;
         messageUnwear.Data = JSON.stringify(heroWearEquipUnwear);
         await UnwearingEquip(messageUnwear, userSocket);
-        hero.Gear.IdArmor = heroEquip._id;
-        heroEquip.IdHero = hero._id;
-        console.log("1687174469 ", heroEquip); 
     }
     if(heroEquip.Type == HeroEquipType.Helmet && hero.Gear.IdHelmet != null && hero.Gear.IdHelmet != undefined){
         var heroWearEquipUnwear = new HeroWearEquip();
@@ -142,10 +137,10 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
         messageUnwear.MessageCode = MessageCode.HeroEquip_Unwearing;
         messageUnwear.Data = JSON.stringify(heroWearEquipUnwear);
         await UnwearingEquip(messageUnwear, userSocket);
-        hero.Gear.IdHelmet = heroEquip._id;
-        heroEquip.IdHero = hero._id;
-        console.log("1687174478 ", heroEquip);
     }
+    Gear.WearingEquip(hero.Gear, heroEquip);
+    heroEquip.IdHero = hero._id;
+    console.log("1687174478 ", heroEquip);
     UpdateHero(hero);
     UpdateHeroEquip(heroEquip);
     WearingEquipSuccess(heroWearEquip, userSocket);

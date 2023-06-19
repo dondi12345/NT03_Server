@@ -2,11 +2,34 @@ import mongoose, { Schema, Types } from "mongoose";
 import { HeroCode } from "./HeroCode";
 import { GenderCode } from "./GenderCode";
 import { HeroFashion, HeroFashionVar } from "../../HeroFashion/HeroFashion";
+import { HeroEquip } from "../../HeroEquip/Model/HeroEquip";
+import { HeroEquipType } from "../../HeroEquip/Model/HeroEquipType";
 
 export interface IGear{
     IdWeapon ?: Types.ObjectId,
     IdArmor ?: Types.ObjectId,
     IdHelmet ?: Types.ObjectId,
+}
+
+export class Gear implements IGear{
+    IdWeapon ?: Types.ObjectId;
+    IdArmor ?: Types.ObjectId;
+    IdHelmet ?: Types.ObjectId;
+
+    static WearingEquip(gear : Gear ,equip:HeroEquip) : void {
+        if(equip.Type == HeroEquipType.Weapon){
+            gear.IdWeapon = equip._id;
+            return;
+        }
+        if(equip.Type == HeroEquipType.Armor){
+            gear.IdArmor = equip._id;
+            return;
+        }
+        if(equip.Type == HeroEquipType.Helmet){
+            gear.IdHelmet = equip._id;
+            return;
+        }
+    }
 }
 
 export class Heroes{
@@ -24,7 +47,7 @@ export interface IHero{
     Eyebrow : HeroFashion,
     Hair : HeroFashion,
     Mouths : HeroFashion,
-    Gear : IGear,
+    Gear : Gear,
 }
 export type HeroDictionary = Record<string, IHero>;
 
@@ -39,12 +62,12 @@ export class Hero implements IHero{
     Eyebrow : HeroFashion;
     Hair : HeroFashion;
     Mouths : HeroFashion;
-    Gear : IGear;
+    Gear : Gear;
 
     constructor() {
         this._id = new Types.ObjectId();
         this.Lv = 1;
-        this.Code = HeroCode.Dummy_WhiteItem;
+        this.Code = HeroCode.Unknown;
         this.HeroName = HeroFashionVar.FirstNames[Math.floor(Math.random() * HeroFashionVar.FirstNames.length)]
                       +" "+HeroFashionVar.LastNames[Math.floor(Math.random() * HeroFashionVar.LastNames.length)];
         this.GenderCode = Math.random() < 0.5 ? GenderCode.Male : GenderCode.Female;

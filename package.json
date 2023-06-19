@@ -5,12 +5,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-dev": "yarn ts-node ./src/App.ts",
+    "start-debug": "yarn ts-node/register/transpile-only ./src/App.ts",
     "start": "node  ./build/src/App.js",
     "build": "tsc -p ."
   },
   "license": "MIT",
   "devDependencies": {
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {
