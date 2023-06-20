@@ -15,21 +15,6 @@ export class Gear implements IGear{
     IdWeapon ?: Types.ObjectId;
     IdArmor ?: Types.ObjectId;
     IdHelmet ?: Types.ObjectId;
-
-    static WearingEquip(gear : Gear ,equip:HeroEquip) : void {
-        if(equip.Type == HeroEquipType.Weapon){
-            gear.IdWeapon = equip._id;
-            return;
-        }
-        if(equip.Type == HeroEquipType.Armor){
-            gear.IdArmor = equip._id;
-            return;
-        }
-        if(equip.Type == HeroEquipType.Helmet){
-            gear.IdHelmet = equip._id;
-            return;
-        }
-    }
 }
 
 export class Heroes{

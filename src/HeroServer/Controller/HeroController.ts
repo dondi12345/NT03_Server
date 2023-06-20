@@ -1,7 +1,7 @@
 import redis from 'redis';
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero } from "../Model/Hero";
+import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero, UpdateHero } from "../Model/Hero";
 import { HeroCode } from "../Model/HeroCode";
 import { ISummonHero, ISummonHeroSlot, SummonHero, SummonHeroSlot } from "../Model/SummonHero";
 import { RateSummon } from "../Model/VariableHero";
@@ -156,4 +156,15 @@ export function HireFailMessage(){
     var message = new Message();
     message.MessageCode = MessageCode.Hero_HireHeroFail;
     return message
+}
+
+export function UpdateHeroes(heroes : Heroes, userSocket: IUserSocket){
+    heroes.Elements.forEach(element => {
+        UpdateHero(element);
+    });
+
+    var message = new Message();
+    message.MessageCode = MessageCode.Hero_UpdateHeroes;
+    message.Data = JSON.stringify(heroes);
+    SendMessageToSocket(message, userSocket.Socket)
 }
