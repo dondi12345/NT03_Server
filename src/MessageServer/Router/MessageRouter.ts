@@ -6,7 +6,7 @@ import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
 import { GetSummonResult, HeroLogin, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
-import { CraftEquip, HeroEquipLogin, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
+import { CraftEquip, HeroEquipLogin, UnwearingEquip, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
 import { ResLogin } from "../../Res/Controller/ResController";
 import { BuyResCtrlByCurrency } from "../../Shop/Controller/ShopController";
 
@@ -63,6 +63,10 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     }
     if(message.MessageCode == MessageCode.HeroEquip_Wearing){
         WearingEquip(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.HeroEquip_Unwearing){
+        UnwearingEquip(message, userSocket);
         return;
     }
     if(message.MessageCode == MessageCode.Res_Login){

@@ -30,11 +30,6 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
         for (let item of respone) {
             var hero = Hero.Parse(item);
             dataHeroes.Elements.push(hero);
-            for (let index = 0; index < 10; index++) {
-                var newHero : Hero = {...hero}
-                newHero._id = new Types.ObjectId();  
-                dataHeroes.Elements.push(newHero);
-            }
         }
         console.log("1685979990 "+ dataHeroes.Elements.length);
         if(dataHeroes.Elements.length > 0) console.log("1685293708 "+JSON.stringify(dataHeroes.Elements[0]))
