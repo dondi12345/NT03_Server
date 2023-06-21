@@ -98,17 +98,19 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
         return;
     }
     var heroEquips : HeroEquip[] = [];
-    heroWearEquip.IdHeroEquips.forEach(async (element) => {
+    for (let index = 0; index < heroWearEquip.IdHeroEquips.length; index++) {
+        const element = heroWearEquip.IdHeroEquips[index];
         await FindHeroEquipById(element).then(res =>{
             if(res == null || res == undefined) return;
             heroEquips.push(res);
         })
-    });
+    }
     if(heroEquips.length == 0){
         WearingEquipFail(userSocket);
         return;
     }
-    await heroEquips.forEach(async (element) => {
+    for (let index = 0; index < heroEquips.length; index++) {
+        const element = heroEquips[index];
         switch (element.Type) {
             case HeroEquipType.Weapon:
                 if(hero.Gear.IdWeapon != null && hero.Gear.IdWeapon != undefined){
@@ -150,8 +152,8 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
                 heroeEquipsUpdate.Elements.push(element);
                 break;
         }
-        
-    });
+    }
+    
     heroesUpdate.Elements.push(hero);
 
     UpdateHeroes(heroesUpdate, userSocket);
@@ -162,7 +164,7 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
 
 export function WearingEquipFail(userSocket : IUserSocket){
     var message = new Message();
-    message.MessageCode = MessageCode.HeroEquip_UnwearingFail;
+    message.MessageCode = MessageCode.HeroEquip_WearingFail;
     SendMessageToSocket(message, userSocket.Socket);
 }
 
@@ -179,17 +181,19 @@ export async function UnwearingEquip(message : Message, userSocket : IUserSocket
         return;
     }
     var heroEquips : HeroEquip[] = [];
-    heroWearEquip.IdHeroEquips.forEach(async (element) => {
+    for (let index = 0; index < heroWearEquip.IdHeroEquips.length; index++) {
+        const element = heroWearEquip.IdHeroEquips[index];
         await FindHeroEquipById(element).then(res =>{
             if(res == null || res == undefined) return;
             heroEquips.push(res);
         })
-    });
+    }
     if(heroEquips.length == 0){
         WearingEquipFail(userSocket);
         return;
     }
-    heroEquips.forEach(element => {
+    for (let index = 0; index < heroEquips.length; index++) {
+        const element = heroEquips[index];
         if(element.Type == HeroEquipType.Weapon){
             hero.Gear.IdWeapon = undefined;
             element.IdHero = undefined;
@@ -205,7 +209,7 @@ export async function UnwearingEquip(message : Message, userSocket : IUserSocket
             element.IdHero = undefined;
             heroeEquipsUpdate.Elements.push(element);
         }
-    });
+    }
 
     heroesUpdate.Elements.push(hero);
 
