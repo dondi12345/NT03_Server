@@ -97,52 +97,61 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
         WearingEquipFail(userSocket);
         return;
     }
-    var heroEquip;
-    await FindHeroEquipById(heroWearEquip.IdHeroEquip).then(res =>{
-        heroEquip = res;
-    })
-    if(heroEquip == null || heroEquip == undefined){
+    var heroEquips : HeroEquip[] = [];
+    heroWearEquip.IdHeroEquips.forEach(async (element) => {
+        await FindHeroEquipById(element).then(res =>{
+            if(res == null || res == undefined) return;
+            heroEquips.push(res);
+        })
+    });
+    if(heroEquips.length == 0){
         WearingEquipFail(userSocket);
         return;
     }
-    switch (heroEquip.Type) {
-        case HeroEquipType.Weapon:
-            if(hero.Gear.IdWeapon != null && hero.Gear.IdWeapon != undefined){
-                await FindHeroEquipById(hero.Gear.IdWeapon).then((res : HeroEquip)=>{
-                    if(res == null || res == undefined) return;
-                    res.IdHero = undefined;
-                    heroeEquipsUpdate.Elements.push(res);
-                })
-
-            }
-            hero.Gear.IdWeapon = heroEquip._id;
-            break;
-        case HeroEquipType.Armor:
-            if(hero.Gear.IdArmor != null && hero.Gear.IdArmor != undefined){
-                await FindHeroEquipById(hero.Gear.IdArmor).then((res : HeroEquip)=>{
-                    if(res == null || res == undefined) return;
-                    res.IdHero = undefined;
-                    heroeEquipsUpdate.Elements.push(res);
-                })
-
-            }
-            hero.Gear.IdArmor = heroEquip._id;
-            break;
-        case HeroEquipType.Helmet:
-            if(hero.Gear.IdHelmet != null && hero.Gear.IdHelmet != undefined){
-                await FindHeroEquipById(hero.Gear.IdHelmet).then((res : HeroEquip)=>{
-                    if(res == null || res == undefined) return;
-                    res.IdHero = undefined;
-                    heroeEquipsUpdate.Elements.push(res);
-                })
-
-            }
-            hero.Gear.IdHelmet = heroEquip._id;
-            break;
-    }
-    heroEquip.IdHero = hero._id;
-
-    heroeEquipsUpdate.Elements.push(heroEquip);
+    await heroEquips.forEach(async (element) => {
+        switch (element.Type) {
+            case HeroEquipType.Weapon:
+                if(hero.Gear.IdWeapon != null && hero.Gear.IdWeapon != undefined){
+                    await FindHeroEquipById(hero.Gear.IdWeapon).then((res : HeroEquip)=>{
+                        if(res == null || res == undefined) return;
+                        res.IdHero = undefined;
+                        heroeEquipsUpdate.Elements.push(res);
+                    })
+    
+                }
+                hero.Gear.IdWeapon = element._id;
+                element.IdHero = hero._id;
+                heroeEquipsUpdate.Elements.push(element);
+                break;
+            case HeroEquipType.Armor:
+                if(hero.Gear.IdArmor != null && hero.Gear.IdArmor != undefined){
+                    await FindHeroEquipById(hero.Gear.IdArmor).then((res : HeroEquip)=>{
+                        if(res == null || res == undefined) return;
+                        res.IdHero = undefined;
+                        heroeEquipsUpdate.Elements.push(res);
+                    })
+    
+                }
+                hero.Gear.IdArmor = element._id;
+                element.IdHero = hero._id;
+                heroeEquipsUpdate.Elements.push(element);
+                break;
+            case HeroEquipType.Helmet:
+                if(hero.Gear.IdHelmet != null && hero.Gear.IdHelmet != undefined){
+                    await FindHeroEquipById(hero.Gear.IdHelmet).then((res : HeroEquip)=>{
+                        if(res == null || res == undefined) return;
+                        res.IdHero = undefined;
+                        heroeEquipsUpdate.Elements.push(res);
+                    })
+    
+                }
+                hero.Gear.IdHelmet = element._id;
+                element.IdHero = hero._id;
+                heroeEquipsUpdate.Elements.push(element);
+                break;
+        }
+        
+    });
     heroesUpdate.Elements.push(hero);
 
     UpdateHeroes(heroesUpdate, userSocket);
@@ -169,22 +178,36 @@ export async function UnwearingEquip(message : Message, userSocket : IUserSocket
         UnwearingEquipFail(userSocket);
         return;
     }
-    var heroEquip;
-    await FindHeroEquipById(heroWearEquip.IdHeroEquip).then(res=>{
-        heroEquip = res;
-    })
-    if(heroEquip == null || heroEquip == undefined){
-        UnwearingEquipFail(userSocket);
+    var heroEquips : HeroEquip[] = [];
+    heroWearEquip.IdHeroEquips.forEach(async (element) => {
+        await FindHeroEquipById(element).then(res =>{
+            if(res == null || res == undefined) return;
+            heroEquips.push(res);
+        })
+    });
+    if(heroEquips.length == 0){
+        WearingEquipFail(userSocket);
         return;
     }
-
-    if(heroEquip.Type == HeroEquipType.Weapon) hero.Gear.IdWeapon = undefined;
-    if(heroEquip.Type == HeroEquipType.Armor) hero.Gear.IdArmor = undefined;
-    if(heroEquip.Type == HeroEquipType.Helmet) hero.Gear.IdHelmet = undefined;
-    heroEquip.IdHero = undefined;
+    heroEquips.forEach(element => {
+        if(element.Type == HeroEquipType.Weapon){
+            hero.Gear.IdWeapon = undefined;
+            element.IdHero = undefined;
+            heroeEquipsUpdate.Elements.push(element);
+        }
+        if(element.Type == HeroEquipType.Armor){
+            hero.Gear.IdArmor = undefined;
+            element.IdHero = undefined;
+            heroeEquipsUpdate.Elements.push(element);
+        }
+        if(element.Type == HeroEquipType.Helmet){
+            hero.Gear.IdHelmet = undefined;
+            element.IdHero = undefined;
+            heroeEquipsUpdate.Elements.push(element);
+        }
+    });
 
     heroesUpdate.Elements.push(hero);
-    heroeEquipsUpdate.Elements.push(heroEquip);
 
     UpdateHeroes(heroesUpdate, userSocket);
     UpdateHeroEquips(heroeEquipsUpdate, userSocket);

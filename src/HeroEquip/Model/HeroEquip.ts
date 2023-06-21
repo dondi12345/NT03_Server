@@ -8,7 +8,7 @@ import { dataHeroEquipDictionary } from "../Service/HeroEquipService";
 
 export class HeroWearEquip{
     IdHero : Types.ObjectId;
-    IdHeroEquip : Types.ObjectId;
+    IdHeroEquips : Types.ObjectId[] = [];
 
     static Parse(data) : HeroWearEquip{
         try{
