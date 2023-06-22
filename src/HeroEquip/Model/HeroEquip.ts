@@ -65,7 +65,7 @@ export interface IHeroEquip{
     _id : Types.ObjectId,
     Code : HeroEquipCode,
     IdUserPlayer: Types.ObjectId,
-    IdHero ?: Types.ObjectId,
+    IdHero ?: string,
     Type : HeroEquipType,
     Lv : Number,
 }
@@ -76,7 +76,7 @@ export class HeroEquip implements IHeroEquip{
     _id : Types.ObjectId;
     Code : HeroEquipCode;
     IdUserPlayer: Types.ObjectId;
-    IdHero ?: Types.ObjectId;
+    IdHero ?: string;
     Type : HeroEquipType;
     Lv : Number;
 
@@ -117,7 +117,7 @@ const HeroEquipSchema = new Schema<IHeroEquip>(
     {
         Code : { type : Number, enum : HeroEquipCode},
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
-        IdHero: { type: mongoose.Schema.Types.ObjectId, ref: 'Hero' },
+        IdHero: { type: String},
         Type : { type : Number, enum : HeroEquipType},
         Lv : { type : Number, default : 1},
     }

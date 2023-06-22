@@ -1,4 +1,5 @@
 
+import { Types } from "mongoose";
 import { UpdateHeroes } from "../../HeroServer/Controller/HeroController";
 import { FindHeroById, Gear, Hero, Heroes, IHero, UpdateHero } from "../../HeroServer/Model/Hero";
 import { HeroCode } from "../../HeroServer/Model/HeroCode";
@@ -114,41 +115,41 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket){
         switch (element.Type) {
             case HeroEquipType.Weapon:
                 if(hero.Gear.IdWeapon != null && hero.Gear.IdWeapon != undefined){
-                    await FindHeroEquipById(hero.Gear.IdWeapon).then((res : HeroEquip)=>{
+                    await FindHeroEquipById(new Types.ObjectId(hero.Gear.IdWeapon)).then((res : HeroEquip)=>{
                         if(res == null || res == undefined) return;
-                        res.IdHero = undefined;
+                        res.IdHero = "";
                         heroeEquipsUpdate.Elements.push(res);
                     })
     
                 }
-                hero.Gear.IdWeapon = element._id;
-                element.IdHero = hero._id;
+                hero.Gear.IdWeapon = element._id.toString();
+                element.IdHero = hero._id.toString();
                 heroeEquipsUpdate.Elements.push(element);
                 break;
             case HeroEquipType.Armor:
                 if(hero.Gear.IdArmor != null && hero.Gear.IdArmor != undefined){
-                    await FindHeroEquipById(hero.Gear.IdArmor).then((res : HeroEquip)=>{
+                    await FindHeroEquipById(new Types.ObjectId(hero.Gear.IdArmor)).then((res : HeroEquip)=>{
                         if(res == null || res == undefined) return;
-                        res.IdHero = undefined;
+                        res.IdHero = "";
                         heroeEquipsUpdate.Elements.push(res);
                     })
     
                 }
-                hero.Gear.IdArmor = element._id;
-                element.IdHero = hero._id;
+                hero.Gear.IdArmor = element._id.toString();
+                element.IdHero = hero._id.toString();
                 heroeEquipsUpdate.Elements.push(element);
                 break;
             case HeroEquipType.Helmet:
                 if(hero.Gear.IdHelmet != null && hero.Gear.IdHelmet != undefined){
-                    await FindHeroEquipById(hero.Gear.IdHelmet).then((res : HeroEquip)=>{
+                    await FindHeroEquipById(new Types.ObjectId(hero.Gear.IdHelmet)).then((res : HeroEquip)=>{
                         if(res == null || res == undefined) return;
-                        res.IdHero = undefined;
+                        res.IdHero = "";
                         heroeEquipsUpdate.Elements.push(res);
                     })
     
                 }
-                hero.Gear.IdHelmet = element._id;
-                element.IdHero = hero._id;
+                hero.Gear.IdHelmet = element._id.toString();
+                element.IdHero = hero._id.toHexString();
                 heroeEquipsUpdate.Elements.push(element);
                 break;
         }
@@ -196,17 +197,17 @@ export async function UnwearingEquip(message : Message, userSocket : IUserSocket
         const element = heroEquips[index];
         if(element.Type == HeroEquipType.Weapon){
             hero.Gear.IdWeapon = undefined;
-            element.IdHero = undefined;
+            element.IdHero = "";
             heroeEquipsUpdate.Elements.push(element);
         }
         if(element.Type == HeroEquipType.Armor){
             hero.Gear.IdArmor = undefined;
-            element.IdHero = undefined;
+            element.IdHero = "";
             heroeEquipsUpdate.Elements.push(element);
         }
         if(element.Type == HeroEquipType.Helmet){
             hero.Gear.IdHelmet = undefined;
-            element.IdHero = undefined;
+            element.IdHero = "";
             heroeEquipsUpdate.Elements.push(element);
         }
     }

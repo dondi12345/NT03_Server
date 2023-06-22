@@ -6,15 +6,15 @@ import { HeroEquip } from "../../HeroEquip/Model/HeroEquip";
 import { HeroEquipType } from "../../HeroEquip/Model/HeroEquipType";
 
 export interface IGear{
-    IdWeapon ?: Types.ObjectId,
-    IdArmor ?: Types.ObjectId,
-    IdHelmet ?: Types.ObjectId,
+    IdWeapon ?: string,
+    IdArmor ?: string,
+    IdHelmet ?: string,
 }
 
 export class Gear implements IGear{
-    IdWeapon ?: Types.ObjectId;
-    IdArmor ?: Types.ObjectId;
-    IdHelmet ?: Types.ObjectId;
+    IdWeapon ?: string;
+    IdArmor ?: string;
+    IdHelmet ?: string;
 }
 
 export class Heroes{
@@ -105,9 +105,9 @@ const HeroSchema = new Schema<IHero>(
         Hair : { Index : { type : String}, Color : { type : String}, },
         Mouths : { Index : { type : String}, Color : { type : String}, },
         Gear :{
-            IdWeapon : { type : Types.ObjectId, ref: 'HeroEquip'},
-            IdArmor : { type : Types.ObjectId, ref: 'HeroEquip'},
-            IdHelmet : { type : Types.ObjectId, ref: 'HeroEquip'},
+            IdWeapon : { type : String},
+            IdArmor : { type : String},
+            IdHelmet : { type : String},
         }
     }
 );
