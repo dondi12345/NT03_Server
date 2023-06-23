@@ -42,22 +42,9 @@ function LoginSuccessMessage(res : ICurrency){
     return message;
 }
 
-export function UpdateCurrencyCtrl(message : IMessage, userSocket: IUserSocket){
+export function UpdateCurrencyCtrl(userSocket: IUserSocket){
     var messageBack : Message = new Message();
     messageBack.MessageCode = MessageCode.Currency_Update;
     messageBack.Data = JSON.stringify(userSocket.Currency);
     SendMessageToSocket(messageBack, userSocket.Socket);
-}
-
-export function ChangeCurrency(nameCurrency : string, number : number, userSocket: IUserSocket){
-    try {
-        if(userSocket.Currency[nameCurrency] + number < 0) return false;
-        userSocket.Currency[nameCurrency] += number;
-        IncreaseNumber(nameCurrency, number, userSocket.IdUserPlayer);
-        UpdateCurrencyCtrl(new Message(), userSocket);
-        return true;
-    } catch (error) {
-        console.log("1686722594 "+error);
-        return false;
-    }
 }

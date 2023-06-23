@@ -54,6 +54,8 @@ export enum MessageCode {
     HeroEquip_UnwearingSuccess  = 6011,
     HeroEquip_UnwearingFail  = 6012,
     HeroEquip_UpdateEquips = 6013,
+    HeroEquip_UpgradeLv = 6014,
+    HeroEquip_UpgradeLvFail = 6015,
 
     Res_Test = 7000,
     Res_Login = 7001,

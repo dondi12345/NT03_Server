@@ -10,9 +10,11 @@ import { ChangeRes } from "../../Res/Controller/ResController";
 import { ResCode } from "../../Res/Model/ResCode";
 import { DataResService } from "../../Res/Service/ResService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipById, FindHeroEquipByIdUserPlayer, HeroEquip, HeroEquips, HeroWearEquip, IHeroEquip, UpdateHeroEquip } from "../Model/HeroEquip";
+import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipById, FindHeroEquipByIdUserPlayer, HeroEquip, HeroEquipUpgradeLv, HeroEquips, HeroWearEquip, IHeroEquip, UpdateHeroEquip } from "../Model/HeroEquip";
 import { HeroEquipType } from "../Model/HeroEquipType";
 import { IndexHeroEquipCraft, RateCraft, RateCraftWhite } from "../Model/VariableHeroEquip";
+import { dataHeroEquipDictionary } from "../Service/HeroEquipService";
+import { UpdateCurrencyCtrl } from "../../Currency/Controller/CurrencyController";
 
 export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket){
     await FindHeroEquipByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
@@ -233,4 +235,37 @@ export function UpdateHeroEquips(heroEquips : HeroEquips, userSocket : IUserSock
     message.MessageCode = MessageCode.HeroEquip_UpdateEquips;
     message.Data = JSON.stringify(heroEquips);
     SendMessageToSocket(message, userSocket.Socket)
+}
+
+export function HeroEquipUpgradeLvCtrl(message : Message, userSocket : IUserSocket){
+    var heroEquipUpgradeLv = HeroEquipUpgradeLv.Parse(message.Data);
+    FindHeroEquipById(heroEquipUpgradeLv.IdEquip).then((res : HeroEquip)=>{
+        var heroEquipData = dataHeroEquipDictionary[res.Code];
+        var cost = CostUpgradeLv(res.Lv, heroEquipUpgradeLv.NumberLv, heroEquipData.CostUpgrade, heroEquipData.CostUpgradeRise);
+        if(cost > userSocket.Currency.Money){
+            HeroEquipUpgradeLvFail(userSocket);
+        }else{
+            userSocket.Currency.Money -= cost;
+            res.Lv += heroEquipUpgradeLv.NumberLv;
+            var heroeEquips = new HeroEquips();
+            heroeEquips.Elements.push(res);
+            UpdateHeroEquips(heroeEquips, userSocket);
+            UpdateCurrencyCtrl(userSocket);
+        }
+    })
+
+}
+
+export function HeroEquipUpgradeLvFail(userSocket : IUserSocket){
+    var message = new Message();
+    message.MessageCode = MessageCode.HeroEquip_UpgradeLvFail;
+    SendMessageToSocket(message, userSocket.Socket);
+}
+
+export function CostUpgradeLv(lv : number, lvRise : number, start : number, raise : number){
+    var result = 0;
+    for(let i = lv; i < lv + lvRise; i++){
+        result += start + raise*i*(i+1);
+    }
+    return result;
 }

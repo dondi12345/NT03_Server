@@ -19,6 +19,19 @@ export class HeroWearEquip{
     }
 }
 
+export class HeroEquipUpgradeLv{
+    IdEquip : Types.ObjectId;
+    NumberLv : number;
+
+    static Parse(data) : HeroEquipUpgradeLv{
+        try{
+            return JSON.parse(data);
+        }catch{
+            return data;
+        }
+    }
+}
+
 export class CraftHeroEquip{
     ResCode : ResCode;
 
@@ -40,6 +53,8 @@ export class DataHeroEquip{
     QualityItemCode : QualityItemCode;
     IconName : string;
     IconBorderName : string;
+
+    Power : number;
     Atk : number;
     Def : number;
     Agi : number;
@@ -47,6 +62,17 @@ export class DataHeroEquip{
     Hp : number;
     Crt : number;
     CrtRate : number;
+
+    PowerRise: number;
+    AtkRise: number;
+    DefRise: number;
+    AgiRise: number;
+    DexRise: number;
+    HpRise: number;
+    CrtRateRise: number;
+
+    CostUpgrade: number;
+    CostUpgradeRise: number;
 
     static Parse(data) : DataHeroEquip{
         try{
@@ -67,7 +93,7 @@ export interface IHeroEquip{
     IdUserPlayer: Types.ObjectId,
     IdHero ?: string,
     Type : HeroEquipType,
-    Lv : Number,
+    Lv : number,
 }
 
 export type HeroEquipDictionary = Record<string, IHeroEquip>;
@@ -78,7 +104,7 @@ export class HeroEquip implements IHeroEquip{
     IdUserPlayer: Types.ObjectId;
     IdHero ?: string;
     Type : HeroEquipType;
-    Lv : Number;
+    Lv : number;
 
     constructor(){
         this._id = new Types.ObjectId();

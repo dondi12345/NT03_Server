@@ -8,7 +8,6 @@ import { RateSummon } from "../Model/VariableHero";
 import { Redis } from '../../Enviroment/Env';
 import { MessageCode } from '../../MessageServer/Model/MessageCode';
 import { SendMessageToSocket } from '../../MessageServer/Service/MessageService';
-import { CurrencyLogin, UpdateCurrencyCtrl } from '../../Currency/Controller/CurrencyController';
 import { ChangeRes, ResLogin } from '../../Res/Controller/ResController';
 import { ResCode } from '../../Res/Model/ResCode';
 import { Res } from '../../Res/Model/Res';
