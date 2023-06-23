@@ -69,7 +69,16 @@ export async function FindCurrencyByIdUserPlayer(idUserPlayer: Types.ObjectId) {
 }
 
 export async function UpdateCurrency(currency : ICurrency, idUserPlayer : Types.ObjectId){
-    CurrencyModel.updateOne({IdUserPlayer : idUserPlayer}, currency).then(res=>{
+    CurrencyModel.updateOne({IdUserPlayer : idUserPlayer}, 
+        {
+            Diamond : currency.Diamond,
+            Money : currency.Money,
+            Food : currency.Food,
+            Gold : currency.Gold,
+            Silver : currency.Silver,
+            EnchanceStone : currency.EnchanceStone,
+        }
+    ).then(res=>{
         console.log("1684851978 " + JSON.stringify(res))
     })
 }
