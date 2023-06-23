@@ -17,14 +17,58 @@ export class Gear implements IGear{
     IdHelmet ?: string;
 }
 
+export class HeroUpgradeLv{
+    IdHero : Types.ObjectId;
+    NumberLv : number;
+
+    static Parse(data) : HeroUpgradeLv{
+        try{
+            return JSON.parse(data);
+        }catch{
+            return data;
+        }
+    }
+}
+
 export class Heroes{
     Elements : Hero[] = [];
+}
+
+export type DataHeroDictionary = Record<string, HeroData>;
+
+export class HeroData{
+    Index : string;
+    Code : HeroCode;
+    Power : number;
+    Atk : number;
+    Def : number;
+    Agi : number;
+    Dex : number;
+    Hp : number;
+    CrtRate : number;
+    PowerRise : number;
+    AtkRise : number;
+    DefRise : number;
+    AgiRise : number;
+    DexRise : number;
+    HpRise : number;
+    CrtRateRise : number;
+    CostUpgrade : number;
+    CostUpgradeRise : number;
+
+    static Parse(data) : HeroData{
+        try{
+            return JSON.parse(data);
+        }catch{
+            return data;
+        }
+    }
 }
 
 export interface IHero{
     _id : Types.ObjectId,
     IdUserPlayer : Types.ObjectId,
-    Lv : Number,
+    Lv : number,
     Code : HeroCode,
     HeroName : String,
     GenderCode : GenderCode,
@@ -39,7 +83,7 @@ export type HeroDictionary = Record<string, IHero>;
 export class Hero implements IHero{
     _id: Types.ObjectId = new Types.ObjectId();
     IdUserPlayer: Types.ObjectId;
-    Lv : Number;
+    Lv : number;
     Code : HeroCode;
     HeroName : String;
     GenderCode : GenderCode;

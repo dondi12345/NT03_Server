@@ -241,7 +241,7 @@ export function HeroEquipUpgradeLvCtrl(message : Message, userSocket : IUserSock
     var heroEquipUpgradeLv = HeroEquipUpgradeLv.Parse(message.Data);
     FindHeroEquipById(heroEquipUpgradeLv.IdEquip).then((res : HeroEquip)=>{
         var heroEquipData = dataHeroEquipDictionary[res.Code];
-        var cost = CostUpgradeLv(res.Lv, heroEquipUpgradeLv.NumberLv, heroEquipData.CostUpgrade, heroEquipData.CostUpgradeRise);
+        var cost = HeroEquipCostUpgradeLv(res.Lv, heroEquipUpgradeLv.NumberLv, heroEquipData.CostUpgrade, heroEquipData.CostUpgradeRise);
         if(cost > userSocket.Currency.Money){
             HeroEquipUpgradeLvFail(userSocket);
         }else{
@@ -262,7 +262,7 @@ export function HeroEquipUpgradeLvFail(userSocket : IUserSocket){
     SendMessageToSocket(message, userSocket.Socket);
 }
 
-export function CostUpgradeLv(lv : number, lvRise : number, start : number, raise : number){
+export function HeroEquipCostUpgradeLv(lv : number, lvRise : number, start : number, raise : number){
     var result = 0;
     for(let i = lv; i < lv + lvRise; i++){
         result += start + raise*i*(i+1);

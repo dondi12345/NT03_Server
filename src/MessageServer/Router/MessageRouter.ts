@@ -5,7 +5,7 @@ import { UpdateCurrencyCtrl, CurrencyLogin } from "../../Currency/Controller/Cur
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
-import { GetSummonResult, HeroLogin, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
+import { GetSummonResult, HeroLogin, HeroUpgradeLvCtrl, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
 import { CraftEquip, HeroEquipLogin, HeroEquipUpgradeLvCtrl, UnwearingEquip, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
 import { ResLogin } from "../../Res/Controller/ResController";
 
@@ -47,6 +47,10 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     }
     if(message.MessageCode == MessageCode.Hero_Login){
         HeroLogin(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.Hero_UpgradeLv){
+        HeroUpgradeLvCtrl(message, userSocket);
         return;
     }
     if(message.MessageCode == MessageCode.HeroEquip_Login){

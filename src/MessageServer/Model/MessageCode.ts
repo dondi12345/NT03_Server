@@ -39,6 +39,8 @@ export enum MessageCode {
     Hero_HireHeroSuccess  = 5010,
     Hero_HireHeroFail  = 5011,
     Hero_UpdateHeroes = 5012,
+    Hero_UpgradeLv = 5013,
+    Hero_UpgradeLvFail = 5014,
 
     HeroEquip_Test = 6000,
     HeroEquip_Login  = 6001,

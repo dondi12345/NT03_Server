@@ -1,7 +1,7 @@
 import redis from 'redis';
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero, UpdateHero } from "../Model/Hero";
+import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero, UpdateHero, HeroUpgradeLv, FindHeroById } from "../Model/Hero";
 import { HeroCode } from "../Model/HeroCode";
 import { ISummonHero, ISummonHeroSlot, SummonHero, SummonHeroSlot } from "../Model/SummonHero";
 import { RateSummon } from "../Model/VariableHero";
@@ -12,6 +12,8 @@ import { ChangeRes, ResLogin } from '../../Res/Controller/ResController';
 import { ResCode } from '../../Res/Model/ResCode';
 import { Res } from '../../Res/Model/Res';
 import { Types } from 'mongoose';
+import { dataHeroDictionary } from '../Service/HeroService';
+import { UpdateCurrencyCtrl } from '../../Currency/Controller/CurrencyController';
 
 const redisHero = redis.createClient();
 
@@ -166,4 +168,37 @@ export function UpdateHeroes(heroes : Heroes, userSocket: IUserSocket){
     message.MessageCode = MessageCode.Hero_UpdateHeroes;
     message.Data = JSON.stringify(heroes);
     SendMessageToSocket(message, userSocket.Socket)
+}
+
+export function HeroUpgradeLvCtrl(message : Message, userSocket : IUserSocket){
+    var heroUpgradeLv = HeroUpgradeLv.Parse(message.Data);
+    FindHeroById(heroUpgradeLv.IdHero).then((res : Hero)=>{
+        var heroData = dataHeroDictionary[res.Code];
+        var cost = HeroCostUpgradeLv(res.Lv, heroUpgradeLv.NumberLv, heroData.CostUpgrade, heroData.CostUpgradeRise);
+        if(cost > userSocket.Currency.Food){
+            HeroUpgradeLvFail(userSocket);
+        }else{
+            userSocket.Currency.Food -= cost;
+            res.Lv += heroUpgradeLv.NumberLv;
+            var heroes = new Heroes();
+            heroes.Elements.push(res);
+            UpdateHeroes(heroes, userSocket);
+            UpdateCurrencyCtrl(userSocket);
+        }
+    })
+
+}
+
+export function HeroUpgradeLvFail(userSocket : IUserSocket){
+    var message = new Message();
+    message.MessageCode = MessageCode.Hero_UpgradeLvFail;
+    SendMessageToSocket(message, userSocket.Socket);
+}
+
+export function HeroCostUpgradeLv(lv : number, lvRise : number, start : number, raise : number){
+    var result = 0;
+    for(let i = lv; i < lv + lvRise; i++){
+        result += start + raise*i*(i+1);
+    }
+    return result;
 }
