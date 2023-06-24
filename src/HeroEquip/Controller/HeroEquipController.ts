@@ -23,7 +23,7 @@ export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket
             var heroEquip = HeroEquip.Parse(item);
             heroEquips.Elements.push(heroEquip);
         }
-        console.log("1685514345 "+respone.length)
+        console.log("Dev 1685514345 "+respone.length)
         var message = new Message();
         message.MessageCode = MessageCode.HeroEquip_LoginSuccess;
         message.Data = JSON.stringify(heroEquips);
@@ -32,7 +32,7 @@ export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket
         var message = new Message();
         message.MessageCode = MessageCode.HeroEquip_LoginFail;
         message.Data = "HeroEquip login fail";
-        console.log("1685514350 "+ e);
+        console.log("Dev 1685514350 "+ e);
         SendMessageToSocket(message, userSocket.Socket);
     })
 }
@@ -41,7 +41,7 @@ export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket
 export async function CraftEquip(message : IMessage, userSocket: IUserSocket) {
     var craftHeroEquip = CraftHeroEquip.Parse(message.Data);
     ChangeRes(craftHeroEquip.ResCode, -1, userSocket).then(respone=>{
-        console.log("1686209545 "+ respone);
+        console.log("Dev 1686209545 "+ respone);
         if(respone){
             RandomHeroEquip(craftHeroEquip, userSocket);
         }else{
@@ -75,7 +75,7 @@ export function RandomHeroEquip(craftHeroEquip : CraftHeroEquip, userSocket: IUs
         message.Data = JSON.stringify(newEquip);
         SendMessageToSocket(message, userSocket.Socket);
     }).catch(e=>{
-        console.log("1686210916 "+e);
+        console.log("Dev 1686210916 "+e);
         CraftHeroEquipFail(userSocket);
         return;
     })

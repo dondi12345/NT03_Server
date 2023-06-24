@@ -16,27 +16,27 @@ const redisClient = createClient();
 // Define number of worker processes
 const numCPUs = 1;
 // const numCPUs = require('os').cpus().length;
-
+// AppTest();
 InitApp();
 
 // Check if current process is master or worker
 function InitApp(){
   if (cluster.isMaster) {
-    console.log(`1684475565 Master ${process.pid} is running`);
-    console.log("1684475553 "+ numCPUs);
+    console.log(`Dev 1684475565 Master ${process.pid} is running`);
+    console.log("Dev 1684475553 "+ numCPUs);
     
     // Fork worker processes
     for (let i = 0; i < numCPUs; i++) {
       cluster.fork();
     }
-    console.log("1684475633 create cluster");
+    console.log("Dev 1684475633 create cluster");
     
     // Handle exit of worker processes
     cluster.on('1684475534 exit', (worker, code, signal) => {
-      console.log(`1684475542 worker ${worker.process.pid} died`);
+      console.log(`Dev 1684475542 worker ${worker.process.pid} died`);
     });
     API();
-    AppTest();
+    // AppTest();
     Init.InitDatabase().then((result) => {
       InitAccountServer();
     }).catch((err) => {

@@ -118,7 +118,7 @@ export class HeroEquip implements IHeroEquip{
         heroEquip.IdUserPlayer = idUserPlayer;
         heroEquip.Type = dataHeroEquip.Type;
         heroEquip.Lv = 1;
-        console.log("1686842053 ", JSON.stringify(heroEquip));
+        console.log("Dev 1686842053 ", JSON.stringify(heroEquip));
         return heroEquip;
     }
 
@@ -162,19 +162,19 @@ export async function FindHeroEquipByIdUserPlayer(idUserPlayer: Types.ObjectId){
 export async function CreateHeroEquip(heroEquip : IHeroEquip){
     var data;
     await HeroEquipModel.create(heroEquip).then((res)=>{
-        console.log("1685517259 "+ res)
+        console.log("Dev 1685517259 "+ res)
         data = HeroEquip.Parse(res);
     }).catch((e)=>{
-        console.log("1685517262 "+ e)
+        console.log("Dev 1685517262 "+ e)
         data = null;
     })
     return data;
 }
 
 export async function UpdateHeroEquip(heroEquip:IHeroEquip) {
-    console.log("1687173995 ", heroEquip);
+    console.log("Dev 1687173995 ", heroEquip);
     HeroEquipModel.updateOne({_id : heroEquip._id}, {IdHero : heroEquip.IdHero, Lv : heroEquip.Lv}).then((res)=>{
-        console.log("1685723716 ", res);
+        console.log("Dev 1685723716 ", res);
     })
 }
 

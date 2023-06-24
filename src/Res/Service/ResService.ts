@@ -11,6 +11,6 @@ export function InitRes(){
         var dataRes = ResData.Parse(element);
         DataResService[element.Code] = dataRes;
     });
-    console.log("1686211076 InitRes "+ Object.keys(DataResService).length);
+    console.log("Dev 1686211076 InitRes "+ Object.keys(DataResService).length);
     
 }

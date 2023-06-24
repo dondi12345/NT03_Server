@@ -4,7 +4,7 @@ import { Mongo } from '../../Enviroment/Env';
 export class MongoDBDatabase {
 
   async connectAsync() {
-    console.log("1684475659 DB connecting")
+    console.log("Dev 1684475659 DB connecting")
     const options: ConnectOptions = {
       dbName: Mongo.DbName,
       keepAlive: true,

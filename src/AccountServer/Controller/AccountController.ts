@@ -35,12 +35,12 @@ export async function AccountRegister(message : IMessage, response) {
         bcrypt.hash(pass, saltRounds, function(err, hash) {
             account.Password = hash;
             CreateAccount(account).then((res: IAccount)=>{
-                console.log("1684646335 "+ res);
+                console.log("Dev 1684646335 "+ res);
                 response.send(RegisterSuccessMessage());
             })
         });
     } catch (error) {
-        console.log("1684641453 "+error);
+        console.log("Dev 1684641453 "+error);
         response.send(RegisterFailMessage());
     }
 }
@@ -57,13 +57,13 @@ function RegisterSuccessMessage(){
 }
 
 export async function AccountLogin(message:Message, response){
-    console.log("1684684863 Login")
+    console.log("Dev 1684684863 Login")
     try {
         var accountAuthen = AccountAuthen.Parse(message.Data);
         
 
         if(accountAuthen.Username == null || accountAuthen.Username == undefined || accountAuthen.Password == null || accountAuthen.Password== undefined){
-            console.log("1684937233 error format")
+            console.log("Dev 1684937233 error format")
             response.send(JSON.stringify(LoginFailMessage()));
             return;
         }
@@ -71,18 +71,18 @@ export async function AccountLogin(message:Message, response){
         {
             await FindByUserName(accountAuthen.Username).then((res: IAccount)=>{
                 if(res == null || res == undefined){
-                    console.log("1685266848 Account not found")
+                    console.log("Dev 1685266848 Account not found")
                     response.send(JSON.stringify(LoginFailMessage()));
                     return;
                 }
                 if(res.Password == null || res.Password == undefined){
-                    console.log("1685266848 Error password")
+                    console.log("Dev 1685266848 Error password")
                     response.send(JSON.stringify(LoginFailMessage()));
                     return;
                 }
                 bcrypt.compare(accountAuthen.Password.toString(), res.Password.toString(), async function(err, result) {
                     if(result){
-                        console.log("1684684470 Login successfull: ")
+                        console.log("Dev 1684684470 Login successfull: ")
                         var accountData = new AccountData();
                         accountData.IdAccount = res._id.toString();
                         accountData.IdDevice = accountAuthen.IdDevice;
@@ -94,7 +94,7 @@ export async function AccountLogin(message:Message, response){
                         LoginSuccess(accountTocken, response);
                         return;
                     }else{
-                        console.log("1684684249 WrongPassword")
+                        console.log("Dev 1684684249 WrongPassword")
                         response.send(JSON.stringify(LoginFailMessage()));
                         return;
                     }
@@ -103,7 +103,7 @@ export async function AccountLogin(message:Message, response){
         }
        
     } catch (error){
-        console.log("1684684560 "+error);
+        console.log("Dev 1684684560 "+error);
         response.send(LoginFailMessage())
     }
 }
@@ -119,12 +119,12 @@ export function AccountLoginTocken(message : Message, response){
     var data = AuthenVerify(tockenAuthen.Token);
     if(data == null || data == undefined){
         response.send(LoginFailMessage());
-        console.log("1684937265 wrong token")
+        console.log("Dev 1684937265 wrong token")
         return;
     }else{
         var accountData = AccountData.Parse(data);
         if(accountData.IdDevice != tockenAuthen.IdDevice){
-            console.log("1684937311 wrong device")
+            console.log("Dev 1684937311 wrong device")
             response.send(LoginFailMessage());
             return; 
         }

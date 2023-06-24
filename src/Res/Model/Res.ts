@@ -71,13 +71,13 @@ export const ResModel = mongoose.model<IRes>('Res', ResSchema);
 export async function CreateRes(res : IRes){
     var data;
     await ResModel.create(res).then((respone)=>{
-        console.log("1686240002 "+ respone)
+        console.log("Dev 1686240002 "+ respone)
         data = Res.Parse(respone);
     }).catch((e)=>{
-        console.log("1686240018 "+ e)
+        console.log("Dev 1686240018 "+ e)
         data = null;
     })
-    console.log("1686239656 "+ data);
+    console.log("Dev 1686239656 "+ data);
     
     return data;
 }
@@ -99,18 +99,18 @@ export async function FindItemByIdUserPlayerAndCode(idUserPlayer: Types.ObjectId
 }
 
 export async function UpdateRes(res:IRes) {
-    console.log("1685723760 " + res);
+    console.log("Dev 1685723760 " + res);
     ResModel.updateOne({
         _id : res._id
     },{
         Number : res.Number,
     }).then((res)=>{
-        console.log("1685723759 "+res);
+        console.log("Dev 1685723759 "+res);
     })
 }
 
 export async function IncreaseNumber(id : Types.ObjectId, number : number){
     await ResModel.updateOne({_id : id}, {$inc:{Number : number}}).then(res=>{
-        console.log("1686728204 " , res);
+        console.log("Dev 1686728204 " , res);
     })
 }

@@ -21,7 +21,7 @@ export function InitChatServer(){
 
     redisSubscriber.on('message', (channel, data) => {
         var msgChat = MSGChat.Parse(data);
-        console.log("1684603001 Listent "+ JSON.stringify(msgChat));
+        console.log("Dev 1684603001 Listent "+ JSON.stringify(msgChat));
         ChatRouterWithoutSocket(msgChat);
     });
 }
@@ -30,16 +30,16 @@ function InitWithSocket() {
     isChatServerUseSocket = true;
     userSocketChatServer = {};
     const io = new Server(port.portChatServer);
-    console.log(`1684563910 Worker ${process.pid} listening to ChatServer on port: ${port.portChatServer}`);
+    console.log(`Dev 1684563910 Worker ${process.pid} listening to ChatServer on port: ${port.portChatServer}`);
     io.on(variable.eventSocketConnection, (socket : Socket) => {
-        console.log("1684563926 Socket connect to ChatServer");
+        console.log("Dev 1684563926 Socket connect to ChatServer");
         socket.on(variable.eventSocketListening, (data) => {
             var msgChat = MSGChat.Parse(data);
-            console.log("1684564028:" + JSON.stringify(msgChat));
+            console.log("Dev 1684564028:" + JSON.stringify(msgChat));
             try {
                 userSocketChatServer[msgChat.IdUserPlayer.toString()] = socket;
             } catch (error) {
-                console.log("1684642664 "+error);
+                console.log("Dev 1684642664 "+error);
             }
             ChatRouter(msgChat, socket)
         });
@@ -50,7 +50,7 @@ export function SendToSocket(msgChat : IMSGChat, socket : Socket){
     try {
         socket.emit(variable.eventSocketListening, msgChat);
     } catch (error) {
-        console.log("1684665082 "+error);
+        console.log("Dev 1684665082 "+error);
     }
 }
 

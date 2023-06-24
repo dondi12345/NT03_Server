@@ -161,10 +161,10 @@ export const HeroModel = mongoose.model<IHero>('Hero', HeroSchema);
 export async function CreateHero(hero : IHero){
     var data;
     await HeroModel.create(hero).then((res)=>{
-        console.log("1685285706 "+ res)
+        console.log("Dev 1685285706 "+ res)
         data = Hero.Parse(res);
     }).catch((e)=>{
-        console.log("1685285714 "+ e)
+        console.log("Dev 1685285714 "+ e)
         data = null;
     })
     return data;
@@ -187,8 +187,8 @@ export async function FindHeroById(id : Types.ObjectId){
 }
 
 export async function UpdateHero(hero:IHero) {
-    console.log("1687174057 ", hero);
+    console.log("Dev 1687174057 ", hero);
     HeroModel.updateOne({_id : hero._id},{Lv : hero.Lv, Gear : hero.Gear}).then((res)=>{
-        console.log("1685723760 ",res);
+        console.log("Dev 1685723760 ",res);
     })
 }

@@ -10,14 +10,14 @@ export async function CurrencyLogin(message : IMessage, userSocket: IUserSocket)
             var currency = new Currency();
             currency.IdUserPlayer = userSocket.IdUserPlayer;
             await CreateUserPlayerCurrency(currency).then(respone=>{
-                console.log("1684837963 " + respone)
+                console.log("Dev 1684837963 " + respone)
                 userSocket.Currency = respone;
                 SendMessageToSocket(LoginSuccessMessage(userSocket.Currency), userSocket.Socket);
             }).catch(()=>{
                 LoginFail(userSocket);
             })
         }else{
-            console.log("1684837891 " + respone)
+            console.log("Dev 1684837891 " + respone)
             userSocket.Currency = respone;
             SendMessageToSocket(LoginSuccessMessage(userSocket.Currency), userSocket.Socket);
         }

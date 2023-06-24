@@ -52,10 +52,10 @@ export const CurrencyModel = mongoose.model<ICurrency>('Currency', CurrencySchem
 export async function CreateUserPlayerCurrency(data : ICurrency){
     var userPlayerRes;
     await CurrencyModel.create(data).then((res)=>{
-        console.log("1684837676 "+ res)
+        console.log("Dev 1684837676 "+ res)
         userPlayerRes = Currency.Parse(res);
     }).catch((e)=>{
-        console.log("1684837715 "+ e)
+        console.log("Dev 1684837715 "+ e)
     })
     return userPlayerRes;
 }
@@ -79,12 +79,12 @@ export async function UpdateCurrency(currency : ICurrency, idUserPlayer : Types.
             EnchanceStone : currency.EnchanceStone,
         }
     ).then(res=>{
-        console.log("1684851978 " + JSON.stringify(res))
+        console.log("Dev 1684851978 " + JSON.stringify(res))
     })
 }
 
 export async function IncreaseNumber(nameCurrency : string, number : number, idUserPlayer : Types.ObjectId) {
     CurrencyModel.updateOne({IdUserPlayer : idUserPlayer}, {$inc:{[nameCurrency] : number}}).then(respone=>{
-        console.log("1686733379 ",respone);
+        console.log("Dev 1686733379 ",respone);
     })
 }

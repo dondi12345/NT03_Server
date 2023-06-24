@@ -23,10 +23,10 @@ export async function InitGlobalChatChannel(){
     globalChannel.TyppeChatChannelCode = TyppeChatChannelCode.Global;
     globalChannel.Detail = "This global channel";
     await ChatChannelModel.find({"TyppeChatChannelCode" : TyppeChatChannelCode.Global}).then(res=>{
-        console.log("1684596348 "+res.length)
+        console.log("Dev 1684596348 "+res.length)
         if(res.length > 0) return;
         CreateChatChannel(globalChannel).then((res: IChatChannel)=>{
-            console.log("1684583339 "+res._id);
+            console.log("Dev 1684583339 "+res._id);
         })
     })
 }

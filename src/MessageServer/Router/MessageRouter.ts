@@ -8,18 +8,19 @@ import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerCon
 import { GetSummonResult, HeroLogin, HeroUpgradeLvCtrl, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
 import { CraftEquip, HeroEquipLogin, HeroEquipUpgradeLvCtrl, UnwearingEquip, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
 import { ResLogin } from "../../Res/Controller/ResController";
+import { HeroTeamLogin, SelectHeroTeamCtrl } from "../../HeroTeam/Controller/HeroTeamCtrl";
 
 
 export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     if(message.MessageCode == MessageCode.MessageServer_Test){
-        console.log("1684475214 Test Message")
+        console.log("Dev 1684475214 Test Message")
     }
     if(message.MessageCode == MessageCode.MessageServer_Connect){
         Connect(message, userSocket);
         return;
     }
     if(userSocket.IdAccount == null || userSocket.IdAccount == undefined){
-        console.log("1684769809 Logout Acount")
+        console.log("Dev 1684769809 Logout Acount")
         return;
     }
     if(message.MessageCode == MessageCode.UserPlayerServer_Login){
@@ -27,7 +28,7 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
         return;
     }
     if(userSocket.IdUserPlayer == null || userSocket.IdUserPlayer == undefined){
-        console.log("1685002171 Logout Acount")
+        console.log("Dev 1685002171 Logout Acount")
         return;
     }
     if(message.MessageCode == MessageCode.Currency_Login){
@@ -75,6 +76,14 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     }
     if(message.MessageCode == MessageCode.Res_Login){
         ResLogin(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.HeroTeam_Login){
+        HeroTeamLogin(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.HeroTeam_SelectHero){
+        SelectHeroTeamCtrl(message, userSocket);
         return;
     }
 }

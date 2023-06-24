@@ -33,7 +33,7 @@ export const UserChatChannelModel = mongoose.model<IUserChatChannel>('UserChatCh
 export async function GetIdUserPlayerByIdChatChannel(IdChatChannel : Types.ObjectId){
     var data : UserChatChannel[]= [];
     await UserChatChannelModel.find({IdChatChannel: IdChatChannel.toString()}).then(res=>{
-        console.log("1684576640 "+ res.length)
+        console.log("Dev 1684576640 "+ res.length)
         if(res.length > 0){
             data = res;
         }
@@ -43,7 +43,7 @@ export async function GetIdUserPlayerByIdChatChannel(IdChatChannel : Types.Objec
 
 export async function UserJoinToChatChannel(idUserPlayer: Types.ObjectId, idChatChannel: Types.ObjectId){
     await UserChatChannelModel.find({IdChatChannel : idChatChannel, IdUserPlayer: idUserPlayer}).then(res=>{
-        console.log("1684596592 " + res.length);
+        console.log("Dev 1684596592 " + res.length);
         if(res.length> 0) return;
         var userChatChannel = new UserChatChannel();
         userChatChannel.IdChatChannel = idChatChannel;
@@ -57,7 +57,7 @@ export async function UserJoinToGlobalChannel(idUserPlayer: Types.ObjectId, serv
         try {
             UserJoinToChatChannel(idUserPlayer, res._id);
         } catch (error) {
-            console.log("1684663387 "+error);
+            console.log("Dev 1684663387 "+error);
         }
     })
 }

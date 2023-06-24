@@ -14,12 +14,12 @@ export async function Connect(message : IMessage, userSocket : IUserSocket){
     var data = AuthenVerify(tockenAuthen.Token);
     if(data == null || data == undefined){
         SendMessageToSocket(ConnectFailMessage("Token authen fail"), userSocket.Socket);
-        console.log("1684937265 wrong token")
+        console.log("Dev 1684937265 wrong token")
         return;
     }else{
         var accountData = AccountData.Parse(data);
         if(accountData.IdDevice != tockenAuthen.IdDevice){
-            console.log("1684937311 wrong device")
+            console.log("Dev 1684937311 wrong device")
             SendMessageToSocket(ConnectFailMessage("Wrong device"), userSocket.Socket);
             return; 
         }
@@ -31,7 +31,7 @@ export async function Connect(message : IMessage, userSocket : IUserSocket){
         var message = new Message();
         message.MessageCode = MessageCode.MessageServer_ConnectSuccess;
         message.Data = JSON.stringify(accountTocken);
-        console.log("1684993827 Token authen success")
+        console.log("Dev 1684993827 Token authen success")
         SendMessageToSocket(message, userSocket.Socket);
     }
 }

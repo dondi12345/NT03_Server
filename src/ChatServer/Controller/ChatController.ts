@@ -14,7 +14,7 @@ const redisPublisher = redis.createClient();
 
 export function SendChat(msgChat :IMSGChat){
     var chat = Chat.Parse(msgChat.Data);
-    console.log("1684569237 Sendchat: " + chat)
+    console.log("Dev 1684569237 Sendchat: " + chat)
     if(chat.Content.length == 0) return;
     msgChat.MSGChatCode = MSGChatCode.ReciveMSGChat;
     GetChatChannelById(chat.IdChatChannel).then((res : ChatChannel) => {
@@ -26,9 +26,9 @@ export function SendChat(msgChat :IMSGChat){
 
 export function ReciveChat(msgChat :IMSGChat){
     var chat = Chat.Parse(msgChat.Data);
-    console.log("1684569247 ReciveChat")
+    console.log("Dev 1684569247 ReciveChat")
     GetChatChannelById(chat.IdChatChannel).then(res=>{
-        console.log("1684569247 Recive "+res)
+        console.log("Dev 1684569247 Recive "+res)
         var chatChannel = ChatChannel.Parse(res);
         GetIdUserPlayerByIdChatChannel(chatChannel._id).then(res=>{
             if(res.length == 0) return;
@@ -44,7 +44,7 @@ export function addChatToRedis(IdChatChannel :string, chat: string) {
         if (error) {
             console.error('1684567920 Failed to add chat message:', error);
         } else {
-            console.log(`1684567933 Chat message added ${result}: `, chat);
+            console.log(`Dev 1684567933 Chat message added ${result}: `, chat);
             // Remove oldest message if we have more than MAX_CHAT
             if (result > variable.maxLengthChat) {
                 redisChat.ltrim(IdChatChannel, result - variable.maxLengthChat, -1, (error, result) => {

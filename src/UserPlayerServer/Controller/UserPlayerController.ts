@@ -3,7 +3,6 @@ import { UserJoinToGlobalChannel } from "../../ChatServer/Model/UserChatChannel"
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { AddUserSocketDictionary, SendMessageToSocket, userSocketDictionary } from "../../MessageServer/Service/MessageService";
-import { CreateUserPlayerCurrency, FindCurrencyByIdUserPlayer, Currency } from "../../Currency/Model/Currency";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { ServerGame } from "../Model/ServerGame";
 import { ServerGameCode } from "../Model/ServerGameCode";
@@ -61,19 +60,19 @@ export function addAccountTokenToRedis(idUserPlayer :string, token: string) {
         if (error) {
             console.error('1685008521 Failed to save token:', error);
         } else {
-            console.log(`1685008516 Token added ${result}: `, token);
+            console.log(`Dev 1685008516 Token added ${result}: `, token);
         }
     });
 }
 
 export async function CheckUserLoginedFromRedis(userPlayer:IUserPlayer, userSocket : IUserSocket){
     await redisUserPlayerSession.get(Redis.KeyUserPlayerSession + userPlayer._id.toString(), (error, result)=>{
-        console.log("1685077900 "+result);
+        console.log("Dev 1685077900 "+result);
         if(error || result == null || result == undefined){
             userSocket.IdUserPlayer = userPlayer._id;
             addAccountTokenToRedis(userSocket.IdUserPlayer.toString(), userSocket.IdAccount.toString());
             AddUserSocketDictionary(userSocket);
-            console.log("1685080451 "+Object.keys(userSocketDictionary).length)
+            console.log("Dev 1685080451 "+Object.keys(userSocketDictionary).length)
             SendMessageToSocket(LoginSuccessMessage(userPlayer), userSocket.Socket);
         }else{
             var message = new Message();

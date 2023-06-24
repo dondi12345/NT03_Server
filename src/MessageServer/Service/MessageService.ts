@@ -42,12 +42,12 @@ export function InitMessageServer(){
 
 function InitWithSocket() {
     const io = new Server(port.portMessageServer);
-    console.log(`1684424393 Worker ${process.pid} listening to MessageServer on port: ${port.portMessageServer}`);
+    console.log(`Dev 1684424393 Worker ${process.pid} listening to MessageServer on port: ${port.portMessageServer}`);
     io.on(variable.eventSocketConnection, (socket : Socket) => {
-        console.log("1684424410 "+socket.id+" connec to MessageServer");
+        console.log("Dev 1684424410 "+socket.id+" connec to MessageServer");
         let userSocket = new UserSocket();
         socket.on(variable.eventSocketListening, (data) => {
-            console.log("1684424442:" + data);
+            console.log("Dev 1684424442:" + data);
             var message = Message.Parse(data);
 
             if(!userSocket.Socket) userSocket.Socket = socket;
@@ -56,17 +56,17 @@ function InitWithSocket() {
         });
 
         socket.on("disconnect", () => {
-            console.log("1685025149 "+socket.id+" left MessageServer");
+            console.log("Dev 1685025149 "+socket.id+" left MessageServer");
             try {
-                console.log("1685086000 ")
+                console.log("Dev 1685086000 ")
                 redisAccountToken.del(Redis.KeyUserPlayerSession + userSocket.IdUserPlayer,()=>{});
             } catch (error) {
-                console.log("1685080913 "+error)
+                console.log("Dev 1685080913 "+error)
             }
             try {
                 delete userSocketDictionary[userSocket.IdUserPlayer.toString()]
             } catch (error) {
-                console.log("1684903275 "+error)
+                console.log("Dev 1684903275 "+error)
             }
         });
     });
@@ -80,15 +80,15 @@ function InitWithSocket() {
 
     redisUserPlayerChannelSub.subscribe(Redis.UserPlayerChannel);
     redisUserPlayerChannelSub.on('message', (channel, data)=>{
-        console.log("1685078357"+data)
+        console.log("Dev 1685078357"+data)
         var message = Message.Parse(data);
         if(message.MessageCode == MessageCode.MessageServer_Disconnect){
             try {
                 var userSocketData = UserSocketData.Parse(message.Data);
-                console.log("1685077463 Disconnect: "+userSocketData.IdUserPlayer.toString());
+                console.log("Dev 1685077463 Disconnect: "+userSocketData.IdUserPlayer.toString());
                 userSocketDictionary[userSocketData.IdUserPlayer.toString()].Socket.disconnect();
             } catch (error) {
-                console.log("1685074144 "+error)
+                console.log("Dev 1685074144 "+error)
             }
         }
     });
@@ -102,6 +102,6 @@ export function SendMessageToSocket(message: Message, socket : Socket){
     try {
         socket.emit(variable.eventSocketListening, JSON.stringify(message));
     } catch (error) {
-        console.log("1684765923 "+error);
+        console.log("Dev 1684765923 "+error);
     }
 }

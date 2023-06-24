@@ -5,7 +5,7 @@ import { Socket } from "socket.io";
 
 export function ChatRouter(msgChat : IMSGChat, socket : Socket){
     if(msgChat.MSGChatCode == MSGChatCode.TestMSGChat){
-        console.log("1684566303 TestChat")
+        console.log("Dev 1684566303 TestChat")
         return;
     }
     if(msgChat.MSGChatCode == MSGChatCode.SendMSGChat){

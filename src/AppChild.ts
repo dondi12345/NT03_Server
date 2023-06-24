@@ -12,7 +12,7 @@ import { InitShop } from "./Shop/Service/ShopService";
 
 // Function to create app child instance
 export function AppChild() {
-    console.log("1684561087 Init AppChild")
+    console.log("Dev 1684561087 Init AppChild")
     Init.InitDatabase().then(()=>{
         InitMessageServer();
         InitChatServer();

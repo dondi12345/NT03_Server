@@ -32,8 +32,8 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
             var hero = Hero.Parse(item);
             dataHeroes.Elements.push(hero);
         }
-        console.log("1685979990 "+ dataHeroes.Elements.length);
-        if(dataHeroes.Elements.length > 0) console.log("1685293708 "+JSON.stringify(dataHeroes.Elements[0]))
+        console.log("Dev 1685979990 "+ dataHeroes.Elements.length);
+        if(dataHeroes.Elements.length > 0) console.log("Dev 1685293708 "+JSON.stringify(dataHeroes.Elements[0]))
         var message = new Message();
         message.MessageCode = MessageCode.Hero_LoginSuccess;
         message.Data = JSON.stringify(dataHeroes);
@@ -42,7 +42,7 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
         var message = new Message();
         message.MessageCode = MessageCode.Hero_LoginFail;
         message.Data = "Hero login fail";
-        console.log("1685293337 "+ e);
+        console.log("Dev 1685293337 "+ e);
         SendMessageToSocket(message, userSocket.Socket);
     })
 }
@@ -50,11 +50,11 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
 export function Summon(message : IMessage, userSocket: IUserSocket){
     if(userSocket.Currency == null || userSocket.Currency == undefined){
         ResLogin(new Message(), userSocket);
-        console.log("1685287568 Not connect to Res")
+        console.log("Dev 1685287568 Not connect to Res")
         return;
     }
     ChangeRes(ResCode.HeroScroll_White, -1, userSocket).then(respone=>{
-        console.log("1686208980 "+ respone);
+        console.log("Dev 1686208980 "+ respone);
         if(respone){
             RandomeHero(userSocket);
         }else{
@@ -124,7 +124,7 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
                 var indexFindout = -1;
                 for (let index = 0; index < summonHero.Slots.length; index++) {
                     const element = summonHero.Slots[index];
-                    console.log("1685507029 "+ element._id.toString() + " - "+summonHeroSlot._id.toString());
+                    console.log("Dev 1685507029 "+ element._id.toString() + " - "+summonHeroSlot._id.toString());
                     if(element._id.toString() === summonHeroSlot._id.toString()){
                         element.Hired = true;
                         indexFindout = index;
@@ -136,7 +136,7 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
                 var hero = Hero.NewHero(summonHero.Slots[indexFindout].Hero);
                 HireHeroSuccess(hero, userSocket);
             } catch (error) {
-                console.log("1685284455 "+error)
+                console.log("Dev 1685284455 "+error)
                 SendMessageToSocket(HireFailMessage(), userSocket.Socket); 
             }
         }
@@ -145,7 +145,7 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
 
 export function HireHeroSuccess(hero : IHero, userSocket: IUserSocket){
     CreateHero(hero).then((res : IHero)=>{
-        console.log("1685974556 Adding Hero")
+        console.log("Dev 1685974556 Adding Hero")
         var message = new Message();
         message.MessageCode = MessageCode.Hero_HireHeroSuccess;
         message.Data = JSON.stringify(hero);

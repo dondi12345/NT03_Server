@@ -34,6 +34,6 @@ export function InitAccountServer(){
     })
 
     app.listen(port.portAccountServer, () => {
-        console.log(`1686217636 Example app listening on port ${port.portAccountServer}`)
+        console.log(`Dev 1686217636 Example app listening on port ${port.portAccountServer}`)
     })
 }

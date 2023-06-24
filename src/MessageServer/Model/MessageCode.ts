@@ -69,5 +69,13 @@ export enum MessageCode {
     Shop_BuyResByCurrency = 8001,
     Shop_BuySuccess = 8100,
     Shop_BuyFail = 8100,
-    
+
+    HeroTeam_Test = 9000,
+    HeroTeam_Login  = 9001,
+    HeroTeam_LoginFail  = 9002,
+    HeroTeam_LoginSuccess  = 9003,
+    HeroTeam_Update  = 9004,
+    HeroTeam_SelectHero = 9005,
+    HeroTeam_SelectHeroSuccess = 9006,
+    HeroTeam_SelectHeroFail = 9007,
 }

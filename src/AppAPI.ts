@@ -14,10 +14,10 @@ export function API(){
   app.get('/message', (req, res) => {
     socketMessage = io("ws://"+variable.localhost+":"+port.portMessageServer);
     socketMessage.on(variable.eventSocketListening, (arg)=>{
-      console.log("1684561396 from MessageServer: "+JSON.stringify(arg));
+      console.log("Dev 1684561396 from MessageServer: "+JSON.stringify(arg));
     })
     socketMessage.on(variable.eventSocketDisconnect,()=>{
-      console.log("1685084052 Drop connect from server");
+      console.log("Dev 1685084052 Drop connect from server");
     })
       res.send("Connect MessageServer");
     });
@@ -27,7 +27,7 @@ export function API(){
       return;
     }
     resMessage = res;
-    console.log("1684475504 "+ JSON.stringify(req.body));
+    console.log("Dev 1684475504 "+ JSON.stringify(req.body));
       socketMessage.emit(variable.eventSocketListening, JSON.stringify(req.body));
       res.send("suc");
   })
@@ -37,7 +37,7 @@ export function API(){
   app.get('/chat', (req, res) =>{
     socketChat = io("ws://"+variable.localhost+":"+port.portChatServer);
     socketChat.on(variable.eventSocketListening, (arg)=>{
-      console.log("1684568352 from ChatServer: "+arg);
+      console.log("Dev 1684568352 from ChatServer: "+arg);
     })
     res.send("Connect to ChatServer");
   });
@@ -47,12 +47,12 @@ export function API(){
       res.send("Not connect to ChatServer")
       return;
     }
-    console.log("1684568485 "+ JSON.stringify(req.body));
+    console.log("Dev 1684568485 "+ JSON.stringify(req.body));
     socketChat.emit(variable.eventSocketListening, JSON.stringify(req.body));
       res.send("suc");
   })
 
   app.listen(port.portAPI, () => {
-      console.log(`1684475518 Example app listening on port ${port.portAPI}`)
+      console.log(`Dev 1684475518 Example app listening on port ${port.portAPI}`)
     })
 }

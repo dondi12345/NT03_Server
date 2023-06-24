@@ -9,5 +9,5 @@ export function InitHeroEquip(){
         var dataHeroEquip = DataHeroEquip.Parse(element);
         dataHeroEquipDictionary[element.Code] = dataHeroEquip;
     });
-    console.log("1686293177 InitHeroEquip "+Object.keys(dataHeroEquipDictionary).length);
+    console.log("Dev 1686293177 InitHeroEquip "+Object.keys(dataHeroEquipDictionary).length);
 }  
