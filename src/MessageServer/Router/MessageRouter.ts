@@ -8,7 +8,7 @@ import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerCon
 import { GetSummonResult, HeroLogin, HeroUpgradeLvCtrl, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
 import { CraftEquip, HeroEquipLogin, HeroEquipUpgradeLvCtrl, UnwearingEquip, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
 import { ResLogin } from "../../Res/Controller/ResController";
-import { HeroTeamLogin, SelectHeroTeamCtrl } from "../../HeroTeam/Controller/HeroTeamCtrl";
+import { DeselectHeroTeamCtrl, HeroTeamLogin, SelectHeroTeamCtrl } from "../../HeroTeam/Controller/HeroTeamCtrl";
 
 
 export function MessageRouter(message : IMessage, userSocket : IUserSocket){
@@ -84,6 +84,10 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     }
     if(message.MessageCode == MessageCode.HeroTeam_SelectHero){
         SelectHeroTeamCtrl(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.HeroTeam_DeselectHero){
+        DeselectHeroTeamCtrl(message, userSocket);
         return;
     }
 }

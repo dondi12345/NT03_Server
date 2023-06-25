@@ -73,6 +73,35 @@ export async function SelectHeroTeamCtrl(message : Message, userSocket : UserSoc
         LogUserSocket(LogCode.HeroTeam_SelectHeroFail, userSocket, error)
     }
 }
+export async function DeselectHeroTeamCtrl(message : Message, userSocket : UserSocket){
+    var selectHero = SelectHero.Parse(message.Data);
+    try {
+        await FindHeroTeamByIdUserPlayer(userSocket.IdUserPlayer).then((res : HeroTeam)=>{
+            if(res == null || res == undefined) return;
+            if(res.Slot1 === selectHero.IdHero){
+                res.Slot1 = "";
+            }
+            if(res.Slot2 === selectHero.IdHero){
+                res.Slot2 = "";
+            }
+            if(res.Slot3 === selectHero.IdHero){
+                res.Slot3 = "";
+            }
+            if(res.Slot4 === selectHero.IdHero){
+                res.Slot4 = "";
+            }
+            if(res.Slot5 === selectHero.IdHero){
+                res.Slot5 = "";
+            }
+            var messageCall = new Message();
+            messageCall.MessageCode = MessageCode.HeroTeam_Update;
+            messageCall.Data = JSON.stringify(res);
+            UpdateHeroTeamCtrl(messageCall, userSocket);
+        })
+    } catch (error) {
+        LogUserSocket(LogCode.HeroTeam_SelectHeroFail, userSocket, error)
+    }
+}
 
 export function UpdateHeroTeamCtrl(message : Message, userSocket : UserSocket){
     try {

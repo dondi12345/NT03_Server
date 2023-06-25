@@ -76,6 +76,5 @@ export enum MessageCode {
     HeroTeam_LoginSuccess  = 9003,
     HeroTeam_Update  = 9004,
     HeroTeam_SelectHero = 9005,
-    HeroTeam_SelectHeroSuccess = 9006,
-    HeroTeam_SelectHeroFail = 9007,
+    HeroTeam_DeselectHero = 9006,
 }
