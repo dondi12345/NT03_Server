@@ -16,7 +16,7 @@ const redisUserPlayerChannelSub = createClient();
 
 export let userSocketDictionary : UserSocketDictionary ={};
 
-export function InitMessageServer(){
+export function InitMessageServerWithSocket(){
     redisAccountToken.keys(Redis.KeyUserPlayerSession+'*', (error, keys) => {
         if (error) {
           console.error('Error retrieving keys:', error);

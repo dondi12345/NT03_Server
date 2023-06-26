@@ -16,8 +16,8 @@ const redisClient = createClient();
 // Define number of worker processes
 const numCPUs = 1;
 // const numCPUs = require('os').cpus().length;
-AppTest();
-// InitApp();
+// AppTest();
+InitApp();
 
 // Check if current process is master or worker
 function InitApp(){

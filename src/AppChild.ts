@@ -1,6 +1,6 @@
 // Import necessary modules
 import Init from "./Service/Init";
-import { InitMessageServer } from "./MessageServer/Service/MessageService";
+import { InitMessageServerWithSocket } from "./MessageServer/Service/MessageService";
 import { InitChatServer } from "./ChatServer/Service/ChatService";
 import { GetIdUserPlayerByIdChatChannel } from "./ChatServer/Model/UserChatChannel";
 import { Types } from "mongoose";
@@ -14,7 +14,7 @@ import { InitShop } from "./Shop/Service/ShopService";
 export function AppChild() {
     console.log("Dev 1684561087 Init AppChild")
     Init.InitDatabase().then(()=>{
-        InitMessageServer();
+        InitMessageServerWithSocket();
         InitChatServer();
         InitHero();
         InitRes();
