@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { LogUserSocket } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
@@ -50,19 +51,19 @@ export async function SelectHeroTeamCtrl(message : Message, userSocket : UserSoc
         await FindHeroTeamByIdUserPlayer(userSocket.IdUserPlayer).then((res : HeroTeam)=>{
             if(res == null || res == undefined) return;
             if(selectHero.IndexSlot == 1){
-                res.Slot1 = selectHero.IdHero;
+                res.Slot1 = new Types.ObjectId(selectHero.IdHero);
             }
             if(selectHero.IndexSlot == 2){
-                res.Slot2 = selectHero.IdHero;
+                res.Slot2 = new Types.ObjectId(selectHero.IdHero);
             }
             if(selectHero.IndexSlot == 3){
-                res.Slot3 = selectHero.IdHero;
+                res.Slot3 = new Types.ObjectId(selectHero.IdHero);
             }
             if(selectHero.IndexSlot == 4){
-                res.Slot4 = selectHero.IdHero;
+                res.Slot4 = new Types.ObjectId(selectHero.IdHero);
             }
             if(selectHero.IndexSlot == 5){
-                res.Slot5 = selectHero.IdHero;
+                res.Slot5 = new Types.ObjectId(selectHero.IdHero);
             }
             var messageCall = new Message();
             messageCall.MessageCode = MessageCode.HeroTeam_Update;
@@ -78,20 +79,20 @@ export async function DeselectHeroTeamCtrl(message : Message, userSocket : UserS
     try {
         await FindHeroTeamByIdUserPlayer(userSocket.IdUserPlayer).then((res : HeroTeam)=>{
             if(res == null || res == undefined) return;
-            if(res.Slot1 === selectHero.IdHero){
-                res.Slot1 = "";
+            if(res.Slot1 === new Types.ObjectId(selectHero.IdHero)){
+                delete res['Slot1'];
             }
-            if(res.Slot2 === selectHero.IdHero){
-                res.Slot2 = "";
+            if(res.Slot2 === new Types.ObjectId(selectHero.IdHero)){
+                delete res['Slot2'];
             }
-            if(res.Slot3 === selectHero.IdHero){
-                res.Slot3 = "";
+            if(res.Slot3 === new Types.ObjectId(selectHero.IdHero)){
+                delete res['Slot3'];
             }
-            if(res.Slot4 === selectHero.IdHero){
-                res.Slot4 = "";
+            if(res.Slot4 === new Types.ObjectId(selectHero.IdHero)){
+                delete res['Slot4'];
             }
-            if(res.Slot5 === selectHero.IdHero){
-                res.Slot5 = "";
+            if(res.Slot5 === new Types.ObjectId(selectHero.IdHero)){
+                delete res['Slot5'];
             }
             var messageCall = new Message();
             messageCall.MessageCode = MessageCode.HeroTeam_Update;

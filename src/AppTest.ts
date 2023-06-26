@@ -9,9 +9,11 @@ import { Message } from "./MessageServer/Model/Message";
 import { CraftHeroEquip } from "./HeroEquip/Model/HeroEquip";
 import { ResCode } from "./Res/Model/ResCode";
 import { CreateHero, Hero, HeroModel } from "./HeroServer/Model/Hero";
+import { TestHeroTeam } from "./HeroTeam/Model/HeroTeam";
 
 export function AppTest(){
     Init.InitDatabase().then(()=>{
+        TestHeroTeam();
         // HeroModel.deleteMany({HeroName : "Clone"}).then(res=>{
         //     // console.log(res);
         // })

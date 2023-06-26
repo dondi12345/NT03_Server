@@ -18,11 +18,11 @@ export class SelectHero{
 export class HeroTeam{
     IdUserPlayer : Types.ObjectId;
     Power : number
-    Slot1 : string;
-    Slot2 : string;
-    Slot3 : string;
-    Slot4 : string;
-    Slot5 : string;
+    Slot1 ?: Types.ObjectId;
+    Slot2 ?: Types.ObjectId;
+    Slot3 ?: Types.ObjectId;
+    Slot4 ?: Types.ObjectId;
+    Slot5 ?: Types.ObjectId;
 
     static Parse(data) : HeroTeam{
         try{
@@ -37,11 +37,11 @@ const HeroTeamSchema = new Schema<HeroTeam>(
     {
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
         Power : {type: Number, default : 0},
-        Slot1 : {type: String},
-        Slot2 : {type: String},
-        Slot3 : {type: String},
-        Slot4 : {type: String},
-        Slot5 : {type: String},
+        Slot1 : {type: mongoose.Schema.Types.ObjectId, ref: 'Hero'},
+        Slot2 : {type: mongoose.Schema.Types.ObjectId, ref: 'Hero'},
+        Slot3 : {type: mongoose.Schema.Types.ObjectId, ref: 'Hero'},
+        Slot4 : {type: mongoose.Schema.Types.ObjectId, ref: 'Hero'},
+        Slot5 : {type: mongoose.Schema.Types.ObjectId, ref: 'Hero'},
     }
 );
 
@@ -80,4 +80,17 @@ export async function UpdateHeroTeam(heroTeam : HeroTeam) {
     }).catch((e)=>{
         LogIdUserPlayer(LogCode.HeroTeam_SaveFail, heroTeam.IdUserPlayer.toString(), e);
     })
+
+}
+
+export async function TestHeroTeam() {
+    HeroTeamModel.findById(new Types.ObjectId("64967143a76f2a6e578af8e4")).then((res) => {
+        var data = HeroTeam.Parse(res);
+        const heroTeam : HeroTeam = {
+            Power : data.Power,
+            IdUserPlayer : data.IdUserPlayer,
+
+        }    
+    })
+
 }

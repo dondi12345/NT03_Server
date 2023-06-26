@@ -6,12 +6,18 @@ export interface IUserPlayer{
     _id : Types.ObjectId;
     IdAccount : Types.ObjectId;
     ServerGameCode : ServerGameCode;
+    Name : string;
+
+    Wave : number;
 }
 
 export class UserPlayer implements IUserPlayer{
     _id : Types.ObjectId = new Types.ObjectId();
     IdAccount : Types.ObjectId;
     ServerGameCode : ServerGameCode;
+    Name : string = "Player"+ (10000+Math.floor(Math.random()*90000));
+
+    Wave : number = 0;
 
     constructor() {
         
