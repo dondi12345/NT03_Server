@@ -1,4 +1,4 @@
-import mongoose, { Schema, Types } from "mongoose";
+import mongoose, { Query, Schema, Types } from "mongoose";
 import { LogIdUserPlayer } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 
@@ -76,21 +76,45 @@ export async function UpdateHeroTeam(heroTeam : HeroTeam) {
         Slot4 : heroTeam.Slot4,
         Slot5 : heroTeam.Slot5,
     }).then(res=>{
-        console.log("Dev 1687617538 ", res);
+        console.log("Dev 1687617539 ", res);
     }).catch((e)=>{
         LogIdUserPlayer(LogCode.HeroTeam_SaveFail, heroTeam.IdUserPlayer.toString(), e);
     })
-
 }
+
+export async function RemoveSlotHeroTeam(heroTeam : HeroTeam) {
+    var query ={}
+    if(heroTeam.Slot1 == null || heroTeam.Slot1 == undefined){
+        query["Slot1"] = "";
+    }
+    if(heroTeam.Slot2 == null || heroTeam.Slot2 == undefined){
+        query["Slot2"] = "";
+    }
+    if(heroTeam.Slot3 == null || heroTeam.Slot3 == undefined){
+        query["Slot3"] = "";
+    }
+    if(heroTeam.Slot4 == null || heroTeam.Slot4 == undefined){
+        query["Slot4"] = "";
+    }
+    if(heroTeam.Slot5 == null || heroTeam.Slot5 == undefined){
+        query["Slot5"] = "";
+    }
+
+    console.log("Dev 1687859261 ", heroTeam);
+
+    HeroTeamModel.updateOne({IdUserPlayer : heroTeam.IdUserPlayer},{ $unset : query}).then(res=>{
+        console.log("Dev 1687617538 ", res);
+    }).catch((e)=>{
+        LogIdUserPlayer(LogCode.HeroTeam_RemoveSlotFail, heroTeam.IdUserPlayer.toString(), e);
+    })
+
+} 
 
 export async function TestHeroTeam() {
     HeroTeamModel.findById(new Types.ObjectId("64967143a76f2a6e578af8e4")).then((res) => {
         var data = HeroTeam.Parse(res);
-        const heroTeam : HeroTeam = {
-            Power : data.Power,
-            IdUserPlayer : data.IdUserPlayer,
-
-        }    
+        data.Slot1 = undefined;
+        UpdateHeroTeam(data);
     })
 
 }

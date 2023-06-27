@@ -19,6 +19,7 @@ export enum LogCode {
     HeroTeam_SelectHeroFail = 9001,
     HeroTeam_UpdateFail = 9002,
     HeroTeam_SaveFail = 9003,
+    HeroTeam_RemoveSlotFail = 9004,
     
     
 }

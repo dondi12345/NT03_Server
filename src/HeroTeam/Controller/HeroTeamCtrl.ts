@@ -5,7 +5,7 @@ import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHeroTeam, FindHeroTeamByIdUserPlayer, HeroTeam, HeroTeamModel, SelectHero, UpdateHeroTeam } from "../Model/HeroTeam";
+import { CreateHeroTeam, FindHeroTeamByIdUserPlayer, HeroTeam, HeroTeamModel, RemoveSlotHeroTeam, SelectHero, UpdateHeroTeam } from "../Model/HeroTeam";
 
 export async function HeroTeamLogin(message : IMessage, userSocket: IUserSocket){
     await FindHeroTeamByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
@@ -80,24 +80,21 @@ export async function DeselectHeroTeamCtrl(message : Message, userSocket : UserS
         await FindHeroTeamByIdUserPlayer(userSocket.IdUserPlayer).then((res : HeroTeam)=>{
             if(res == null || res == undefined) return;
             if(res.Slot1 === new Types.ObjectId(selectHero.IdHero)){
-                delete res['Slot1'];
+                res['Slot1'] = undefined;
             }
             if(res.Slot2 === new Types.ObjectId(selectHero.IdHero)){
-                delete res['Slot2'];
+                res['Slot2'] = undefined;
             }
             if(res.Slot3 === new Types.ObjectId(selectHero.IdHero)){
-                delete res['Slot3'];
+                res['Slot3'] = undefined;
             }
             if(res.Slot4 === new Types.ObjectId(selectHero.IdHero)){
-                delete res['Slot4'];
+                res['Slot4'] = undefined;
             }
             if(res.Slot5 === new Types.ObjectId(selectHero.IdHero)){
-                delete res['Slot5'];
+                res['Slot5'] = undefined;
             }
-            var messageCall = new Message();
-            messageCall.MessageCode = MessageCode.HeroTeam_Update;
-            messageCall.Data = JSON.stringify(res);
-            UpdateHeroTeamCtrl(messageCall, userSocket);
+            RemoveSlotHeroTeamCtrl(res, userSocket);
         })
     } catch (error) {
         LogUserSocket(LogCode.HeroTeam_SelectHeroFail, userSocket, error)
@@ -114,5 +111,16 @@ export function UpdateHeroTeamCtrl(message : Message, userSocket : UserSocket){
         SendMessageToSocket(messageBack, userSocket.Socket);
     } catch (error) {
         LogUserSocket(LogCode.HeroTeam_UpdateFail, userSocket, error);
+    }
+}
+
+export function RemoveSlotHeroTeamCtrl(heroTeam : HeroTeam, userSocket : UserSocket){
+    try {
+        var messageCall = new Message();
+        messageCall.MessageCode = MessageCode.HeroTeam_Update;
+        messageCall.Data = JSON.stringify(heroTeam);
+        RemoveSlotHeroTeam(heroTeam);
+    } catch (error) {
+        LogUserSocket(LogCode.HeroTeam_RemoveSlotFail, userSocket, error);
     }
 }
