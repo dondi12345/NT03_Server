@@ -101,12 +101,12 @@ export class Hero implements IHero{
                       +" "+HeroFashionVar.LastNames[Math.floor(Math.random() * HeroFashionVar.LastNames.length)];
         this.GenderCode = Math.random() < 0.5 ? GenderCode.Male : GenderCode.Female;
         if(this.GenderCode == GenderCode.Male ){
-            this.Eyes = HeroFashion.NewHero(HeroFashionVar.FemaleEyes[Math.floor(Math.random() * HeroFashionVar.FemaleEyes.length)])
-            this.Hair = HeroFashion.NewHero1(HeroFashionVar.FemaleHair[Math.floor(Math.random() * HeroFashionVar.FemaleHair.length)],
-                                                HeroFashionVar.Color[Math.floor(Math.random() * HeroFashionVar.Color.length)]);
-        }else{
             this.Eyes = HeroFashion.NewHero(HeroFashionVar.MaleEyes[Math.floor(Math.random() * HeroFashionVar.MaleEyes.length)])
             this.Hair = HeroFashion.NewHero1(HeroFashionVar.MaleHair[Math.floor(Math.random() * HeroFashionVar.MaleHair.length)],
+                                                HeroFashionVar.Color[Math.floor(Math.random() * HeroFashionVar.Color.length)]);
+        }else{
+            this.Eyes = HeroFashion.NewHero(HeroFashionVar.FemaleEyes[Math.floor(Math.random() * HeroFashionVar.FemaleEyes.length)])
+            this.Hair = HeroFashion.NewHero1(HeroFashionVar.FemaleHair[Math.floor(Math.random() * HeroFashionVar.FemaleHair.length)],
                                                 HeroFashionVar.Color[Math.floor(Math.random() * HeroFashionVar.Color.length)]);
         }
         this.Eyebrow = HeroFashion.NewHero(HeroFashionVar.Eyebrow[Math.floor(Math.random() * HeroFashionVar.Eyebrow.length)]);                            

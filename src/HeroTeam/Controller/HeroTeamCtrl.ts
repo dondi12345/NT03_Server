@@ -79,19 +79,19 @@ export async function DeselectHeroTeamCtrl(message : Message, userSocket : UserS
     try {
         await FindHeroTeamByIdUserPlayer(userSocket.IdUserPlayer).then((res : HeroTeam)=>{
             if(res == null || res == undefined) return;
-            if(res.Slot1 === new Types.ObjectId(selectHero.IdHero)){
+            if(res.Slot1?.toString() == selectHero.IdHero){
                 res['Slot1'] = undefined;
             }
-            if(res.Slot2 === new Types.ObjectId(selectHero.IdHero)){
+            if(res.Slot2?.toString() == selectHero.IdHero){
                 res['Slot2'] = undefined;
             }
-            if(res.Slot3 === new Types.ObjectId(selectHero.IdHero)){
+            if(res.Slot3?.toString() == selectHero.IdHero){
                 res['Slot3'] = undefined;
             }
-            if(res.Slot4 === new Types.ObjectId(selectHero.IdHero)){
+            if(res.Slot4?.toString() == selectHero.IdHero){
                 res['Slot4'] = undefined;
             }
-            if(res.Slot5 === new Types.ObjectId(selectHero.IdHero)){
+            if(res.Slot5?.toString() == selectHero.IdHero){
                 res['Slot5'] = undefined;
             }
             RemoveSlotHeroTeamCtrl(res, userSocket);
@@ -119,6 +119,7 @@ export function RemoveSlotHeroTeamCtrl(heroTeam : HeroTeam, userSocket : UserSoc
         var messageCall = new Message();
         messageCall.MessageCode = MessageCode.HeroTeam_Update;
         messageCall.Data = JSON.stringify(heroTeam);
+        UpdateHeroTeamCtrl(messageCall, userSocket);
         RemoveSlotHeroTeam(heroTeam);
     } catch (error) {
         LogUserSocket(LogCode.HeroTeam_RemoveSlotFail, userSocket, error);
