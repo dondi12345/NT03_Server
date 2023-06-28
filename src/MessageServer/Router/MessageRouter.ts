@@ -9,6 +9,7 @@ import { GetSummonResult, HeroLogin, HeroUpgradeLvCtrl, HireHero, Summon } from 
 import { CraftEquip, HeroEquipLogin, HeroEquipUpgradeLvCtrl, UnwearingEquip, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
 import { ResLogin } from "../../Res/Controller/ResController";
 import { DeselectHeroTeamCtrl, HeroTeamLogin, SelectHeroTeamCtrl } from "../../HeroTeam/Controller/HeroTeamCtrl";
+import { ProtectedFailCtrl, ProtectedSuccessCtrl } from "../../TDWave/Controller/TDWaveController";
 
 
 export function MessageRouter(message : IMessage, userSocket : IUserSocket){
@@ -88,6 +89,14 @@ export function MessageRouter(message : IMessage, userSocket : IUserSocket){
     }
     if(message.MessageCode == MessageCode.HeroTeam_DeselectHero){
         DeselectHeroTeamCtrl(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.TDWave_ProtectedSuccess){
+        ProtectedSuccessCtrl(message, userSocket);
+        return;
+    }
+    if(message.MessageCode == MessageCode.TDWave_ProtectedFail){
+        ProtectedFailCtrl(message, userSocket);
         return;
     }
 }

@@ -4,8 +4,11 @@ export enum LogCode {
     AccountServer_Test = 2000,
 
     UserPlayerServer_Test = 3000,
+    UserPlayerServer_SaveFail = 3001,
 
     Currency_Test = 4000,
+    Currency_UpdateFail = 4001,
+    Currency_SaveFail = 4002,
 
     Hero_Test = 5000,
 

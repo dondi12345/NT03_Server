@@ -1,5 +1,7 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { DefaultCurrency } from "./DefaultCurrency";
+import { LogIdUserPlayer } from "../../LogServer/Controller/LogController";
+import { LogCode } from "../../LogServer/Model/LogCode";
 
 export interface ICurrency{
     IdUserPlayer : Types.ObjectId,
@@ -80,6 +82,8 @@ export async function UpdateCurrency(currency : ICurrency, idUserPlayer : Types.
         }
     ).then(res=>{
         console.log("Dev 1684851978 " + JSON.stringify(res))
+    }).catch(e=>{
+        LogIdUserPlayer(LogCode.Currency_SaveFail, idUserPlayer.toString(), e);
     })
 }
 

@@ -3,10 +3,10 @@ import { UserJoinToGlobalChannel } from "../../ChatServer/Model/UserChatChannel"
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { AddUserSocketDictionary, SendMessageToSocket, userSocketDictionary } from "../../MessageServer/Service/MessageService";
-import { IUserSocket } from "../../UserSocket/Model/UserSocket";
+import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
 import { ServerGame } from "../Model/ServerGame";
 import { ServerGameCode } from "../Model/ServerGameCode";
-import { CreateUserPlayer, FindByIdAccountAndServerGameCode, IUserPlayer, UserPlayer } from "../Model/UserPlayer";
+import { CreateUserPlayer, FindByIdAccountAndServerGameCode, IUserPlayer, UpdateUserPlayer, UserPlayer } from "../Model/UserPlayer";
 import { Redis } from '../../Enviroment/Env';
 import { UserSocketData } from '../../UserSocket/Model/UserSocketData';
 
@@ -86,4 +86,12 @@ export async function CheckUserLoginedFromRedis(userPlayer:IUserPlayer, userSock
             redisPub.publish(Redis.UserPlayerChannel, JSON.stringify(message));  
         }
     });
+}
+
+export function UpdateUserPlayerCtrl(userSocket : UserSocket) {
+    var message = new Message();
+    message.MessageCode = MessageCode.UserPlayerServer_Update;
+    message.Data = JSON.stringify(userSocket.UserPlayer);
+    UpdateUserPlayer(userSocket.UserPlayer);
+    SendMessageToSocket(message, userSocket.Socket);
 }

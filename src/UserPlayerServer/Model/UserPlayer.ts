@@ -1,6 +1,8 @@
 import mongoose, { Schema, Types } from 'mongoose';
 import { variable } from '../../Enviroment/Env';
 import { ServerGameCode } from './ServerGameCode';
+import { LogIdUserPlayer, LogUserSocket } from '../../LogServer/Controller/LogController';
+import { LogCode } from '../../LogServer/Model/LogCode';
 
 export interface IUserPlayer{
     _id : Types.ObjectId;
@@ -72,4 +74,16 @@ export async function FindByIdAccountAndServerGameCode(idAccount : Types.ObjectI
         userPlayer = UserPlayer.Parse(res);
     })
     return userPlayer;
+}
+
+export async function UpdateUserPlayer(userPlayer : UserPlayer) {
+    UserPlayerModel.updateOne({_id : userPlayer._id},{
+        ServerGameCode : userPlayer.ServerGameCode,
+        Name : userPlayer.Name,
+        Wave : userPlayer.Wave,
+    }).then(res=>{
+        console.log("Dev 1687943868 ", res);
+    }).catch(e=>{
+        LogIdUserPlayer(LogCode.UserPlayerServer_SaveFail, userPlayer._id.toString(), e);
+    })
 }

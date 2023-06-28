@@ -1,3 +1,5 @@
+import { LogUserSocket } from "../../LogServer/Controller/LogController";
+import { LogCode } from "../../LogServer/Model/LogCode";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
@@ -43,9 +45,13 @@ function LoginSuccessMessage(res : ICurrency){
 }
 
 export function UpdateCurrencyCtrl(userSocket: IUserSocket){
-    UpdateCurrency(userSocket.Currency, userSocket.IdUserPlayer);
-    var messageBack : Message = new Message();
-    messageBack.MessageCode = MessageCode.Currency_Update;
-    messageBack.Data = JSON.stringify(userSocket.Currency);
-    SendMessageToSocket(messageBack, userSocket.Socket);
+    try {
+        UpdateCurrency(userSocket.Currency, userSocket.IdUserPlayer);
+        var messageBack : Message = new Message();
+        messageBack.MessageCode = MessageCode.Currency_Update;
+        messageBack.Data = JSON.stringify(userSocket.Currency);
+        SendMessageToSocket(messageBack, userSocket.Socket);
+    } catch (error) {
+        LogUserSocket(LogCode.Currency_UpdateFail, userSocket, error);
+    }
 }

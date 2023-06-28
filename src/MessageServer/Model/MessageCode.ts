@@ -19,6 +19,7 @@ export enum MessageCode {
     UserPlayerServer_Login = 3001,
     UserPlayerServer_LoginFail = 3002,
     UserPlayerServer_LoginSuccess = 3003,
+    UserPlayerServer_Update = 3004,
 
     Currency_Test = 4000,
     Currency_Login  = 4001,
@@ -77,4 +78,9 @@ export enum MessageCode {
     HeroTeam_Update  = 9004,
     HeroTeam_SelectHero = 9005,
     HeroTeam_DeselectHero = 9006,
+
+    TDWave_ProtectedSuccess = 10001,
+    TDWave_ProtectedFail = 10002,
+    TDWave_BattleWin = 10003,
+    TDWave_BattleLose = 10004,
 }
