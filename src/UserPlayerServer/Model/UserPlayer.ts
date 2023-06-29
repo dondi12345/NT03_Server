@@ -44,7 +44,8 @@ const UserPlayerSchema = new Schema<IUserPlayer>(
     {
       _id : { type: Schema.Types.ObjectId, default: new Types.ObjectId()},
       IdAccount: {type: Schema.Types.ObjectId, ref : 'Account'},
-      ServerGameCode : {type : Number, enum : ServerGameCode}
+      ServerGameCode : {type : Number, enum : ServerGameCode},
+      Wave : {type : Number, default : 0}
     }
 );
   
@@ -77,10 +78,11 @@ export async function FindByIdAccountAndServerGameCode(idAccount : Types.ObjectI
 }
 
 export async function UpdateUserPlayer(userPlayer : UserPlayer) {
+    console.log("Dev 1688027507 ", userPlayer);
     UserPlayerModel.updateOne({_id : userPlayer._id},{
         ServerGameCode : userPlayer.ServerGameCode,
         Name : userPlayer.Name,
-        Wave : userPlayer.Wave,
+        Wave : userPlayer.Wave ? userPlayer.Wave : 0,
     }).then(res=>{
         console.log("Dev 1687943868 ", res);
     }).catch(e=>{

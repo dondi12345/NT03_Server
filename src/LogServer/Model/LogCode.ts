@@ -15,6 +15,7 @@ export enum LogCode {
     HeroEquip_Test = 6000,
 
     Res_Test = 7000,
+    Res_SaveFail = 7001,
 
     Shop_Test = 8000,
 

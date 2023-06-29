@@ -73,6 +73,7 @@ export async function CheckUserLoginedFromRedis(userPlayer:IUserPlayer, userSock
             addAccountTokenToRedis(userSocket.IdUserPlayer.toString(), userSocket.IdAccount.toString());
             AddUserSocketDictionary(userSocket);
             console.log("Dev 1685080451 "+Object.keys(userSocketDictionary).length)
+            userSocket.UserPlayer = userPlayer;
             SendMessageToSocket(LoginSuccessMessage(userPlayer), userSocket.Socket);
         }else{
             var message = new Message();

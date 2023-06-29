@@ -10,6 +10,9 @@ import { TDWaveReward5Lv, TDWaveRewardGrow5Lv, TDWaveRewardGrowLv, TDWaveRewardL
 
 export function ProtectedSuccessCtrl(message : Message, userSocket : UserSocket) {
     //Reward
+    if(userSocket.UserPlayer.Wave == undefined || userSocket.UserPlayer.Wave == null){
+        userSocket.UserPlayer.Wave = 0;
+    }
     if(userSocket.UserPlayer.Wave % 5 == 0){
         userSocket.Currency.Money += TDWaveRewardLv.Money + TDWaveRewardGrowLv.Money * userSocket.UserPlayer.Wave;
         userSocket.Currency.Food += TDWaveRewardLv.Food + TDWaveRewardGrowLv.Food * userSocket.UserPlayer.Wave;

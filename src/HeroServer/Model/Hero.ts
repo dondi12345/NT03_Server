@@ -189,6 +189,6 @@ export async function FindHeroById(id : Types.ObjectId){
 export async function UpdateHero(hero:IHero) {
     console.log("Dev 1687174057 ", hero);
     HeroModel.updateOne({_id : hero._id},{Lv : hero.Lv, Gear : hero.Gear}).then((res)=>{
-        console.log("Dev 1685723760 ",res);
+        console.log("Dev 1685723761 ",res);
     })
 }

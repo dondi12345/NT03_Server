@@ -2,6 +2,8 @@ import mongoose, { Schema, Types } from "mongoose";
 import { ResCode } from "./ResCode";
 import { QualityItemCode } from "../../QualityItem/QualityItem";
 import { ResType } from "./ResType";
+import { LogIdUserPlayer } from "../../LogServer/Controller/LogController";
+import { LogCode } from "../../LogServer/Model/LogCode";
 
 export class Reses{
     Elements : IRes[] = [];
@@ -106,11 +108,7 @@ export async function UpdateRes(res:IRes) {
         Number : res.Number,
     }).then((res)=>{
         console.log("Dev 1685723759 "+res);
-    })
-}
-
-export async function IncreaseNumber(id : Types.ObjectId, number : number){
-    await ResModel.updateOne({_id : id}, {$inc:{Number : number}}).then(res=>{
-        console.log("Dev 1686728204 " , res);
+    }).catch(e=>{
+        LogIdUserPlayer(LogCode.Res_SaveFail, res.IdUserPlayer.toHexString(), e);
     })
 }

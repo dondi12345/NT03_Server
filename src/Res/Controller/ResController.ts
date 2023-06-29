@@ -2,7 +2,7 @@ import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateRes, FindItemByIdUserPlayerAndCode as FindResByIdUserPlayerAndCode, FindResByIdUserPlayer, IRes, Res, Reses, UpdateRes, IncreaseNumber } from "../Model/Res";
+import { CreateRes, FindItemByIdUserPlayerAndCode as FindResByIdUserPlayerAndCode, FindResByIdUserPlayer, IRes, Res, Reses, UpdateRes } from "../Model/Res";
 import { ResCode } from "../Model/ResCode";
 
 export async function ResLogin(message : IMessage, userSocket: IUserSocket){
@@ -47,7 +47,7 @@ export async function ChangeRes(code : ResCode, number: number, userSocket: IUse
     res.Number += number;
     var result = true;
     console.log("Dev 1686728016 ", res);
-    IncreaseNumber(res._id, number);
+    // IncreaseNumber(res._id, number);
     UpdateResCtrl(res, userSocket);
     return result;
 }
@@ -65,6 +65,7 @@ export async function CreateNewRes(resCode : ResCode ,userSocket: IUserSocket) {
 }
 
 export async function UpdateResCtrl(res : Res ,userSocket: IUserSocket) {
+    UpdateRes(res);
     var message = new Message();
     message.MessageCode = MessageCode.Res_Update;
     message.Data = JSON.stringify(res);
