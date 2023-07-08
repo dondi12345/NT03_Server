@@ -6,14 +6,16 @@ export const port = {
 }
 
 export const Mongo = {
-    dbLink : "mongodb://127.0.0.1:27017",
+    // dbLink : "mongodb://45.124.95.182:27017",
     // dbLink : "mongodb+srv://dondi1412:Trunghung24@cluster0.vj24px5.mongodb.net/",
+    dbLink : "mongodb://103.116.9.104:27017",
     DbName : "NT03",
 }
 
 export const variable = {
     eventSocketConnection : "connection",
     eventSocketListening : "listening",
+    eventSocketDisconnect : "disconnect",
     worker : "worker",
     messageServer : "MessageServer",
     chatServer: "ChatServer",
@@ -24,4 +26,15 @@ export const variable = {
     maxStepRacingHourse : 20,
     localhost : "localhost",
     // localhost : "45.124.95.182",
+}
+
+export const Redis = {
+    EventMessage : "message",
+
+    AccountChannel : "AccountChannel",
+    UserPlayerChannel : "UserPlayerChannel",
+
+    KeyUserPlayerSession : "UserPlayer:Session:",
+    KeyHeroSummon : "Hero:Summon:",
+
 }

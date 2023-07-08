@@ -2,21 +2,17 @@ import mongoose, { Schema, Types } from 'mongoose';
 
 export interface IAccount{
     _id : Types.ObjectId;
-    Username?: String;
-    Password?: String;
+    Username: String;
+    Password: String;
 }
 
 export class Account implements IAccount{
     _id : Types.ObjectId = new Types.ObjectId();
-    Username?: String;
-    Password?: String;
+    Username: String;
+    Password: String;
 
     constructor() {
         
-    }
-
-    static ToString(data :IAccount){
-        return JSON.stringify(data);
     }
 
     static Parse(data) : IAccount{
@@ -47,9 +43,10 @@ export async function GetAccountById(_id : Types.ObjectId){
     return Account;
 }
 
-export async function CreateAccount(Account:Account) {
+export async function CreateAccount(account:Account) {
     var newAccount
-    await AccountModel.create(Account).then(res=>{
+    account._id = new Types.ObjectId();
+    await AccountModel.create(account).then(res=>{
         newAccount = res;
     })
     return newAccount

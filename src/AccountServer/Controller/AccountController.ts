@@ -1,18 +1,22 @@
-import { CreateAccount, FindByUserName, IAccount, Account, AccountModel } from "../Model/Account";
 import bcrypt from 'bcrypt'
-import { Message } from "../../MessageServer/Model/Message";
+import { CreateAccount, FindByUserName, IAccount, Account, AccountModel } from "../Model/Account";
+import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
-import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
+import { AccountAuthen, IAccountAuthen } from "../Model/AccountAuthen";
+import { AccountData } from "../Model/AccountData";
+import { AccountTocken } from "../Model/AccountTocken";
+import { AuthenGetToken, AuthenVerify } from "../../AuthenServer/AuthenController";
+import { TockenAuthen } from "../Model/TockenAuthen";
+
 const saltRounds = 10;
 
-export async function AccountRegister(message:Message, userSocket: IUserSocket) {
+export async function AccountRegister(message : IMessage, response) {
     try {
         var account = Account.Parse(message.Data);
         
         var isExisten = false;
         if(account.Username == null || account.Username == undefined) {
-            SendMessageToSocket(RegisterFailMessage(), userSocket.Socket);
+            response.send(RegisterFailMessage());
             return; 
         }
         await FindByUserName(account.Username).then(res=>{
@@ -20,24 +24,24 @@ export async function AccountRegister(message:Message, userSocket: IUserSocket) 
             isExisten = true;
         })
         if(isExisten) {
-            SendMessageToSocket(RegisterFailMessage(), userSocket.Socket);
-            return; 
+            response.send(RegisterFailMessage());
+            return;
         }
 
         if(account.Password == null || account.Password == undefined){
-            SendMessageToSocket(RegisterFailMessage(), userSocket.Socket);
-            return;
+            response.send(RegisterFailMessage());
         }
         var pass = account.Password == undefined ? "" : account.Password+"";
         bcrypt.hash(pass, saltRounds, function(err, hash) {
             account.Password = hash;
             CreateAccount(account).then((res: IAccount)=>{
-                console.log("1684646335 "+ res);
-                SendMessageToSocket(RegisterSuccessMessage(), userSocket.Socket);
+                console.log("Dev 1684646335 "+ res);
+                response.send(RegisterSuccessMessage());
             })
         });
     } catch (error) {
-        console.log("1684641453 "+error);
+        console.log("Dev 1684641453 "+error);
+        response.send(RegisterFailMessage());
     }
 }
 
@@ -52,39 +56,55 @@ function RegisterSuccessMessage(){
     return message;
 }
 
-export async function AccountLogin(message:Message, userSocket: IUserSocket){
-    console.log("1684684863 Login")
+export async function AccountLogin(message:Message, response){
+    console.log("Dev 1684684863 Login")
     try {
-        var account = Account.Parse(message.Data);
-        if(account.Username == null || account.Username == undefined || account.Password == null || account.Password== undefined){
-            SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
+        var accountAuthen = AccountAuthen.Parse(message.Data);
+        
+
+        if(accountAuthen.Username == null || accountAuthen.Username == undefined || accountAuthen.Password == null || accountAuthen.Password== undefined){
+            console.log("Dev 1684937233 error format")
+            response.send(JSON.stringify(LoginFailMessage()));
             return;
         }
-        
-        await FindByUserName(account.Username).then((res: IAccount)=>{
-            if(res == null || res == undefined){
-                SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
-                return;
-            }
-            if(res.Password == null || res.Password == undefined || account.Password == null || account.Password== undefined){
-                SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
-                return;
-            }
-            bcrypt.compare(account.Password.toString(), res.Password.toString(), function(err, result) {
-                if(result){
-                    userSocket.IdAccount = res._id;
-                    console.log("1684684470 Login successfull: "+userSocket.IdAccount.toString())
-                    SendMessageToSocket(LoginSuccessMessage(res), userSocket.Socket);
-                return;
-                }else{
-                    console.log("1684684249 WrongPassword")
-                    SendMessageToSocket(LoginFailMessage(), userSocket.Socket);
+        else
+        {
+            await FindByUserName(accountAuthen.Username).then((res: IAccount)=>{
+                if(res == null || res == undefined){
+                    console.log("Dev 1685266848 Account not found")
+                    response.send(JSON.stringify(LoginFailMessage()));
                     return;
                 }
-            });
-        })
+                if(res.Password == null || res.Password == undefined){
+                    console.log("Dev 1685266848 Error password")
+                    response.send(JSON.stringify(LoginFailMessage()));
+                    return;
+                }
+                bcrypt.compare(accountAuthen.Password.toString(), res.Password.toString(), async function(err, result) {
+                    if(result){
+                        console.log("Dev 1684684470 Login successfull: ")
+                        var accountData = new AccountData();
+                        accountData.IdAccount = res._id.toString();
+                        accountData.IdDevice = accountAuthen.IdDevice;
+
+                        var accountTocken = new AccountTocken();
+                        accountTocken.IdAccount = accountData.IdAccount;
+                        accountTocken.Token = AuthenGetToken(JSON.parse(JSON.stringify(accountData)));
+
+                        LoginSuccess(accountTocken, response);
+                        return;
+                    }else{
+                        console.log("Dev 1684684249 WrongPassword")
+                        response.send(JSON.stringify(LoginFailMessage()));
+                        return;
+                    }
+                });
+            })
+        }
+       
     } catch (error){
-        console.log("1684684560 "+error);
+        console.log("Dev 1684684560 "+error);
+        response.send(LoginFailMessage())
     }
 }
 
@@ -93,9 +113,34 @@ function LoginFailMessage(){
     message.MessageCode = MessageCode.AccountServer_LoginFail;
     return message;
 }
-function LoginSuccessMessage(account : IAccount){
+
+export function AccountLoginTocken(message : Message, response){
+    var tockenAuthen = TockenAuthen.Parse(message.Data);
+    var data = AuthenVerify(tockenAuthen.Token);
+    if(data == null || data == undefined){
+        response.send(LoginFailMessage());
+        console.log("Dev 1684937265 wrong token")
+        return;
+    }else{
+        var accountData = AccountData.Parse(data);
+        if(accountData.IdDevice != tockenAuthen.IdDevice){
+            console.log("Dev 1684937311 wrong device")
+            response.send(LoginFailMessage());
+            return; 
+        }
+
+        var accountTocken = new AccountTocken();
+        accountTocken.IdAccount = accountData.IdAccount;
+        accountTocken.Token = tockenAuthen.Token;
+
+        LoginSuccess(accountTocken, response);
+    }
+}
+
+export function LoginSuccess(accountTocken : AccountTocken, response){
+
     var message = new Message();
     message.MessageCode = MessageCode.AccountServer_LoginSuccess;
-    message.Data = Account.ToString(account);
-    return message;
-}
+    message.Data = JSON.stringify(accountTocken);
+    response.send(JSON.stringify(message));
+} 

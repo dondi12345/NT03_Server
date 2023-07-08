@@ -1,74 +1,107 @@
 import { Server, Socket } from "socket.io";
-import {port, variable} from "../../Other/Env";
+import {port, Redis, variable} from "../../Enviroment/Env";
 import { Message } from "../Model/Message";
-import { UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
+import { IUserSocket, UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { MessageRouter } from "../Router/MessageRouter";
 import { createClient } from 'redis';
 import { MessageCode } from "../Model/MessageCode";
 import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
+import { AccountData } from "../../AccountServer/Model/AccountData";
+import { UserSocketData } from "../../UserSocket/Model/UserSocketData";
 
 const redisSubscriber = createClient();
+const redisAccountToken = createClient();
+const redisUserPlayerChannelSub = createClient();
 
-export let userSocketMessageServer : UserSocketServer = {};
 export let userSocketDictionary : UserSocketDictionary ={};
 
-export function InitMessageServer(){
+export function InitMessageServerWithSocket(){
+    redisAccountToken.keys(Redis.KeyUserPlayerSession+'*', (error, keys) => {
+        if (error) {
+          console.error('Error retrieving keys:', error);
+          return;
+        }
+      
+        // If there are keys matching the pattern
+        if (keys.length > 0) {
+          // Delete the keys
+          redisAccountToken.del(...keys, (error, deletedCount) => {
+            if (error) {
+              console.error('Error deleting keys:', error);
+            } else {
+              console.log('1685077153 Keys deleted:', deletedCount);
+            }
+          });
+        } else {
+          console.log('No keys found matching the pattern.');
+        }
+      })
     InitWithSocket();
 }
 
 function InitWithSocket() {
     const io = new Server(port.portMessageServer);
-    console.log(`1684424393 Worker ${process.pid} listening to MessageServer on port: ${port.portMessageServer}`);
+    console.log(`Dev 1684424393 Worker ${process.pid} listening to MessageServer on port: ${port.portMessageServer}`);
     io.on(variable.eventSocketConnection, (socket : Socket) => {
-        console.log("1684424410 Socket connec to MessageServer");
+        console.log("Dev 1684424410 "+socket.id+" connec to MessageServer");
         let userSocket = new UserSocket();
         socket.on(variable.eventSocketListening, (data) => {
-            console.log("1684424442:" + data);
+            console.log("Dev 1684424442:" + data);
             var message = Message.Parse(data);
 
             if(!userSocket.Socket) userSocket.Socket = socket;
 
-            if(message.MessageCode == MessageCode.AccountServer_Register){
-                AccountRegister(message, userSocket);
-                return;
-            }
-            if(message.MessageCode == MessageCode.AccountServer_Login){
-                AccountLogin(message, userSocket);
-                return;
-            }
-            if(userSocket.IdAccount == null || userSocket.IdAccount == undefined){
-                console.log("1684769809 Logout Acount")
-                return;
-            }
-            if(message.MessageCode == MessageCode.UserPlayerServer_Login){
-                UserPlayerLogin(message, userSocket);
-                return;
-            }
-            if(userSocket.IdUserPlayer == null || userSocket.IdUserPlayer == undefined){
-                console.log("1684769809 Logout Acount")
-                return;
-            } 
-            MessageRouter(message)
+            MessageRouter(message, userSocket);
         });
 
         socket.on("disconnect", () => {
-            delete userSocketDictionary[userSocket.IdUserPlayer.toString()]
+            console.log("Dev 1685025149 "+socket.id+" left MessageServer");
+            try {
+                console.log("Dev 1685086000 ")
+                redisAccountToken.del(Redis.KeyUserPlayerSession + userSocket.IdUserPlayer,()=>{});
+            } catch (error) {
+                console.log("Dev 1685080913 "+error)
+            }
+            try {
+                delete userSocketDictionary[userSocket.IdUserPlayer.toString()]
+            } catch (error) {
+                console.log("Dev 1684903275 "+error)
+            }
         });
     });
 
-    redisSubscriber.subscribe(variable.worker);
+    // redisSubscriber.subscribe(variable.worker);
 
-    redisSubscriber.on(variable.messageServer, (channel, data) => {
+    // redisSubscriber.on(variable.messageServer, (channel, data) => {
+    //     var message = Message.Parse(data);
+    //     MessageRouter(message);
+    // });
+
+    redisUserPlayerChannelSub.subscribe(Redis.UserPlayerChannel);
+    redisUserPlayerChannelSub.on('message', (channel, data)=>{
+        console.log("Dev 1685078357"+data)
         var message = Message.Parse(data);
-        MessageRouter(message);
+        if(message.MessageCode == MessageCode.MessageServer_Disconnect){
+            try {
+                var userSocketData = UserSocketData.Parse(message.Data);
+                console.log("Dev 1685077463 Disconnect: "+userSocketData.IdUserPlayer.toString());
+                userSocketDictionary[userSocketData.IdUserPlayer.toString()].Socket.disconnect();
+            } catch (error) {
+                console.log("Dev 1685074144 "+error)
+            }
+        }
     });
+}
+
+export function AddUserSocketDictionary(userSocket : IUserSocket){
+    userSocketDictionary[userSocket.IdUserPlayer.toString()] = userSocket;
 }
 
 export function SendMessageToSocket(message: Message, socket : Socket){
     try {
-        socket.emit(variable.eventSocketListening, Message.ToString(message));
+        socket.emit(variable.eventSocketListening, JSON.stringify(message));
     } catch (error) {
-        console.log("1684765923 "+error);
+        console.log("Dev 1684765923 "+error);
     }
 }

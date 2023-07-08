@@ -19,14 +19,6 @@ export class MSGChat implements IMSGChat {
         
     }
 
-    static ToString(msgChat : IMSGChat){
-        var data = new MSGChat();
-        data.MSGChatCode = msgChat.MSGChatCode;
-        data.IdUserPlayer = msgChat.IdUserPlayer;
-        data.Data = msgChat.Data;
-        return JSON.stringify(data);
-    }
-
     static Parse(data) : IMSGChat{
         try{
             return JSON.parse(data);

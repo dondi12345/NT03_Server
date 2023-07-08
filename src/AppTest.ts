@@ -2,12 +2,21 @@ import { Types } from "mongoose";
 import { ChatChannel, ChatChannelModel, CreateChatChannel, IChatChannel, TyppeChatChannelCode } from "./ChatServer/Model/ChatChannel";
 import { UserJoinToChatChannel } from "./ChatServer/Model/UserChatChannel";
 import Init from "./Service/Init";
+import { UpdateRes } from "./Res/Model/Res";
+import { CreateNewHero } from "./HeroServer/Controller/HeroController";
+import { CraftEquip } from "./HeroEquip/Controller/HeroEquipController";
+import { Message } from "./MessageServer/Model/Message";
+import { CraftHeroEquip } from "./HeroEquip/Model/HeroEquip";
+import { ResCode } from "./Res/Model/ResCode";
+import { CreateHero, Hero, HeroModel } from "./HeroServer/Model/Hero";
+import { TestHeroTeam } from "./HeroTeam/Model/HeroTeam";
 
 export function AppTest(){
-    // return;
     Init.InitDatabase().then(()=>{
-        InitGlobalChatChannel();
-        InitPlayerChatChannel();
+        TestHeroTeam();
+        // HeroModel.deleteMany({HeroName : "Clone"}).then(res=>{
+        //     // console.log(res);
+        // })
     })
 }
 
@@ -16,10 +25,10 @@ export async function InitGlobalChatChannel(){
     globalChannel.TyppeChatChannelCode = TyppeChatChannelCode.Global;
     globalChannel.Detail = "This global channel";
     await ChatChannelModel.find({"TyppeChatChannelCode" : TyppeChatChannelCode.Global}).then(res=>{
-        console.log("1684596348 "+res.length)
+        console.log("Dev 1684596348 "+res.length)
         if(res.length > 0) return;
         CreateChatChannel(globalChannel).then((res: IChatChannel)=>{
-            console.log("1684583339 "+res._id);
+            console.log("Dev 1684583339 "+res._id);
         })
     })
 }
