@@ -34,19 +34,19 @@ export async function DailyLoginRewardCheck(message : IMessage, response) {
         }else{
             var date = new Date();
             var isCheck = false;
-            if(date.getFullYear() > res.Year){
+            if(date.getUTCFullYear() > res.Year){
                 isCheck = true;
             }
-            if(date.getMonth() > res.Month){
+            if(date.getUTCMonth() > res.Month){
                 isCheck = true;
             }
-            if(date.getDate() > res.Day){
+            if(date.getUTCDate() > res.Day){
                 isCheck = true;
             }
             if(isCheck){
-                res.Year = date.getFullYear();
-                res.Month = date.getMonth();
-                res.Day = date.getDate();
+                res.Year = date.getUTCFullYear();
+                res.Month = date.getUTCMonth();
+                res.Day = date.getUTCDate();
                 res.Number ++;
                 UpdateDailyLoginReward(res);
                 response.send(JSON.stringify(Message_DailyLoginReward_CheckSuccess(res)));
