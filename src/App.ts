@@ -1,4 +1,5 @@
 // /nt/nt-03-server/NT03_Server
+// 103.116.9.104
 //yarn ts-node ./src/App.ts
 // Import necessary modules
 import cluster from 'cluster';
@@ -10,6 +11,7 @@ import { API } from './AppAPI';
 import { AppTest } from './AppTest';
 import { InitAccountServer } from './AccountServer/Service/AccountService';
 import Init from './Service/Init';
+import { InitDailyLoginReward } from './DailyLoginReward/Service/DailyLoginRewardService';
 
 // Create Redis client
 const redisClient = createClient();
@@ -40,6 +42,7 @@ function InitApp(){
     // AppTest();
     Init.InitDatabase().then((result) => {
       InitAccountServer();
+      InitDailyLoginReward();
     }).catch((err) => {
       
     });
