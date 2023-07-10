@@ -44,6 +44,9 @@ export async function DailyLoginRewardCheck(message : IMessage, response) {
                 isCheck = true;
             }
             if(isCheck){
+                res.Year = date.getFullYear();
+                res.Month = date.getMonth();
+                res.Day = date.getDay();
                 res.Number ++;
                 UpdateDailyLoginReward(res);
                 response.send(JSON.stringify(Message_DailyLoginReward_CheckSuccess(res)));
