@@ -40,13 +40,13 @@ export async function DailyLoginRewardCheck(message : IMessage, response) {
             if(date.getMonth() > res.Month){
                 isCheck = true;
             }
-            if(date.getDay() > res.Day){
+            if(date.getDate() > res.Day){
                 isCheck = true;
             }
             if(isCheck){
                 res.Year = date.getFullYear();
                 res.Month = date.getMonth();
-                res.Day = date.getDay();
+                res.Day = date.getDate();
                 res.Number ++;
                 UpdateDailyLoginReward(res);
                 response.send(JSON.stringify(Message_DailyLoginReward_CheckSuccess(res)));
