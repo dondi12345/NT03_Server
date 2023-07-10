@@ -9,9 +9,9 @@ import { CreateRacingHourse, RacingHourse, RacingHourseManager } from './MiniGam
 import mongoose, { Schema, Types } from 'mongoose';
 import { API } from './AppAPI';
 import { AppTest } from './AppTest';
-import { InitAccountServer } from './AccountServer/Service/AccountService';
 import Init from './Service/Init';
 import { InitDailyLoginReward } from './DailyLoginReward/Service/DailyLoginRewardService';
+import { InitAPIServer } from './APIServer/Service/APIServerService';
 
 // Create Redis client
 const redisClient = createClient();
@@ -43,7 +43,7 @@ function InitApp(){
     var date = new Date();
     console.log("Dev 1688975930 Server on: ", date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear());
     Init.InitDatabase().then((result) => {
-      InitAccountServer();
+      InitAPIServer();
       InitDailyLoginReward();
     }).catch((err) => {
       

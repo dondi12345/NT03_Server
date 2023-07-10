@@ -25,5 +25,10 @@ export enum LogCode {
     HeroTeam_SaveFail = 9003,
     HeroTeam_RemoveSlotFail = 9004,
     
-    
+    TDWave_Test = 10000,
+
+    DailyLoginReward_Test = 11000,
+
+    DataCenter_Test = 12000,
+    DataCenter_InitFail = 12001,
 }

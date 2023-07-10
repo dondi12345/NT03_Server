@@ -79,15 +79,19 @@ export enum MessageCode {
     HeroTeam_SelectHero = 9005,
     HeroTeam_DeselectHero = 9006,
 
+    TDWave_Test = 10000,
     TDWave_ProtectedSuccess = 10001,
     TDWave_ProtectedFail = 10002,
     TDWave_BattleWin = 10003,
     TDWave_BattleLose = 10004,
 
+    DailyLoginReward_Test = 11000,
     DailyLoginReward_Login = 11001,
     DailyLoginReward_LoginSuccess = 11002,
     DailyLoginReward_LoginFail = 11003,
     DailyLoginReward_Check = 11004,
     DailyLoginReward_CheckSuccess = 11005,
     DailyLoginReward_CheckFail = 11006,
+
+    DataCenter_Test = 12000,
 }

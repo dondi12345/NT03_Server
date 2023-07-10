@@ -18,3 +18,12 @@ export function LogIdUserPlayer(logCode : LogCode, idUserPlayer : string, data :
     logMode.Data = data;
     console.log(JSON.stringify(logMode));
 }
+
+export function LogServer(logCode : LogCode, data : string = ""){
+    var logMode = new LogModel();
+    logMode.Code = logCode;
+    logMode.Platform = 0;
+    logMode.IdUserPlayer = "Server";
+    logMode.Data = data;
+    console.log(JSON.stringify(logMode));
+}
