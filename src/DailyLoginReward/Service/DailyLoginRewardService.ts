@@ -15,6 +15,7 @@ export function InitDailyLoginReward(){
 
     app.post('/daily_login_reward',(req, res)=>{
         var message = Message.Parse(req.body)
+        console.log("Dev 1688972193 Recive: ",req.body);
         if(message.MessageCode == MessageCode.DailyLoginReward_Login){
             DailyLoginRewardLogin(message, res);
             return;

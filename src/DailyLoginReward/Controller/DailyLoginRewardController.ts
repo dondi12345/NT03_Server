@@ -5,6 +5,7 @@ import { CreateDailyLoginReward, DailyLoginReward, FindDailyLoginRewardByIdUser 
 export async function DailyLoginRewardLogin(message : IMessage, response) {
     var data = DailyLoginReward.Parse(message.Data);
     FindDailyLoginRewardByIdUser(data.IdUser).then(res=>{
+        console.log("Dev 1688972225 ",res)
         if(res == undefined || res == null){
             var dailyLoginReward = new DailyLoginReward();
             dailyLoginReward.IdUser = data.IdUser
