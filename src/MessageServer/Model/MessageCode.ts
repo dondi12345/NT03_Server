@@ -85,5 +85,9 @@ export enum MessageCode {
     TDWave_BattleLose = 10004,
 
     DailyLoginReward_Login = 11001,
-    DailyLoginReward_Check = 11002,
+    DailyLoginReward_LoginSuccess = 11002,
+    DailyLoginReward_LoginFail = 11003,
+    DailyLoginReward_Check = 11004,
+    DailyLoginReward_CheckSuccess = 11005,
+    DailyLoginReward_CheckFail = 11006,
 }

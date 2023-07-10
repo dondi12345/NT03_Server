@@ -49,3 +49,14 @@ export async function CreateDailyLoginReward(dailyLoginReward:DailyLoginReward) 
         console.log("Dev 1688969994 ", res);
     })
 }
+
+export async function UpdateDailyLoginReward(dailyLoginReward:DailyLoginReward) {
+    await DailyLoginRewardModel.updateOne({IdUser : dailyLoginReward.IdUser},
+        {
+            Year : dailyLoginReward.Year,
+            Month : dailyLoginReward.Month,
+            Day : dailyLoginReward.Day,
+            Number : dailyLoginReward.Number
+        }
+    )
+}
