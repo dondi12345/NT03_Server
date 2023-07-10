@@ -41,7 +41,7 @@ function InitApp(){
     API();
     // AppTest();
     var date = new Date();
-    console.log("Dev 1688975930 Server on: ", date.getUTCHours()+"/"+date.getUTCDate()+"/"+date.getUTCMonth()+"/"+date.getUTCFullYear());
+    console.log("Dev 1688975930 Server on: ", date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear());
     Init.InitDatabase().then((result) => {
       InitAccountServer();
       InitDailyLoginReward();

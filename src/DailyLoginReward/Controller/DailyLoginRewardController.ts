@@ -37,7 +37,7 @@ export async function DailyLoginRewardCheck(message : IMessage, response) {
             if(date.getUTCFullYear() > res.Year){
                 isCheck = true;
             }
-            if(date.getUTCMonth() > res.Month){
+            if(date.getUTCMonth()+1 > res.Month){
                 isCheck = true;
             }
             if(date.getUTCDate() > res.Day){
@@ -45,7 +45,7 @@ export async function DailyLoginRewardCheck(message : IMessage, response) {
             }
             if(isCheck){
                 res.Year = date.getUTCFullYear();
-                res.Month = date.getUTCMonth();
+                res.Month = date.getUTCMonth()+1;
                 res.Day = date.getUTCDate();
                 res.Number ++;
                 UpdateDailyLoginReward(res);
