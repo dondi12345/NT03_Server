@@ -40,6 +40,8 @@ function InitApp(){
     });
     API();
     // AppTest();
+    var date = new Date();
+    console.log("Dev 1688975930 Server on: ", date.getDay()+":"+date.getMonth()+":"+date.getFullYear());
     Init.InitDatabase().then((result) => {
       InitAccountServer();
       InitDailyLoginReward();
