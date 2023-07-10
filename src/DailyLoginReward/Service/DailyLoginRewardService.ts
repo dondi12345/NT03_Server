@@ -25,7 +25,7 @@ export function InitDailyLoginReward(){
         }
     })
 
-    app.listen(port.portAccountServer, () => {
-        console.log(`Dev 1686217636 Example app listening on port ${port.portAccountServer}`)
+    app.listen(port.portDailyLoginReward, () => {
+        console.log(`Dev 1686217636 Example app listening on port ${port.portDailyLoginReward}`)
     })
 }
