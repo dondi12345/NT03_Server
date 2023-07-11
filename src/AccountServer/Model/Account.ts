@@ -59,3 +59,12 @@ export async function FindByUserName(username : String){
     })
     return account;
 }
+
+export async function CountAccount(callback){
+    await AccountModel.count({}).then(res=>{
+        console.log(res);
+        callback(null, res);
+    }).catch(err=>{
+        callback(err, null);
+    })
+}

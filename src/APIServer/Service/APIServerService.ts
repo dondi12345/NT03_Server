@@ -14,6 +14,6 @@ export function InitAPIServer(){
     })
 
     app.listen(port.portAPIServer, () => {
-        console.log(`Dev 1686217636 AccountServer listening on port ${port.portAPIServer}`)
+        console.log(`Dev 1686217636 APIServer listening on port ${port.portAPIServer}`)
     })
 }

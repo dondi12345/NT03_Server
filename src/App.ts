@@ -12,6 +12,7 @@ import { AppTest } from './AppTest';
 import Init from './Service/Init';
 import { InitDailyLoginReward } from './DailyLoginReward/Service/DailyLoginRewardService';
 import { InitAPIServer } from './APIServer/Service/APIServerService';
+import { InitAccountServer } from './AccountServer/Service/AccountService';
 
 // Create Redis client
 const redisClient = createClient();
@@ -44,6 +45,7 @@ function InitApp(){
     console.log("Dev 1688975930 Server on: ", date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear());
     Init.InitDatabase().then((result) => {
       InitAPIServer();
+      InitAccountServer();
       InitDailyLoginReward();
     }).catch((err) => {
       
