@@ -19,6 +19,7 @@ const redisClient = createClient();
 
 // Define number of worker processes
 const numCPUs = 1;
+const version = "0.0.1"
 // const numCPUs = require('os').cpus().length;
 // AppTest();
 InitApp();
@@ -42,7 +43,7 @@ function InitApp(){
     API();
     // AppTest();
     var date = new Date();
-    console.log("Dev 1688975930 Server on: ", date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear());
+    console.log("Dev 1688975930 Server", version," on: ", date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear());
     Init.InitDatabase().then((result) => {
       InitAPIServer();
       InitAccountServer();
