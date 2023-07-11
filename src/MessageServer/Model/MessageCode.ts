@@ -94,4 +94,7 @@ export enum MessageCode {
     DailyLoginReward_CheckFail = 11006,
 
     DataCenter_Test = 12000,
+    DataCenter_CheckVersion = 12001,
+    DataCenter_VersionUpToDate = 12002,
+    DataCenter_VersionUpdate = 12003,
 }

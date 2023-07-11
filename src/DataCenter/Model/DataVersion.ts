@@ -29,11 +29,9 @@ export const DataVersionModel = mongoose.model<DataVersion>('DataVersion', DataV
 
 export async function GetDataVersionByName(name : string, callback){
     await DataVersionModel.findOne({Name : name}).then((res)=>{
-        callback.response = res
-        callback.error = null
+        callback(null, res);
     }).catch((err)=>{
-        callback.response = null
-        callback.error = err
+        callback(err, null);
     })
 }
 

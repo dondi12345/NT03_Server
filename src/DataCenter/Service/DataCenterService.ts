@@ -7,13 +7,16 @@ const dataNames = ["TestData"]
 export var dataVersionDictionary : DataVersionDictionary;
 
 export function InitDataVersion(){
+    let count = 0
     dataNames.forEach(element => {
-        GetDataVersionByName(element, callback=>{
-            if(callback.error){
-                LogServer(LogCode.DataCenter_InitFail, callback.error)
+        GetDataVersionByName(element, (error, response)=>{
+            if(error){
+                LogServer(LogCode.DataCenter_InitFail, error)
             }else{
-                dataVersionDictionary[element] = callback.response;
+                count ++;
+                dataVersionDictionary[element] = response;
             }
         })
     });
+    console.log("Dev 1689075214 InitDataVersion "+count)
 }
