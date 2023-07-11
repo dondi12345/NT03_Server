@@ -20,7 +20,7 @@ const redisClient = createClient();
 
 // Define number of worker processes
 const numCPUs = 1;
-const version = "0.0.2"
+const version = "0.0.3"
 // const numCPUs = require('os').cpus().length;
 // AppTest();
 InitApp();
