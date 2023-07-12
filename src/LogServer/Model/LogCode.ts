@@ -1,4 +1,6 @@
 export enum LogCode {
+    Server_ServerStart = 100,
+
     MessageServer_Test = 1000,
 
     AccountServer_Test = 2000,

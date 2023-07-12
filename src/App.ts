@@ -13,6 +13,8 @@ import Init from './Service/Init';
 import { InitDailyLoginReward } from './DailyLoginReward/Service/DailyLoginRewardService';
 import { InitAPIServer } from './APIServer/Service/APIServerService';
 import { InitAccountServer } from './AccountServer/Service/AccountService';
+import { LogServer } from './LogServer/Controller/LogController';
+import { LogCode } from './LogServer/Model/LogCode';
 
 
 // Create Redis client
@@ -44,7 +46,10 @@ function InitApp(){
     API();
     // AppTest();
     var date = new Date();
-    console.log("Dev 1688975930 Server", version," on: ", date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear());
+    var dateFormat = date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear()
+    console.log("Dev 1688975930 Server", version," on: ", dateFormat);
+    LogServer(LogCode.Server_ServerStart,JSON.stringify({Version : version, Time : dateFormat}));
+    LogServer(LogCode.Server_ServerStart,JSON.stringify({Version : version, Time : dateFormat}));
     Init.InitDatabase().then((result) => {
       InitAPIServer();
       InitAccountServer();
