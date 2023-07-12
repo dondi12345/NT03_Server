@@ -31,6 +31,7 @@ import { GameData } from "../Model/GameData";
         if(GameData[dataVersion.Name].Version == dataVersion.Version){
             var messageCallback = new Message();
             messageCallback.MessageCode = MessageCode.DataCenter_VersionUpToDate;
+            messageCallback.Data = JSON.stringify(dataVersion);
             res.send(JSON.stringify(messageCallback));
             console.log("Up to date")
         }else{
