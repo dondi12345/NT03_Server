@@ -7,6 +7,7 @@ import { AccountServerRouter } from "../../AccountServer/Router/AccountServerRou
 import { DataCenterRouter } from "../../DataCenter/Router/DataCenterRouter";
 
 export function InitAPIServer(){
+    console.log("Dev 1686217639 InitAPIServer")
     const app = express()
     app.use(express.json())
 

@@ -32,11 +32,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CountAccount = exports.FindByUserName = exports.CreateAccount = exports.GetAccountById = exports.AccountModel = exports.Account = void 0;
+exports.UpdateDailyLoginReward = exports.CreateDailyLoginReward = exports.FindDailyLoginRewardByIdUser = exports.DailyLoginRewardModel = exports.DailyLoginReward = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-class Account {
+class DailyLoginReward {
     constructor() {
-        this._id = new mongoose_1.Types.ObjectId();
+        this.Year = 0;
+        this.Month = 0;
+        this.Day = 0;
+        this.Number = 0;
     }
     static Parse(data) {
         try {
@@ -46,54 +49,45 @@ class Account {
         return data;
     }
 }
-exports.Account = Account;
-const AccountSchema = new mongoose_1.Schema({
+exports.DailyLoginReward = DailyLoginReward;
+const DailyLoginRewardSchema = new mongoose_1.Schema({
     _id: { type: mongoose_1.Schema.Types.ObjectId, default: new mongoose_1.Types.ObjectId() },
-    Username: { type: String },
-    Password: { type: String }
+    IdUser: { type: mongoose_1.Schema.Types.ObjectId, default: new mongoose_1.Types.ObjectId() },
+    Year: { type: Number, default: 0 },
+    Month: { type: Number, default: 0 },
+    Day: { type: Number, default: 0 },
+    Number: { type: Number, default: 0 },
 });
-exports.AccountModel = mongoose_1.default.model('Account', AccountSchema);
-function GetAccountById(_id) {
+exports.DailyLoginRewardModel = mongoose_1.default.model('DailyLoginReward', DailyLoginRewardSchema);
+function FindDailyLoginRewardByIdUser(idUser) {
     return __awaiter(this, void 0, void 0, function* () {
-        var Account = new Account();
-        yield exports.AccountModel.findById(_id).then((res) => {
-            Account = Account.Parse(res);
+        var dailyLoginReward;
+        yield exports.DailyLoginRewardModel.findOne({ IdUser: idUser }).then((res) => {
+            dailyLoginReward = DailyLoginReward.Parse(res);
         }).catch((err) => {
             console.log(err);
         });
-        return Account;
+        return dailyLoginReward;
     });
 }
-exports.GetAccountById = GetAccountById;
-function CreateAccount(account) {
+exports.FindDailyLoginRewardByIdUser = FindDailyLoginRewardByIdUser;
+function CreateDailyLoginReward(dailyLoginReward) {
     return __awaiter(this, void 0, void 0, function* () {
-        var newAccount;
-        account._id = new mongoose_1.Types.ObjectId();
-        yield exports.AccountModel.create(account).then(res => {
-            newAccount = res;
-        });
-        return newAccount;
-    });
-}
-exports.CreateAccount = CreateAccount;
-function FindByUserName(username) {
-    return __awaiter(this, void 0, void 0, function* () {
-        var account;
-        yield exports.AccountModel.findOne({ Username: username }).then(res => {
-            account = res;
-        });
-        return account;
-    });
-}
-exports.FindByUserName = FindByUserName;
-function CountAccount(callback) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield exports.AccountModel.count({}).then(res => {
-            console.log(res);
-            callback(null, res);
-        }).catch(err => {
-            callback(err, null);
+        dailyLoginReward._id = new mongoose_1.Types.ObjectId();
+        yield exports.DailyLoginRewardModel.create(dailyLoginReward).then(res => {
+            console.log("Dev 1688969994 ", res);
         });
     });
 }
-exports.CountAccount = CountAccount;
+exports.CreateDailyLoginReward = CreateDailyLoginReward;
+function UpdateDailyLoginReward(dailyLoginReward) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield exports.DailyLoginRewardModel.updateOne({ IdUser: dailyLoginReward.IdUser }, {
+            Year: dailyLoginReward.Year,
+            Month: dailyLoginReward.Month,
+            Day: dailyLoginReward.Day,
+            Number: dailyLoginReward.Number
+        });
+    });
+}
+exports.UpdateDailyLoginReward = UpdateDailyLoginReward;

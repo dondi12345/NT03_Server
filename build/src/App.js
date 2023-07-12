@@ -4,18 +4,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // /nt/nt-03-server/NT03_Server
+// 103.116.9.104
 //yarn ts-node ./src/App.ts
 // Import necessary modules
 const cluster_1 = __importDefault(require("cluster"));
 const redis_1 = require("redis");
 const AppChild_1 = require("./AppChild");
 const AppAPI_1 = require("./AppAPI");
-const AccountService_1 = require("./AccountServer/Service/AccountService");
 const Init_1 = __importDefault(require("./Service/Init"));
+const DailyLoginRewardService_1 = require("./DailyLoginReward/Service/DailyLoginRewardService");
+const APIServerService_1 = require("./APIServer/Service/APIServerService");
+const AccountService_1 = require("./AccountServer/Service/AccountService");
 // Create Redis client
 const redisClient = (0, redis_1.createClient)();
 // Define number of worker processes
 const numCPUs = 1;
+const version = "0.0.3";
 // const numCPUs = require('os').cpus().length;
 // AppTest();
 InitApp();
@@ -35,8 +39,12 @@ function InitApp() {
         });
         (0, AppAPI_1.API)();
         // AppTest();
+        var date = new Date();
+        console.log("Dev 1688975930 Server", version, " on: ", date.getUTCHours() + "/" + date.getUTCDate() + "/" + (date.getUTCMonth() + 1) + "/" + date.getUTCFullYear());
         Init_1.default.InitDatabase().then((result) => {
+            (0, APIServerService_1.InitAPIServer)();
             (0, AccountService_1.InitAccountServer)();
+            (0, DailyLoginRewardService_1.InitDailyLoginReward)();
         }).catch((err) => {
         });
     }

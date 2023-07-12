@@ -12,11 +12,13 @@ const ResService_1 = require("./Res/Service/ResService");
 const HeroEquipService_1 = require("./HeroEquip/Service/HeroEquipService");
 const HeroService_1 = require("./HeroServer/Service/HeroService");
 const ShopService_1 = require("./Shop/Service/ShopService");
+const DataCenterService_1 = require("./DataCenter/Service/DataCenterService");
 // Function to create app child instance
 function AppChild() {
     console.log("Dev 1684561087 Init AppChild");
     Init_1.default.InitDatabase().then(() => {
         (0, MessageService_1.InitMessageServerWithSocket)();
+        (0, DataCenterService_1.InitDataVersion)();
         (0, ChatService_1.InitChatServer)();
         (0, HeroService_1.InitHero)();
         (0, ResService_1.InitRes)();

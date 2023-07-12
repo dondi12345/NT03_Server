@@ -20,4 +20,8 @@ var LogCode;
     LogCode[LogCode["HeroTeam_UpdateFail"] = 9002] = "HeroTeam_UpdateFail";
     LogCode[LogCode["HeroTeam_SaveFail"] = 9003] = "HeroTeam_SaveFail";
     LogCode[LogCode["HeroTeam_RemoveSlotFail"] = 9004] = "HeroTeam_RemoveSlotFail";
+    LogCode[LogCode["TDWave_Test"] = 10000] = "TDWave_Test";
+    LogCode[LogCode["DailyLoginReward_Test"] = 11000] = "DailyLoginReward_Test";
+    LogCode[LogCode["DataCenter_Test"] = 12000] = "DataCenter_Test";
+    LogCode[LogCode["DataCenter_InitFail"] = 12001] = "DataCenter_InitFail";
 })(LogCode = exports.LogCode || (exports.LogCode = {}));
