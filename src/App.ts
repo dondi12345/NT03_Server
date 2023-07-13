@@ -49,7 +49,6 @@ function InitApp(){
     var dateFormat = date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear()
     console.log("Dev 1688975930 Server", version," on: ", dateFormat);
     LogServer(LogCode.Server_ServerStart,JSON.stringify({Version : version, Time : dateFormat}));
-    LogServer(LogCode.Server_ServerStart,JSON.stringify({Version : version, Time : dateFormat}));
     Init.InitDatabase().then((result) => {
       InitAPIServer();
       InitAccountServer();
