@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LogCode = void 0;
 var LogCode;
 (function (LogCode) {
+    LogCode[LogCode["Server_ServerStart"] = 100] = "Server_ServerStart";
     LogCode[LogCode["MessageServer_Test"] = 1000] = "MessageServer_Test";
     LogCode[LogCode["AccountServer_Test"] = 2000] = "AccountServer_Test";
     LogCode[LogCode["UserPlayerServer_Test"] = 3000] = "UserPlayerServer_Test";

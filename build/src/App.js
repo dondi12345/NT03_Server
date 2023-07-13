@@ -15,6 +15,8 @@ const Init_1 = __importDefault(require("./Service/Init"));
 const DailyLoginRewardService_1 = require("./DailyLoginReward/Service/DailyLoginRewardService");
 const APIServerService_1 = require("./APIServer/Service/APIServerService");
 const AccountService_1 = require("./AccountServer/Service/AccountService");
+const LogController_1 = require("./LogServer/Controller/LogController");
+const LogCode_1 = require("./LogServer/Model/LogCode");
 // Create Redis client
 const redisClient = (0, redis_1.createClient)();
 // Define number of worker processes
@@ -40,7 +42,9 @@ function InitApp() {
         (0, AppAPI_1.API)();
         // AppTest();
         var date = new Date();
-        console.log("Dev 1688975930 Server", version, " on: ", date.getUTCHours() + "/" + date.getUTCDate() + "/" + (date.getUTCMonth() + 1) + "/" + date.getUTCFullYear());
+        var dateFormat = date.getUTCHours() + "/" + date.getUTCDate() + "/" + (date.getUTCMonth() + 1) + "/" + date.getUTCFullYear();
+        console.log("Dev 1688975930 Server", version, " on: ", dateFormat);
+        (0, LogController_1.LogServer)(LogCode_1.LogCode.Server_ServerStart, JSON.stringify({ Version: version, Time: dateFormat }));
         Init_1.default.InitDatabase().then((result) => {
             (0, APIServerService_1.InitAPIServer)();
             (0, AccountService_1.InitAccountServer)();

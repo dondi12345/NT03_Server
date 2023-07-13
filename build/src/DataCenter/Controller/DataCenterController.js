@@ -32,6 +32,7 @@ function CheckVersion(message, res) {
     if (GameData_1.GameData[dataVersion.Name].Version == dataVersion.Version) {
         var messageCallback = new Message_1.Message();
         messageCallback.MessageCode = MessageCode_1.MessageCode.DataCenter_VersionUpToDate;
+        messageCallback.Data = JSON.stringify(dataVersion);
         res.send(JSON.stringify(messageCallback));
         console.log("Up to date");
     }
