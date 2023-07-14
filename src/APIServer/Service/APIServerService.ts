@@ -5,6 +5,7 @@ import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { AccountServerRouter } from "../../AccountServer/Router/AccountServerRouter";
 import { DataCenterRouter } from "../../DataCenter/Router/DataCenterRouter";
+import { InitDataVersion } from "../../DataCenter/Service/DataCenterService";
 
 export function InitAPIServer(){
     console.log("Dev 1686217639 InitAPIServer")
@@ -22,4 +23,6 @@ export function InitAPIServer(){
     app.listen(port.portAPIServer, () => {
         console.log(`Dev 1686217637 APIServer listening on port ${port.portAPIServer}`)
     })
+
+    InitDataVersion();
 }
