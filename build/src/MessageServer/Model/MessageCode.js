@@ -90,4 +90,5 @@ var MessageCode;
     MessageCode[MessageCode["DataCenter_CheckVersion"] = 12001] = "DataCenter_CheckVersion";
     MessageCode[MessageCode["DataCenter_VersionUpToDate"] = 12002] = "DataCenter_VersionUpToDate";
     MessageCode[MessageCode["DataCenter_VersionUpdate"] = 12003] = "DataCenter_VersionUpdate";
+    MessageCode[MessageCode["DataCenter_UpdateVersion"] = 12004] = "DataCenter_UpdateVersion";
 })(MessageCode = exports.MessageCode || (exports.MessageCode = {}));

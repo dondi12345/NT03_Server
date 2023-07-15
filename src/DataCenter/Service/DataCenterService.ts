@@ -3,21 +3,22 @@ import { LogCode } from "../../LogServer/Model/LogCode";
 import { DataVersion, DataVersionDictionary, GetDataVersionByName } from "../Model/DataVersion";
 import { GameData } from "../Model/GameData";
 
-const dataNames = ["TestData"]
+const dataNames = ["TestData", "MonsterData", "BulletData", "DamageEffectData"]
 
 export let dataVersionDictionary : DataVersionDictionary;
 
-export function InitDataVersion(){
+export async function InitDataVersion(){
     dataVersionDictionary ={}
-    dataNames.forEach(element => {
-        GetDataVersionByName(element, (error, response)=>{
+    for (let index = 0; index < dataNames.length; index++) {
+        const element = dataNames[index];
+        await GetDataVersionByName(element, (error, response)=>{
             if(error){
                 LogServer(LogCode.DataCenter_InitFail, error)
             }else{
                 dataVersionDictionary[element] = response;
             }
         })
-    });
+    }
     // GameData.forEach(element => {
     //     dataVersionDictionary[element.Name] = DataVersion.Parse(element);
     // });

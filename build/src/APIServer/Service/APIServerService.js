@@ -8,6 +8,7 @@ const Env_1 = require("../../Enviroment/Env");
 const express_1 = __importDefault(require("express"));
 const AccountServerRouter_1 = require("../../AccountServer/Router/AccountServerRouter");
 const DataCenterRouter_1 = require("../../DataCenter/Router/DataCenterRouter");
+const DataCenterService_1 = require("../../DataCenter/Service/DataCenterService");
 function InitAPIServer() {
     console.log("Dev 1686217639 InitAPIServer");
     const app = (0, express_1.default)();
@@ -21,5 +22,6 @@ function InitAPIServer() {
     app.listen(Env_1.port.portAPIServer, () => {
         console.log(`Dev 1686217637 APIServer listening on port ${Env_1.port.portAPIServer}`);
     });
+    (0, DataCenterService_1.InitDataVersion)();
 }
 exports.InitAPIServer = InitAPIServer;

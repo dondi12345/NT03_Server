@@ -16,9 +16,9 @@ export class MongoDBDatabase {
 
     try {
       await mongoose.connect(Mongo.dbLink, options);
-      console.log('1684475677 MongoDb connected '+Mongo.dbLink);
+      console.log('Dev 1684475677 MongoDb connected');
     } catch (e) {
-      console.log('1684475682 MongoDb error : ' + e);
+      console.log('Dev 1684475682 MongoDb error : ' + e);
     }
   }
 }
