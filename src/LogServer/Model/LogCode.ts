@@ -7,10 +7,14 @@ export enum LogCode {
 
     UserPlayerServer_Test = 3000,
     UserPlayerServer_SaveFail = 3001,
+    UserPlayerServer_UpdateUserPlayer= 3002,
+    UserPlayerServer_SaveUserPlayer= 3003,
+    UserPlayerServer_SaveFailUserPlayer= 3004,
 
     Currency_Test = 4000,
     Currency_UpdateFail = 4001,
     Currency_SaveFail = 4002,
+    Currency_Update = 4003,
 
     Hero_Test = 5000,
 
@@ -28,6 +32,8 @@ export enum LogCode {
     HeroTeam_RemoveSlotFail = 9004,
     
     TDWave_Test = 10000,
+    TDWave_ProtectedSuccess = 10001,
+    TDWave_ProtectedFail = 10002,
 
     DailyLoginReward_Test = 11000,
 

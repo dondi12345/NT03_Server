@@ -84,8 +84,10 @@ export async function UpdateUserPlayer(userPlayer : UserPlayer) {
         Name : userPlayer.Name,
         Wave : userPlayer.Wave ? userPlayer.Wave : 0,
     }).then(res=>{
+        LogIdUserPlayer(LogCode.UserPlayerServer_SaveUserPlayer, userPlayer._id.toString());
         console.log("Dev 1687943868 ", res);
     }).catch(e=>{
-        LogIdUserPlayer(LogCode.UserPlayerServer_SaveFail, userPlayer._id.toString(), e);
+        LogIdUserPlayer(LogCode.UserPlayerServer_SaveUserPlayer, userPlayer._id.toString());
+        LogIdUserPlayer(LogCode.UserPlayerServer_SaveFailUserPlayer, userPlayer._id.toString(), e);
     })
 }

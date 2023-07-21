@@ -9,6 +9,8 @@ import { ServerGameCode } from "../Model/ServerGameCode";
 import { CreateUserPlayer, FindByIdAccountAndServerGameCode, IUserPlayer, UpdateUserPlayer, UserPlayer } from "../Model/UserPlayer";
 import { Redis } from '../../Enviroment/Env';
 import { UserSocketData } from '../../UserSocket/Model/UserSocketData';
+import { LogUserSocket } from '../../LogServer/Controller/LogController';
+import { LogCode } from '../../LogServer/Model/LogCode';
 
 const redisUserPlayerSession = redis.createClient();
 const redisPub = redis.createClient();
@@ -90,6 +92,7 @@ export async function CheckUserLoginedFromRedis(userPlayer:IUserPlayer, userSock
 }
 
 export function UpdateUserPlayerCtrl(userSocket : UserSocket) {
+    LogUserSocket(LogCode.UserPlayerServer_UpdateUserPlayer, userSocket);
     var message = new Message();
     message.MessageCode = MessageCode.UserPlayerServer_Update;
     message.Data = JSON.stringify(userSocket.UserPlayer);

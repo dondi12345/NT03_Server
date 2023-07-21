@@ -46,6 +46,7 @@ function LoginSuccessMessage(res : ICurrency){
 
 export function UpdateCurrencyCtrl(userSocket: IUserSocket){
     try {
+        LogUserSocket(LogCode.Currency_Update, userSocket);
         UpdateCurrency(userSocket.Currency, userSocket.IdUserPlayer);
         var messageBack : Message = new Message();
         messageBack.MessageCode = MessageCode.Currency_Update;
