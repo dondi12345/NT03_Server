@@ -36,6 +36,7 @@ function Connect(message, userSocket) {
                 return;
             }
             userSocket.IdAccount = new mongoose_1.Types.ObjectId(accountData.IdAccount.toString());
+            userSocket.Platform = tockenAuthen.Platform;
             var accountTocken = new AccountTocken_1.AccountTocken();
             accountTocken.Token = tockenAuthen.Token;
             message = new Message_1.Message();

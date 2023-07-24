@@ -22,7 +22,7 @@ const LogModel_1 = require("./LogServer/Model/LogModel");
 const redisClient = (0, redis_1.createClient)();
 // Define number of worker processes
 const numCPUs = 1;
-const version = "0.0.5";
+const version = "0.0.6";
 // const numCPUs = require('os').cpus().length;
 // AppTest();
 InitApp();
