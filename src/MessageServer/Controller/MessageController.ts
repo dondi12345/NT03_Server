@@ -24,6 +24,7 @@ export async function Connect(message : IMessage, userSocket : IUserSocket){
             return; 
         }
         userSocket.IdAccount = new Types.ObjectId(accountData.IdAccount.toString());
+        userSocket.Platform = tockenAuthen.Platform;
 
         var accountTocken = new AccountTocken();
         accountTocken.Token = tockenAuthen.Token;
