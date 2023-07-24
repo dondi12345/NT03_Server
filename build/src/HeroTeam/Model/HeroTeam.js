@@ -36,6 +36,7 @@ exports.TestHeroTeam = exports.RemoveSlotHeroTeam = exports.UpdateHeroTeam = exp
 const mongoose_1 = __importStar(require("mongoose"));
 const LogController_1 = require("../../LogServer/Controller/LogController");
 const LogCode_1 = require("../../LogServer/Model/LogCode");
+const LogModel_1 = require("../../LogServer/Model/LogModel");
 class SelectHero {
     static Parse(data) {
         try {
@@ -104,7 +105,7 @@ function UpdateHeroTeam(heroTeam) {
         }).then(res => {
             console.log("Dev 1687617539 ", res);
         }).catch((e) => {
-            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.HeroTeam_SaveFail, heroTeam.IdUserPlayer.toString(), e);
+            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.HeroTeam_SaveFail, heroTeam.IdUserPlayer.toString(), e, LogModel_1.LogType.Error);
         });
     });
 }
@@ -131,7 +132,7 @@ function RemoveSlotHeroTeam(heroTeam) {
         exports.HeroTeamModel.updateOne({ IdUserPlayer: heroTeam.IdUserPlayer }, { $unset: query }).then(res => {
             console.log("Dev 1687617538 ", res);
         }).catch((e) => {
-            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.HeroTeam_RemoveSlotFail, heroTeam.IdUserPlayer.toString(), e);
+            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.HeroTeam_RemoveSlotFail, heroTeam.IdUserPlayer.toString(), e, LogModel_1.LogType.Error);
         });
     });
 }

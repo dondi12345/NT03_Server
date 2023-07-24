@@ -6,6 +6,7 @@ import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { AccountServerRouter } from "../../AccountServer/Router/AccountServerRouter";
 import { DataCenterRouter } from "../../DataCenter/Router/DataCenterRouter";
 import { InitDataVersion } from "../../DataCenter/Service/DataCenterService";
+import { LogFromClient } from "../../LogServer/Controller/LogController";
 
 export function InitAPIServer(){
     console.log("Dev 1686217639 InitAPIServer")
@@ -18,6 +19,9 @@ export function InitAPIServer(){
 
     app.post('/datacenter',(req, res)=>{
         DataCenterRouter(req.body, res)
+    })
+    app.post('/logServer',(req, res)=>{
+        LogFromClient(req.body);
     })
 
     app.listen(port.portAPIServer, () => {

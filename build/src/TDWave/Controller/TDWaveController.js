@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProtectedFailCtrl = exports.ProtectedSuccessCtrl = void 0;
 const CurrencyController_1 = require("../../Currency/Controller/CurrencyController");
+const LogController_1 = require("../../LogServer/Controller/LogController");
+const LogCode_1 = require("../../LogServer/Model/LogCode");
+const LogModel_1 = require("../../LogServer/Model/LogModel");
 const Message_1 = require("../../MessageServer/Model/Message");
 const MessageCode_1 = require("../../MessageServer/Model/MessageCode");
 const MessageService_1 = require("../../MessageServer/Service/MessageService");
@@ -11,6 +14,7 @@ const UserPlayerController_1 = require("../../UserPlayerServer/Controller/UserPl
 const TDWaveData_1 = require("./TDWaveData");
 function ProtectedSuccessCtrl(message, userSocket) {
     //Reward
+    (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.TDWave_ProtectedSuccess, userSocket, "", LogModel_1.LogType.Normal);
     if (userSocket.UserPlayer.Wave == undefined || userSocket.UserPlayer.Wave == null) {
         userSocket.UserPlayer.Wave = 0;
     }
@@ -37,6 +41,7 @@ function ProtectedSuccessCtrl(message, userSocket) {
 }
 exports.ProtectedSuccessCtrl = ProtectedSuccessCtrl;
 function ProtectedFailCtrl(message, userSocket) {
+    (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.TDWave_ProtectedFail, userSocket, "", LogModel_1.LogType.Normal);
     var message = new Message_1.Message();
     message.MessageCode = MessageCode_1.MessageCode.TDWave_BattleLose;
     (0, MessageService_1.SendMessageToSocket)(message, userSocket.Socket);

@@ -15,6 +15,7 @@ import { InitAPIServer } from './APIServer/Service/APIServerService';
 import { InitAccountServer } from './AccountServer/Service/AccountService';
 import { LogServer } from './LogServer/Controller/LogController';
 import { LogCode } from './LogServer/Model/LogCode';
+import { LogType } from './LogServer/Model/LogModel';
 
 
 // Create Redis client
@@ -48,7 +49,7 @@ function InitApp(){
     var date = new Date();
     var dateFormat = date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear()
     console.log("Dev 1688975930 Server", version," on: ", dateFormat);
-    LogServer(LogCode.Server_ServerStart,JSON.stringify({Version : version, Time : dateFormat}));
+    LogServer(LogCode.Server_ServerStart,JSON.stringify({Version : version, Time : dateFormat}), LogType.Normal);
     Init.InitDatabase().then((result) => {
       InitAPIServer();
       InitAccountServer();

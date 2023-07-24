@@ -23,6 +23,9 @@ const ServerGameCode_1 = require("../Model/ServerGameCode");
 const UserPlayer_1 = require("../Model/UserPlayer");
 const Env_1 = require("../../Enviroment/Env");
 const UserSocketData_1 = require("../../UserSocket/Model/UserSocketData");
+const LogController_1 = require("../../LogServer/Controller/LogController");
+const LogCode_1 = require("../../LogServer/Model/LogCode");
+const LogModel_1 = require("../../LogServer/Model/LogModel");
 const redisUserPlayerSession = redis_1.default.createClient();
 const redisPub = redis_1.default.createClient();
 function UserPlayerLogin(message, userSocket) {
@@ -109,6 +112,7 @@ function CheckUserLoginedFromRedis(userPlayer, userSocket) {
 }
 exports.CheckUserLoginedFromRedis = CheckUserLoginedFromRedis;
 function UpdateUserPlayerCtrl(userSocket) {
+    (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.UserPlayerServer_UpdateUserPlayer, userSocket, "", LogModel_1.LogType.Normal);
     var message = new Message_1.Message();
     message.MessageCode = MessageCode_1.MessageCode.UserPlayerServer_Update;
     message.Data = JSON.stringify(userSocket.UserPlayer);

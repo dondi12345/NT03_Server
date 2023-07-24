@@ -37,6 +37,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const ResCode_1 = require("./ResCode");
 const LogController_1 = require("../../LogServer/Controller/LogController");
 const LogCode_1 = require("../../LogServer/Model/LogCode");
+const LogModel_1 = require("../../LogServer/Model/LogModel");
 class Reses {
     constructor() {
         this.Elements = [];
@@ -121,7 +122,7 @@ function UpdateRes(res) {
         }).then((res) => {
             console.log("Dev 1685723759 " + res);
         }).catch(e => {
-            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.Res_SaveFail, res.IdUserPlayer.toHexString(), e);
+            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.Res_SaveFail, res.IdUserPlayer.toHexString(), e, LogModel_1.LogType.Error);
         });
     });
 }

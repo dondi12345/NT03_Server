@@ -3,32 +3,46 @@ import { join } from 'path';
 
 import { UserSocket } from "../../UserSocket/Model/UserSocket";
 import { LogCode } from "../Model/LogCode";
-import { LogModel } from "../Model/LogModel";
+import { LogModel, LogType } from "../Model/LogModel";
+import { dateUtils } from '../../Utils/DateUtils';
 
-export function LogUserSocket(logCode : LogCode, userSocket : UserSocket, data : string = ""){
+export function LogUserSocket(logCode : LogCode, userSocket : UserSocket, data : string = "", type : LogType = LogType.Unknow){
     var logMode = new LogModel();
     logMode.Code = logCode;
     logMode.Platform = userSocket.Platform;
     logMode.IdUserPlayer = userSocket.IdUserPlayer.toString();
     logMode.Data = data;
+    logMode.Date = dateUtils.GetCurrentFomatDate();
+    logMode.Time = dateUtils.GetCurrentTimeSpan();
+    logMode.Type = type;
     WriteLog(logMode);
 }
-export function LogIdUserPlayer(logCode : LogCode, idUserPlayer : string, data : string = ""){
+export function LogIdUserPlayer(logCode : LogCode, idUserPlayer : string, data : string = "", type : LogType = LogType.Unknow){
     var logMode = new LogModel();
     logMode.Code = logCode;
     logMode.Platform = 0;
     logMode.IdUserPlayer = idUserPlayer;
     logMode.Data = data;
+    logMode.Date = dateUtils.GetCurrentFomatDate();
+    logMode.Time = dateUtils.GetCurrentTimeSpan();
+    logMode.Type = type;
     WriteLog(logMode);
 }
 
-export function LogServer(logCode : LogCode, data : string = ""){
+export function LogServer(logCode : LogCode, data : string = "", type : LogType = LogType.Unknow){
     var logMode = new LogModel();
     logMode.Code = logCode;
     logMode.Platform = 0;
     logMode.IdUserPlayer = "Server";
     logMode.Data = data;
+    logMode.Date = dateUtils.GetCurrentFomatDate();
+    logMode.Time = dateUtils.GetCurrentTimeSpan();
+    logMode.Type = type;
     WriteLog(logMode);
+}
+
+export function LogFromClient(log : string){
+    WriteLog(log);
 }
 
 function WriteLog(data : any){

@@ -3,6 +3,7 @@ import { variable } from '../../Enviroment/Env';
 import { ServerGameCode } from './ServerGameCode';
 import { LogIdUserPlayer, LogUserSocket } from '../../LogServer/Controller/LogController';
 import { LogCode } from '../../LogServer/Model/LogCode';
+import { LogType } from '../../LogServer/Model/LogModel';
 
 export interface IUserPlayer{
     _id : Types.ObjectId;
@@ -84,10 +85,9 @@ export async function UpdateUserPlayer(userPlayer : UserPlayer) {
         Name : userPlayer.Name,
         Wave : userPlayer.Wave ? userPlayer.Wave : 0,
     }).then(res=>{
-        LogIdUserPlayer(LogCode.UserPlayerServer_SaveUserPlayer, userPlayer._id.toString());
+        LogIdUserPlayer(LogCode.UserPlayerServer_SaveUserPlayer, userPlayer._id.toString(), "",LogType.Normal);
         console.log("Dev 1687943868 ", res);
     }).catch(e=>{
-        LogIdUserPlayer(LogCode.UserPlayerServer_SaveUserPlayer, userPlayer._id.toString());
-        LogIdUserPlayer(LogCode.UserPlayerServer_SaveFailUserPlayer, userPlayer._id.toString(), e);
+        LogIdUserPlayer(LogCode.UserPlayerServer_SaveFailUserPlayer, userPlayer._id.toString(), e, LogType.Error);
     })
 }

@@ -37,6 +37,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const DefaultCurrency_1 = require("./DefaultCurrency");
 const LogController_1 = require("../../LogServer/Controller/LogController");
 const LogCode_1 = require("../../LogServer/Model/LogCode");
+const LogModel_1 = require("../../LogServer/Model/LogModel");
 class Currency {
     constructor() {
     }
@@ -94,7 +95,7 @@ function UpdateCurrency(currency, idUserPlayer) {
         }).then(res => {
             console.log("Dev 1684851978 " + JSON.stringify(res));
         }).catch(e => {
-            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.Currency_SaveFail, idUserPlayer.toString(), e);
+            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.Currency_SaveFail, idUserPlayer.toString(), e, LogModel_1.LogType.Error);
         });
     });
 }

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CheckVersion = exports.Test = void 0;
+exports.ReloadDataVersion = exports.CheckVersion = exports.Test = void 0;
 const Message_1 = require("../../MessageServer/Model/Message");
 const MessageCode_1 = require("../../MessageServer/Model/MessageCode");
 const DataVersion_1 = require("../Model/DataVersion");
@@ -28,3 +28,7 @@ function CheckVersion(message, res) {
     }
 }
 exports.CheckVersion = CheckVersion;
+function ReloadDataVersion(message, res) {
+    (0, DataCenterService_1.InitDataVersion)();
+}
+exports.ReloadDataVersion = ReloadDataVersion;

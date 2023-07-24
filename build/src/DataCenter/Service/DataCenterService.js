@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.InitDataVersion = exports.dataVersionDictionary = void 0;
 const LogController_1 = require("../../LogServer/Controller/LogController");
 const LogCode_1 = require("../../LogServer/Model/LogCode");
+const LogModel_1 = require("../../LogServer/Model/LogModel");
 const DataVersion_1 = require("../Model/DataVersion");
 const dataNames = ["TestData", "MonsterData", "BulletData", "DamageEffectData"];
 function InitDataVersion() {
@@ -21,7 +22,7 @@ function InitDataVersion() {
             const element = dataNames[index];
             yield (0, DataVersion_1.GetDataVersionByName)(element, (error, response) => {
                 if (error) {
-                    (0, LogController_1.LogServer)(LogCode_1.LogCode.DataCenter_InitFail, error);
+                    (0, LogController_1.LogServer)(LogCode_1.LogCode.DataCenter_InitFail, error, LogModel_1.LogType.Error);
                 }
                 else {
                     exports.dataVersionDictionary[element] = response;

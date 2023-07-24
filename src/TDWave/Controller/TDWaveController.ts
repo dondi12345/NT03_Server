@@ -1,6 +1,7 @@
 import { UpdateCurrencyCtrl } from "../../Currency/Controller/CurrencyController";
 import { LogUserSocket } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
+import { LogType } from "../../LogServer/Model/LogModel";
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
@@ -12,7 +13,7 @@ import { TDWaveReward5Lv, TDWaveRewardGrow5Lv, TDWaveRewardGrowLv, TDWaveRewardL
 
 export function ProtectedSuccessCtrl(message : Message, userSocket : UserSocket) {
     //Reward
-    LogUserSocket(LogCode.TDWave_ProtectedSuccess, userSocket);
+    LogUserSocket(LogCode.TDWave_ProtectedSuccess, userSocket, "", LogType.Normal);
     if(userSocket.UserPlayer.Wave == undefined || userSocket.UserPlayer.Wave == null){
         userSocket.UserPlayer.Wave = 0;
     }
@@ -39,7 +40,7 @@ export function ProtectedSuccessCtrl(message : Message, userSocket : UserSocket)
 }
 
 export function ProtectedFailCtrl(message : Message, userSocket : UserSocket) {
-    LogUserSocket(LogCode.TDWave_ProtectedFail, userSocket);
+    LogUserSocket(LogCode.TDWave_ProtectedFail, userSocket, "", LogType.Normal);
     var message = new Message();
     message.MessageCode = MessageCode.TDWave_BattleLose;
     SendMessageToSocket(message, userSocket.Socket);

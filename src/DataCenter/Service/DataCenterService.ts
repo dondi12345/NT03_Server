@@ -1,5 +1,6 @@
 import { LogServer } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
+import { LogType } from "../../LogServer/Model/LogModel";
 import { DataVersion, DataVersionDictionary, GetDataVersionByName } from "../Model/DataVersion";
 import { GameData } from "../Model/GameData";
 
@@ -13,7 +14,7 @@ export async function InitDataVersion(){
         const element = dataNames[index];
         await GetDataVersionByName(element, (error, response)=>{
             if(error){
-                LogServer(LogCode.DataCenter_InitFail, error)
+                LogServer(LogCode.DataCenter_InitFail, error, LogType.Error)
             }else{
                 dataVersionDictionary[element] = response;
             }

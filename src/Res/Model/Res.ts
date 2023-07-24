@@ -4,6 +4,7 @@ import { QualityItemCode } from "../../QualityItem/QualityItem";
 import { ResType } from "./ResType";
 import { LogIdUserPlayer } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
+import { LogType } from "../../LogServer/Model/LogModel";
 
 export class Reses{
     Elements : IRes[] = [];
@@ -109,6 +110,6 @@ export async function UpdateRes(res:IRes) {
     }).then((res)=>{
         console.log("Dev 1685723759 "+res);
     }).catch(e=>{
-        LogIdUserPlayer(LogCode.Res_SaveFail, res.IdUserPlayer.toHexString(), e);
+        LogIdUserPlayer(LogCode.Res_SaveFail, res.IdUserPlayer.toHexString(), e, LogType.Error);
     })
 }

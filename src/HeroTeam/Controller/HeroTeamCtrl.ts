@@ -6,6 +6,7 @@ import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
 import { CreateHeroTeam, FindHeroTeamByIdUserPlayer, HeroTeam, HeroTeamModel, RemoveSlotHeroTeam, SelectHero, UpdateHeroTeam } from "../Model/HeroTeam";
+import { LogType } from "../../LogServer/Model/LogModel";
 
 export async function HeroTeamLogin(message : IMessage, userSocket: IUserSocket){
     await FindHeroTeamByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
@@ -71,7 +72,7 @@ export async function SelectHeroTeamCtrl(message : Message, userSocket : UserSoc
             UpdateHeroTeamCtrl(messageCall, userSocket);
         })
     } catch (error) {
-        LogUserSocket(LogCode.HeroTeam_SelectHeroFail, userSocket, error)
+        LogUserSocket(LogCode.HeroTeam_SelectHeroFail, userSocket, error, LogType.Error)
     }
 }
 export async function DeselectHeroTeamCtrl(message : Message, userSocket : UserSocket){
@@ -97,7 +98,7 @@ export async function DeselectHeroTeamCtrl(message : Message, userSocket : UserS
             RemoveSlotHeroTeamCtrl(res, userSocket);
         })
     } catch (error) {
-        LogUserSocket(LogCode.HeroTeam_SelectHeroFail, userSocket, error)
+        LogUserSocket(LogCode.HeroTeam_SelectHeroFail, userSocket, error, LogType.Error)
     }
 }
 
@@ -110,7 +111,7 @@ export function UpdateHeroTeamCtrl(message : Message, userSocket : UserSocket){
         messageBack.Data = JSON.stringify(heroTeam);
         SendMessageToSocket(messageBack, userSocket.Socket);
     } catch (error) {
-        LogUserSocket(LogCode.HeroTeam_UpdateFail, userSocket, error);
+        LogUserSocket(LogCode.HeroTeam_UpdateFail, userSocket, error, LogType.Error);
     }
 }
 
@@ -122,6 +123,6 @@ export function RemoveSlotHeroTeamCtrl(heroTeam : HeroTeam, userSocket : UserSoc
         UpdateHeroTeamCtrl(messageCall, userSocket);
         RemoveSlotHeroTeam(heroTeam);
     } catch (error) {
-        LogUserSocket(LogCode.HeroTeam_RemoveSlotFail, userSocket, error);
+        LogUserSocket(LogCode.HeroTeam_RemoveSlotFail, userSocket, error, LogType.Error);
     }
 }

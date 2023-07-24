@@ -37,6 +37,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const ServerGameCode_1 = require("./ServerGameCode");
 const LogController_1 = require("../../LogServer/Controller/LogController");
 const LogCode_1 = require("../../LogServer/Model/LogCode");
+const LogModel_1 = require("../../LogServer/Model/LogModel");
 class UserPlayer {
     constructor() {
         this._id = new mongoose_1.Types.ObjectId();
@@ -105,9 +106,10 @@ function UpdateUserPlayer(userPlayer) {
             Name: userPlayer.Name,
             Wave: userPlayer.Wave ? userPlayer.Wave : 0,
         }).then(res => {
+            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.UserPlayerServer_SaveUserPlayer, userPlayer._id.toString(), "", LogModel_1.LogType.Normal);
             console.log("Dev 1687943868 ", res);
         }).catch(e => {
-            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.UserPlayerServer_SaveFail, userPlayer._id.toString(), e);
+            (0, LogController_1.LogIdUserPlayer)(LogCode_1.LogCode.UserPlayerServer_SaveFailUserPlayer, userPlayer._id.toString(), e, LogModel_1.LogType.Error);
         });
     });
 }

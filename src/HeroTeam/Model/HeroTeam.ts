@@ -1,6 +1,7 @@
 import mongoose, { Query, Schema, Types } from "mongoose";
 import { LogIdUserPlayer } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
+import { LogType } from "../../LogServer/Model/LogModel";
 
 export class SelectHero{
     IdHero : string
@@ -78,7 +79,7 @@ export async function UpdateHeroTeam(heroTeam : HeroTeam) {
     }).then(res=>{
         console.log("Dev 1687617539 ", res);
     }).catch((e)=>{
-        LogIdUserPlayer(LogCode.HeroTeam_SaveFail, heroTeam.IdUserPlayer.toString(), e);
+        LogIdUserPlayer(LogCode.HeroTeam_SaveFail, heroTeam.IdUserPlayer.toString(), e, LogType.Error);
     })
 }
 
@@ -105,7 +106,7 @@ export async function RemoveSlotHeroTeam(heroTeam : HeroTeam) {
     HeroTeamModel.updateOne({IdUserPlayer : heroTeam.IdUserPlayer},{ $unset : query}).then(res=>{
         console.log("Dev 1687617538 ", res);
     }).catch((e)=>{
-        LogIdUserPlayer(LogCode.HeroTeam_RemoveSlotFail, heroTeam.IdUserPlayer.toString(), e);
+        LogIdUserPlayer(LogCode.HeroTeam_RemoveSlotFail, heroTeam.IdUserPlayer.toString(), e, LogType.Error);
     })
 
 } 

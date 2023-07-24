@@ -17,6 +17,7 @@ const Message_1 = require("../../MessageServer/Model/Message");
 const MessageCode_1 = require("../../MessageServer/Model/MessageCode");
 const MessageService_1 = require("../../MessageServer/Service/MessageService");
 const HeroTeam_1 = require("../Model/HeroTeam");
+const LogModel_1 = require("../../LogServer/Model/LogModel");
 function HeroTeamLogin(message, userSocket) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, HeroTeam_1.FindHeroTeamByIdUserPlayer)(userSocket.IdUserPlayer).then((respone) => __awaiter(this, void 0, void 0, function* () {
@@ -85,7 +86,7 @@ function SelectHeroTeamCtrl(message, userSocket) {
             });
         }
         catch (error) {
-            (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.HeroTeam_SelectHeroFail, userSocket, error);
+            (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.HeroTeam_SelectHeroFail, userSocket, error, LogModel_1.LogType.Error);
         }
     });
 }
@@ -117,7 +118,7 @@ function DeselectHeroTeamCtrl(message, userSocket) {
             });
         }
         catch (error) {
-            (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.HeroTeam_SelectHeroFail, userSocket, error);
+            (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.HeroTeam_SelectHeroFail, userSocket, error, LogModel_1.LogType.Error);
         }
     });
 }
@@ -132,7 +133,7 @@ function UpdateHeroTeamCtrl(message, userSocket) {
         (0, MessageService_1.SendMessageToSocket)(messageBack, userSocket.Socket);
     }
     catch (error) {
-        (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.HeroTeam_UpdateFail, userSocket, error);
+        (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.HeroTeam_UpdateFail, userSocket, error, LogModel_1.LogType.Error);
     }
 }
 exports.UpdateHeroTeamCtrl = UpdateHeroTeamCtrl;
@@ -145,7 +146,7 @@ function RemoveSlotHeroTeamCtrl(heroTeam, userSocket) {
         (0, HeroTeam_1.RemoveSlotHeroTeam)(heroTeam);
     }
     catch (error) {
-        (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.HeroTeam_RemoveSlotFail, userSocket, error);
+        (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.HeroTeam_RemoveSlotFail, userSocket, error, LogModel_1.LogType.Error);
     }
 }
 exports.RemoveSlotHeroTeamCtrl = RemoveSlotHeroTeamCtrl;

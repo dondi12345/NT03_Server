@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateCurrencyCtrl = exports.CurrencyLogin = void 0;
 const LogController_1 = require("../../LogServer/Controller/LogController");
 const LogCode_1 = require("../../LogServer/Model/LogCode");
+const LogModel_1 = require("../../LogServer/Model/LogModel");
 const Message_1 = require("../../MessageServer/Model/Message");
 const MessageCode_1 = require("../../MessageServer/Model/MessageCode");
 const MessageService_1 = require("../../MessageServer/Service/MessageService");
@@ -57,6 +58,7 @@ function LoginSuccessMessage(res) {
 }
 function UpdateCurrencyCtrl(userSocket) {
     try {
+        (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.Currency_Update, userSocket, "", LogModel_1.LogType.Normal);
         (0, Currency_1.UpdateCurrency)(userSocket.Currency, userSocket.IdUserPlayer);
         var messageBack = new Message_1.Message();
         messageBack.MessageCode = MessageCode_1.MessageCode.Currency_Update;
@@ -64,7 +66,7 @@ function UpdateCurrencyCtrl(userSocket) {
         (0, MessageService_1.SendMessageToSocket)(messageBack, userSocket.Socket);
     }
     catch (error) {
-        (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.Currency_UpdateFail, userSocket, error);
+        (0, LogController_1.LogUserSocket)(LogCode_1.LogCode.Currency_UpdateFail, userSocket, error, LogModel_1.LogType.Error);
     }
 }
 exports.UpdateCurrencyCtrl = UpdateCurrencyCtrl;
