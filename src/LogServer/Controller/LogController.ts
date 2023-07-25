@@ -9,12 +9,17 @@ import { dateUtils } from '../../Utils/DateUtils';
 export function LogUserSocket(logCode : LogCode, userSocket : UserSocket, data : string = "", type : LogType = LogType.Unknow){
     var logMode = new LogModel();
     logMode.Code = logCode;
-    logMode.Platform = userSocket.Platform;
-    logMode.IdUserPlayer = userSocket.IdUserPlayer.toString();
     logMode.Data = data;
     logMode.Date = dateUtils.GetCurrentFomatDate();
     logMode.Time = dateUtils.GetCurrentTimeSpan();
     logMode.Type = type;
+    try {
+        logMode.Platform = userSocket.Platform;
+        logMode.IdUserPlayer = userSocket.IdUserPlayer.toString();
+        
+    } catch (error) {
+        console.log(error);
+    }
     WriteLog(logMode);
 }
 export function LogIdUserPlayer(logCode : LogCode, idUserPlayer : string, data : string = "", type : LogType = LogType.Unknow){
