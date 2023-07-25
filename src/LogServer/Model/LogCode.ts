@@ -49,9 +49,22 @@ export enum LogCode {
     Hero_CreateFail = 5013,
 
     HeroEquip_Test = 6000,
+    HeroEquip_LoginFail = 6001,
+    HeroEquip_LoginSuccess = 6002,
+    HeroEquip_CraftEquipSuccess = 6003,
+    HeroEquip_CraftEquipFail = 6004,
+    HeroEquip_ChangeResFail = 6005,
+    HeroEquip_ChangeResError = 6006,
+    HeroEquip_CreateNewFail = 6007,
+    HeroEquip_SaveFail = 6008,
 
     Res_Test = 7000,
     Res_SaveFail = 7001,
+    Res_LoginFail = 7002,
+    Res_LoginSuccess = 7003,
+    Res_CreateNewFail = 7003,
+    Res_Update = 7004,
+    Res_UpdateFail = 7005,
 
     Shop_Test = 8000,
 

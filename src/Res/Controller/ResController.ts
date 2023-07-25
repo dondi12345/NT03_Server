@@ -1,3 +1,6 @@
+import { LogUserSocket } from "../../LogServer/Controller/LogController";
+import { LogCode } from "../../LogServer/Model/LogCode";
+import { LogType } from "../../LogServer/Model/LogModel";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
@@ -18,7 +21,9 @@ export async function ResLogin(message : IMessage, userSocket: IUserSocket){
         message.MessageCode = MessageCode.Res_LoginSuccess;
         message.Data = JSON.stringify(reses);
         SendMessageToSocket(message, userSocket.Socket);
+        LogUserSocket(LogCode.Res_LoginSuccess, userSocket, "", LogType.Normal);
     }).catch(e=>{
+        LogUserSocket(LogCode.Res_LoginFail, userSocket, e, LogType.Error);
         var message = new Message();
         message.MessageCode = MessageCode.Res_LoginFail;
         message.Data = "Item login fail";
@@ -37,8 +42,6 @@ export async function ChangeRes(code : ResCode, number: number, userSocket: IUse
         await CreateNewRes(code, userSocket).then(respone=>{
             console.log("Dev 1686240263 " + respone);
             res = Res.Parse(respone);
-        }).catch(e=>{
-            console.log("Dev 1686239001 "+e);
         })
     }
     if(res == null || res == undefined) return false;
@@ -59,6 +62,7 @@ export async function CreateNewRes(resCode : ResCode ,userSocket: IUserSocket) {
     await CreateRes(res).then(respone =>{
         resback = Res.Parse(respone);        
     }).catch(e=>{
+        LogUserSocket(LogCode.Res_CreateNewFail, userSocket, e, LogType.Error);
         console.log("Dev 1686240493 "+e);
     })
     return resback;

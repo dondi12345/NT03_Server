@@ -2,7 +2,7 @@ import mongoose, { Schema, Types } from "mongoose";
 import { ResCode } from "./ResCode";
 import { QualityItemCode } from "../../QualityItem/QualityItem";
 import { ResType } from "./ResType";
-import { LogIdUserPlayer } from "../../LogServer/Controller/LogController";
+import { LogIdUserPlayer, LogServer } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
 
@@ -77,6 +77,7 @@ export async function CreateRes(res : IRes){
         console.log("Dev 1686240002 "+ respone)
         data = Res.Parse(respone);
     }).catch((e)=>{
+        LogServer(LogCode.Res_CreateNewFail, e, LogType.Error);
         console.log("Dev 1686240018 "+ e)
         data = null;
     })

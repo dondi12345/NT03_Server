@@ -15,6 +15,9 @@ import { HeroEquipType } from "../Model/HeroEquipType";
 import { IndexHeroEquipCraft, RateCraft, RateCraftWhite } from "../Model/VariableHeroEquip";
 import { dataHeroEquipDictionary } from "../Service/HeroEquipService";
 import { UpdateCurrencyCtrl } from "../../Currency/Controller/CurrencyController";
+import { LogUserSocket } from "../../LogServer/Controller/LogController";
+import { LogCode } from "../../LogServer/Model/LogCode";
+import { LogType } from "../../LogServer/Model/LogModel";
 
 export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket){
     await FindHeroEquipByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
@@ -24,11 +27,13 @@ export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket
             heroEquips.Elements.push(heroEquip);
         }
         console.log("Dev 1685514345 "+respone.length)
+        LogUserSocket(LogCode.HeroEquip_LoginSuccess, userSocket, "", LogType.Normal)
         var message = new Message();
         message.MessageCode = MessageCode.HeroEquip_LoginSuccess;
         message.Data = JSON.stringify(heroEquips);
         SendMessageToSocket(message, userSocket.Socket);
     }).catch(e=>{
+        LogUserSocket(LogCode.HeroEquip_LoginFail, userSocket, e, LogType.Error)
         var message = new Message();
         message.MessageCode = MessageCode.HeroEquip_LoginFail;
         message.Data = "HeroEquip login fail";
@@ -45,8 +50,11 @@ export async function CraftEquip(message : IMessage, userSocket: IUserSocket) {
         if(respone){
             RandomHeroEquip(craftHeroEquip, userSocket);
         }else{
+            LogUserSocket(LogCode.HeroEquip_ChangeResFail, userSocket, "", LogType.Normal)
             CraftHeroEquipFail(userSocket);
         }
+    }).catch(err=>{
+        LogUserSocket(LogCode.HeroEquip_ChangeResError, userSocket, err, LogType.Error)
     })
 }
 
@@ -57,6 +65,7 @@ export function RandomHeroEquip(craftHeroEquip : CraftHeroEquip, userSocket: IUs
     var rand = Math.random()*maxRate;
     console.log(rand +" - "+ totalRate+" - "+maxRate);
     if(rand > totalRate){
+        LogUserSocket(LogCode.HeroEquip_ChangeResFail, userSocket, "", LogType.Normal)
         CraftHeroEquipFail(userSocket);
         return;
     }
@@ -66,6 +75,7 @@ export function RandomHeroEquip(craftHeroEquip : CraftHeroEquip, userSocket: IUs
     heroEquip = HeroEquip.HeroEquip(code, userSocket.IdUserPlayer)
     CreateHeroEquip(heroEquip).then(respone=>{
         if(respone == null || respone == undefined){
+            LogUserSocket(LogCode.HeroEquip_CraftEquipFail, userSocket, "", LogType.Normal)
             CraftHeroEquipFail(userSocket);
             return;
         }
@@ -75,6 +85,7 @@ export function RandomHeroEquip(craftHeroEquip : CraftHeroEquip, userSocket: IUs
         message.Data = JSON.stringify(newEquip);
         SendMessageToSocket(message, userSocket.Socket);
     }).catch(e=>{
+        LogUserSocket(LogCode.HeroEquip_CreateNewFail, userSocket, e, LogType.Error)
         console.log("Dev 1686210916 "+e);
         CraftHeroEquipFail(userSocket);
         return;

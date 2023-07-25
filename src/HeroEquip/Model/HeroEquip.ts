@@ -5,6 +5,9 @@ import { HeroEquipCode } from "./HeroEquipCode";
 import { QualityItemCode } from "../../QualityItem/QualityItem";
 import { HeroCode } from "../../HeroServer/Model/HeroCode";
 import { dataHeroEquipDictionary } from "../Service/HeroEquipService";
+import { LogServer } from "../../LogServer/Controller/LogController";
+import { LogCode } from "../../LogServer/Model/LogCode";
+import { LogType } from "../../LogServer/Model/LogModel";
 
 export class HeroWearEquip{
     IdHero : Types.ObjectId;
@@ -165,6 +168,7 @@ export async function CreateHeroEquip(heroEquip : IHeroEquip){
         console.log("Dev 1685517259 "+ res)
         data = HeroEquip.Parse(res);
     }).catch((e)=>{
+        LogServer(LogCode.HeroEquip_CreateNewFail, e, LogType.Error)
         console.log("Dev 1685517262 "+ e)
         data = null;
     })
@@ -175,6 +179,9 @@ export async function UpdateHeroEquip(heroEquip:IHeroEquip) {
     console.log("Dev 1687173995 ", heroEquip);
     HeroEquipModel.updateOne({_id : heroEquip._id}, {IdHero : heroEquip.IdHero, Lv : heroEquip.Lv}).then((res)=>{
         console.log("Dev 1685723716 ", res);
+    }).catch(err=>{
+        LogServer(LogCode.HeroEquip_SaveFail, err, LogType.Error)
+
     })
 }
 
