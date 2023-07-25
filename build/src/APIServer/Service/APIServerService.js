@@ -21,7 +21,13 @@ function InitAPIServer() {
         (0, DataCenterRouter_1.DataCenterRouter)(req.body, res);
     });
     app.post('/logServer', (req, res) => {
-        (0, LogController_1.LogFromClient)(req.body);
+        try {
+            (0, LogController_1.LogFromClient)(req.body);
+            res.send("Success");
+        }
+        catch (error) {
+            res.send(error);
+        }
     });
     app.listen(Env_1.port.portAPIServer, () => {
         console.log(`Dev 1686217637 APIServer listening on port ${Env_1.port.portAPIServer}`);

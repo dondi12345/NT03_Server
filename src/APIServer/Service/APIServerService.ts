@@ -21,7 +21,12 @@ export function InitAPIServer(){
         DataCenterRouter(req.body, res)
     })
     app.post('/logServer',(req, res)=>{
-        LogFromClient(req.body);
+        try {
+            LogFromClient(req.body);
+            res.send("Success");
+        } catch (error) {
+            res.send(error);
+        }
     })
 
     app.listen(port.portAPIServer, () => {
