@@ -4,6 +4,9 @@ import { GenderCode } from "./GenderCode";
 import { HeroFashion, HeroFashionVar } from "../../HeroFashion/HeroFashion";
 import { HeroEquip } from "../../HeroEquip/Model/HeroEquip";
 import { HeroEquipType } from "../../HeroEquip/Model/HeroEquipType";
+import { LogServer } from "../../LogServer/Controller/LogController";
+import { LogCode } from "../../LogServer/Model/LogCode";
+import { LogType } from "../../LogServer/Model/LogModel";
 
 export interface IGear{
     IdWeapon ?: string,
@@ -161,9 +164,11 @@ export const HeroModel = mongoose.model<IHero>('Hero', HeroSchema);
 export async function CreateHero(hero : IHero){
     var data;
     await HeroModel.create(hero).then((res)=>{
+        LogServer(LogCode.Hero_CreateNew, "", LogType.Normal)
         console.log("Dev 1685285706 "+ res)
         data = Hero.Parse(res);
     }).catch((e)=>{
+        LogServer(LogCode.Hero_CreateFail, e, LogType.Error)
         console.log("Dev 1685285714 "+ e)
         data = null;
     })
@@ -189,6 +194,9 @@ export async function FindHeroById(id : Types.ObjectId){
 export async function UpdateHero(hero:IHero) {
     console.log("Dev 1687174057 ", hero);
     HeroModel.updateOne({_id : hero._id},{Lv : hero.Lv, Gear : hero.Gear}).then((res)=>{
+        LogServer(LogCode.Hero_SaveHero, "", LogType.Normal)
         console.log("Dev 1685723761 ",res);
+    }).catch(err=>{
+        LogServer(LogCode.Hero_SaveHeroFail, err, LogType.Error)
     })
 }

@@ -48,7 +48,7 @@ export function LogFromClient(log : string){
 function WriteLog(data : any){
   var path = "./Log"
   var date = new Date();
-  var dateFormat = date.getUTCDate()+"-"+(date.getUTCMonth()+1)+"-"+date.getUTCFullYear()
+  var dateFormat = dateUtils.GetCurrentDateNumber();
   var fileName = dateFormat+".log"
   writeFile(join(path, fileName), JSON.stringify(data)+",\n", { flag: "a" }, err => {});
 }

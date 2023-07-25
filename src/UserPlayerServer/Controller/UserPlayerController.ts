@@ -9,7 +9,7 @@ import { ServerGameCode } from "../Model/ServerGameCode";
 import { CreateUserPlayer, FindByIdAccountAndServerGameCode, IUserPlayer, UpdateUserPlayer, UserPlayer } from "../Model/UserPlayer";
 import { Redis } from '../../Enviroment/Env';
 import { UserSocketData } from '../../UserSocket/Model/UserSocketData';
-import { LogUserSocket } from '../../LogServer/Controller/LogController';
+import { LogIdUserPlayer, LogUserSocket } from '../../LogServer/Controller/LogController';
 import { LogCode } from '../../LogServer/Model/LogCode';
 import { LogType } from '../../LogServer/Model/LogModel';
 
@@ -61,9 +61,11 @@ function LoginSuccessMessage(userPlayer : IUserPlayer){
 export function addAccountTokenToRedis(idUserPlayer :string, token: string) {
     redisUserPlayerSession.set(Redis.KeyUserPlayerSession + idUserPlayer, token, (error, result) => {
         if (error) {
-            console.error('1685008521 Failed to save token:', error);
+            console.error("Dev 1685008521 Failed to save token:", error);
+            LogIdUserPlayer(LogCode.UserPlayerServer_SaveTokenFail, idUserPlayer, "", LogType.Normal)
         } else {
             console.log(`Dev 1685008516 Token added ${result}: `, token);
+            LogIdUserPlayer(LogCode.UserPlayerServer_SaveToken, idUserPlayer, "", LogType.Normal)
         }
     });
 }

@@ -27,13 +27,13 @@ export async function AccountRegister(message : IMessage, response) {
             isExisten = true;
         })
         if(isExisten) {
-            LogServer(LogCode.AccountServer_RegisterFail, "Account existen", LogType.Error);
+            LogServer(LogCode.AccountServer_RegisterFail, "Account existen", LogType.Warning);
             response.send(RegisterFailMessage("Account existen"));
             return;
         }
 
         if(account.Password == null || account.Password == undefined){
-            LogServer(LogCode.AccountServer_RegisterFail, "Wrong confirm password", LogType.Error);
+            LogServer(LogCode.AccountServer_RegisterFail, "Wrong confirm password", LogType.Warning);
             response.send(RegisterFailMessage("Wrong confirm password"));
         }
         var pass = account.Password == undefined ? "" : account.Password+"";
@@ -72,7 +72,7 @@ export async function AccountLogin(message:Message, response){
 
         if(accountAuthen.Username == null || accountAuthen.Username == undefined || accountAuthen.Password == null || accountAuthen.Password== undefined){
             console.log("Dev 1684937233 error format")
-            LogServer(LogCode.AccountServer_LoginFail, "Inval format", LogType.Error)
+            LogServer(LogCode.AccountServer_LoginFail, "Inval format", LogType.Warning)
             response.send(JSON.stringify(LoginFailMessage("Inval format")));
             return;
         }
@@ -81,14 +81,14 @@ export async function AccountLogin(message:Message, response){
             await FindByUserName(accountAuthen.Username).then((res: IAccount)=>{
                 if(res == null || res == undefined){
                     console.log("Dev 1685266848 Account not found")
-                    LogServer(LogCode.AccountServer_LoginFail, "Account not found", LogType.Error)
+                    LogServer(LogCode.AccountServer_LoginFail, "Account not found", LogType.Warning)
                     response.send(JSON.stringify(LoginFailMessage("Account not found")));
                     return;
                 }
                 if(res.Password == null || res.Password == undefined){
                     console.log("Dev 1685266848 Error password")
                     response.send(JSON.stringify(LoginFailMessage("Error password")));
-                    LogServer(LogCode.AccountServer_LoginFail, "Error password", LogType.Error)
+                    LogServer(LogCode.AccountServer_LoginFail, "Error password", LogType.Warning)
                     return;
                 }
                 bcrypt.compare(accountAuthen.Password.toString(), res.Password.toString(), async function(err, result) {
@@ -106,7 +106,7 @@ export async function AccountLogin(message:Message, response){
                         return;
                     }else{
                         console.log("Dev 1684684249 WrongPassword")
-                        LogServer(LogCode.AccountServer_LoginFail, "WrongPassword", LogType.Error)
+                        LogServer(LogCode.AccountServer_LoginFail, "WrongPassword", LogType.Warning)
                         response.send(JSON.stringify(LoginFailMessage("WrongPassword")));
                         return;
                     }
@@ -133,14 +133,14 @@ export function AccountLoginTocken(message : Message, response){
     var data = AuthenVerify(tockenAuthen.Token);
     if(data == null || data == undefined){
         response.send(LoginFailMessage("Wrong token"));
-        LogServer(LogCode.AccountServer_LoginFail, "Wrong token", LogType.Error)
+        LogServer(LogCode.AccountServer_LoginFail, "Wrong token", LogType.Warning)
         console.log("Dev 1684937265 wrong token")
         return;
     }else{
         var accountData = AccountData.Parse(data);
         if(accountData.IdDevice != tockenAuthen.IdDevice){
             console.log("Dev 1684937311 wrong device")
-            LogServer(LogCode.AccountServer_LoginFail, "Wrong device", LogType.Error)
+            LogServer(LogCode.AccountServer_LoginFail, "Wrong device", LogType.Warning)
             response.send(LoginFailMessage("Wrong device"));
             return; 
         }

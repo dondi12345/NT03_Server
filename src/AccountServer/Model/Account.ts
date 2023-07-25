@@ -52,6 +52,8 @@ export async function CreateAccount(account:Account) {
     await AccountModel.create(account).then(res=>{
         newAccount = res;
         LogServer(LogCode.AccountServer_CreateNew, JSON.stringify(res), LogType.Normal);
+    }).catch(err=>{
+        LogServer(LogCode.AccountServer_CreateFail, err, LogType.Error);
     })
     return newAccount
 }

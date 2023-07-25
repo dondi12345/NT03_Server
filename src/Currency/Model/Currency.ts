@@ -1,6 +1,6 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { DefaultCurrency } from "./DefaultCurrency";
-import { LogIdUserPlayer } from "../../LogServer/Controller/LogController";
+import { LogIdUserPlayer, LogServer } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
 
@@ -58,6 +58,7 @@ export async function CreateUserPlayerCurrency(data : ICurrency){
         console.log("Dev 1684837676 "+ res)
         userPlayerRes = Currency.Parse(res);
     }).catch((e)=>{
+        LogServer(LogCode.Currency_CreateNewFail, e, LogType.Error)
         console.log("Dev 1684837715 "+ e)
     })
     return userPlayerRes;
@@ -90,6 +91,9 @@ export async function UpdateCurrency(currency : ICurrency, idUserPlayer : Types.
 
 export async function IncreaseNumber(nameCurrency : string, number : number, idUserPlayer : Types.ObjectId) {
     CurrencyModel.updateOne({IdUserPlayer : idUserPlayer}, {$inc:{[nameCurrency] : number}}).then(respone=>{
+        LogIdUserPlayer(LogCode.Currency_IncreaseNumber, idUserPlayer.toString(), "", LogType.Normal);
         console.log("Dev 1686733379 ",respone);
+    }).catch(err=>{
+        LogIdUserPlayer(LogCode.Currency_IncreaseNumberFail, idUserPlayer.toString(), err, LogType.Error);
     })
 }

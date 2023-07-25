@@ -1,7 +1,7 @@
 import mongoose, { Schema, Types } from 'mongoose';
 import { variable } from '../../Enviroment/Env';
 import { ServerGameCode } from './ServerGameCode';
-import { LogIdUserPlayer, LogUserSocket } from '../../LogServer/Controller/LogController';
+import { LogIdUserPlayer, LogServer, LogUserSocket } from '../../LogServer/Controller/LogController';
 import { LogCode } from '../../LogServer/Model/LogCode';
 import { LogType } from '../../LogServer/Model/LogModel';
 
@@ -66,6 +66,8 @@ export async function CreateUserPlayer(userPlayer:UserPlayer) {
     var newUserPlayer
     await UserPlayerModel.create(userPlayer).then(res=>{
         newUserPlayer = res;
+    }).catch(err=>{
+        LogServer(LogCode.UserPlayerServer_CreateFail, err, LogType.Error);
     })
     return newUserPlayer
 }

@@ -14,6 +14,9 @@ import { Res } from '../../Res/Model/Res';
 import { Types } from 'mongoose';
 import { dataHeroDictionary } from '../Service/HeroService';
 import { UpdateCurrencyCtrl } from '../../Currency/Controller/CurrencyController';
+import { LogType } from '../../LogServer/Model/LogModel';
+import { LogCode } from '../../LogServer/Model/LogCode';
+import { LogUserSocket } from '../../LogServer/Controller/LogController';
 
 const redisHero = redis.createClient();
 
@@ -38,11 +41,13 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
         message.MessageCode = MessageCode.Hero_LoginSuccess;
         message.Data = JSON.stringify(dataHeroes);
         SendMessageToSocket(message, userSocket.Socket);
+        LogUserSocket(LogCode.Hero_LoginSuccess, userSocket, "", LogType.Normal)
     }).catch(e=>{
         var message = new Message();
         message.MessageCode = MessageCode.Hero_LoginFail;
         message.Data = "Hero login fail";
         console.log("Dev 1685293337 "+ e);
+        LogUserSocket(LogCode.Hero_LoginFail, userSocket, e, LogType.Error)
         SendMessageToSocket(message, userSocket.Socket);
     })
 }
@@ -50,6 +55,7 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
 export function Summon(message : IMessage, userSocket: IUserSocket){
     if(userSocket.Currency == null || userSocket.Currency == undefined){
         ResLogin(new Message(), userSocket);
+        LogUserSocket(LogCode.Hero_DontLoginRes, userSocket, "Hero_DontLoginRes", LogType.Error)
         console.log("Dev 1685287568 Not connect to Res")
         return;
     }
@@ -62,6 +68,7 @@ export function Summon(message : IMessage, userSocket: IUserSocket){
             message.MessageCode = MessageCode.Hero_SummonFail;
             message.Data = "Dont enough HeroScroll";
             SendMessageToSocket(message, userSocket.Socket);
+            LogUserSocket(LogCode.Hero_DontEnoughHeroScroll, userSocket, "", LogType.Warning)
         }
     });
 }
@@ -95,6 +102,7 @@ export function RandomeHero(userSocket: IUserSocket){
     message.MessageCode = MessageCode.Hero_SummonSuccess;
     message.Data = JSON.stringify(summonHero);
     SendMessageToSocket(message, userSocket.Socket);
+    LogUserSocket(LogCode.Hero_SummonSuccess, userSocket, "", LogType.Normal)
 }
 
 export function GetSummonResult(message : IMessage, userSocket: IUserSocket){
@@ -118,6 +126,7 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
     redisHero.get(Redis.KeyHeroSummon + userSocket.IdUserPlayer,  (error, result)=>{
         if(error || result == null || result == undefined){
             SendMessageToSocket(HireFailMessage(), userSocket.Socket);
+            LogUserSocket(LogCode.Hero_HireFail, userSocket, error, LogType.Error)
         }else{
             try {
                 var summonHero = SummonHero.Parse(result);
@@ -134,9 +143,11 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
                 redisHero.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
 
                 var hero = Hero.NewHero(summonHero.Slots[indexFindout].Hero);
+                LogUserSocket(LogCode.Hero_HireSuccess, userSocket, "", LogType.Normal)
                 HireHeroSuccess(hero, userSocket);
             } catch (error) {
                 console.log("Dev 1685284455 "+error)
+                LogUserSocket(LogCode.Hero_HireFail, userSocket, error, LogType.Error)
                 SendMessageToSocket(HireFailMessage(), userSocket.Socket); 
             }
         }
@@ -160,6 +171,7 @@ export function HireFailMessage(){
 }
 
 export function UpdateHeroes(heroes : Heroes, userSocket: IUserSocket){
+    LogUserSocket(LogCode.Hero_UpdateHero, userSocket, "", LogType.Normal)
     heroes.Elements.forEach(element => {
         UpdateHero(element);
     });
