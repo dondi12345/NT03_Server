@@ -1,4 +1,7 @@
 import mongoose, { Schema, Types } from 'mongoose';
+import { LogServer } from '../../LogServer/Controller/LogController';
+import { LogCode } from '../../LogServer/Model/LogCode';
+import { LogType } from '../../LogServer/Model/LogModel';
 
 export interface IAccount{
     _id : Types.ObjectId;
@@ -48,6 +51,7 @@ export async function CreateAccount(account:Account) {
     account._id = new Types.ObjectId();
     await AccountModel.create(account).then(res=>{
         newAccount = res;
+        LogServer(LogCode.AccountServer_CreateNew, JSON.stringify(res), LogType.Normal);
     })
     return newAccount
 }

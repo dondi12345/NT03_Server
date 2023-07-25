@@ -4,6 +4,11 @@ export enum LogCode {
     MessageServer_Test = 1000,
 
     AccountServer_Test = 2000,
+    AccountServer_CreateNew = 2001,
+    AccountServer_RegisterFail = 2002,
+    AccountServer_RegisterSuccess = 2003,
+    AccountServer_LoginFail = 2004,
+    AccountServer_LoginSuccess = 2005,
 
     UserPlayerServer_Test = 3000,
     UserPlayerServer_SaveFail = 3001,
@@ -17,6 +22,7 @@ export enum LogCode {
     Currency_Update = 4003,
 
     Hero_Test = 5000,
+    Hero_ErrorLoadHeroData = 5001,
 
     HeroEquip_Test = 6000,
 

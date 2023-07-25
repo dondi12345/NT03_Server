@@ -11,6 +11,14 @@ class DateUtils{
         var yy = date.getFullYear();
         return dd+"/"+mm+"/"+yy;
     }
+
+    GetCurrentDateNumber(){
+        var date = new Date();
+        var number = date.getFullYear()* 10000;
+        number += (date.getMonth()+1) * 100;
+        number += date.getDate();
+        return number;
+    }
 }
 
 export const dateUtils = new DateUtils();
