@@ -12,7 +12,17 @@ import { UserSocketData } from '../../UserSocket/Model/UserSocketData';
 import { LogIdUserPlayer, LogUserSocket } from '../../LogServer/Controller/LogController';
 import { LogCode } from '../../LogServer/Model/LogCode';
 import { LogType } from '../../LogServer/Model/LogModel';
-import { redisClient } from '../../Service/Database/RedisConnect';
+
+const redisUserPlayerSession = redis.createClient({
+    host: Redis.Host,
+    port: Redis.Port,
+    password: Redis.Password,
+  });
+const redisPub = redis.createClient({
+    host: Redis.Host,
+    port: Redis.Port,
+    password: Redis.Password,
+  });
 
 export async function UserPlayerLogin(message : IMessage, userSocket : IUserSocket) {
     var serverGame = ServerGame.Parse(message.Data);
@@ -57,7 +67,7 @@ function LoginSuccessMessage(userPlayer : IUserPlayer){
 }
 
 export function addAccountTokenToRedis(idUserPlayer :string, token: string) {
-    redisClient.set(Redis.KeyUserPlayerSession + idUserPlayer, token, (error, result) => {
+    redisUserPlayerSession.set(Redis.KeyUserPlayerSession + idUserPlayer, token, (error, result) => {
         if (error) {
             console.error("Dev 1685008521 Failed to save token:", error);
             LogIdUserPlayer(LogCode.UserPlayerServer_SaveTokenFail, idUserPlayer, "", LogType.Normal)
@@ -69,7 +79,7 @@ export function addAccountTokenToRedis(idUserPlayer :string, token: string) {
 }
 
 export async function CheckUserLoginedFromRedis(userPlayer:IUserPlayer, userSocket : IUserSocket){
-    await redisClient.get(Redis.KeyUserPlayerSession + userPlayer._id.toString(), (error, result)=>{
+    await redisUserPlayerSession.get(Redis.KeyUserPlayerSession + userPlayer._id.toString(), (error, result)=>{
         console.log("Dev 1685077900 "+result);
         if(error || result == null || result == undefined){
             userSocket.IdUserPlayer = userPlayer._id;
@@ -87,7 +97,7 @@ export async function CheckUserLoginedFromRedis(userPlayer:IUserPlayer, userSock
             message.Data = JSON.stringify(userSocketData);
             console.log(JSON.stringify(message));
             userSocket.Socket.disconnect();
-            redisClient.publish(Redis.UserPlayerChannel, JSON.stringify(message));  
+            redisPub.publish(Redis.UserPlayerChannel, JSON.stringify(message));  
         }
     });
 }

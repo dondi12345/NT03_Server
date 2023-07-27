@@ -17,7 +17,12 @@ import { UpdateCurrencyCtrl } from '../../Currency/Controller/CurrencyController
 import { LogType } from '../../LogServer/Model/LogModel';
 import { LogCode } from '../../LogServer/Model/LogCode';
 import { LogUserSocket } from '../../LogServer/Controller/LogController';
-import { redisClient } from '../../Service/Database/RedisConnect';
+
+const redisHero = redis.createClient({
+    host: Redis.Host,
+    port: Redis.Port,
+    password: Redis.Password,
+  });
 
 export function CreateNewHero(){
     for (let index = 0; index < 10; index++) {
@@ -54,7 +59,7 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
 export function Summon(message : IMessage, userSocket: IUserSocket){
     if(userSocket.Currency == null || userSocket.Currency == undefined){
         ResLogin(new Message(), userSocket);
-        LogUserSocket(LogCode.Hero_DontLoginRes, userSocket, "Hero_Don'tLoginRes", LogType.Error)
+        LogUserSocket(LogCode.Hero_DontLoginRes, userSocket, "Hero_DontLoginRes", LogType.Error)
         console.log("Dev 1685287568 Not connect to Res")
         return;
     }
@@ -96,7 +101,7 @@ export function RandomeHero(userSocket: IUserSocket){
             rate -= rateSummon[property];
         }
     }
-    redisClient.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
+    redisHero.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
     var message = new Message();
     message.MessageCode = MessageCode.Hero_SummonSuccess;
     message.Data = JSON.stringify(summonHero);
@@ -105,7 +110,7 @@ export function RandomeHero(userSocket: IUserSocket){
 }
 
 export function GetSummonResult(message : IMessage, userSocket: IUserSocket){
-    redisClient.get(Redis.KeyHeroSummon + userSocket.IdUserPlayer,  (error, result)=>{
+    redisHero.get(Redis.KeyHeroSummon + userSocket.IdUserPlayer,  (error, result)=>{
         var data;
         if(error || result == null || result == undefined){
             data = {};
@@ -122,7 +127,7 @@ export function GetSummonResult(message : IMessage, userSocket: IUserSocket){
 
 export function HireHero(message : IMessage, userSocket: IUserSocket){
     var summonHeroSlot : SummonHeroSlot = SummonHeroSlot.Parse(message.Data);
-    redisClient.get(Redis.KeyHeroSummon + userSocket.IdUserPlayer,  (error, result)=>{
+    redisHero.get(Redis.KeyHeroSummon + userSocket.IdUserPlayer,  (error, result)=>{
         if(error || result == null || result == undefined){
             SendMessageToSocket(HireFailMessage(), userSocket.Socket);
             LogUserSocket(LogCode.Hero_HireFail, userSocket, error, LogType.Error)
@@ -139,7 +144,7 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
                         break;
                     }
                 }
-                redisClient.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
+                redisHero.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
 
                 var hero = Hero.NewHero(summonHero.Slots[indexFindout].Hero);
                 LogUserSocket(LogCode.Hero_HireSuccess, userSocket, "", LogType.Normal)

@@ -3,11 +3,22 @@ import { Chat, IChat } from "../Model/Chat";
 import { ChatChannel, GetChatChannelById } from '../Model/ChatChannel';
 import { GetIdUserPlayerByIdChatChannel, UserChatChannel } from '../Model/UserChatChannel';
 import { SendToSocketById } from '../Service/ChatService';
-import { variable } from '../../Enviroment/Env';
+import { Redis, variable } from '../../Enviroment/Env';
 import { MSGChatCode } from '../Model/MSGChatCode';
 import { Socket } from 'socket.io';
 import { IMSGChat, MSGChat } from '../Model/MSGChat';
-import { redisClient } from '../../Service/Database/RedisConnect';
+
+const redisChat = redis.createClient({
+    host: Redis.Host,
+    port: Redis.Port,
+    password: Redis.Password,
+  });
+
+const redisPublisher = redis.createClient({
+    host: Redis.Host,
+    port: Redis.Port,
+    password: Redis.Password,
+  });
 
 export function SendChat(msgChat :IMSGChat){
     var chat = Chat.Parse(msgChat.Data);
@@ -16,7 +27,7 @@ export function SendChat(msgChat :IMSGChat){
     msgChat.MSGChatCode = MSGChatCode.ReciveMSGChat;
     GetChatChannelById(chat.IdChatChannel).then((res : ChatChannel) => {
         if(res == null || res == undefined) return;
-        redisClient.publish(variable.chatServer, msgChat);
+        redisPublisher.publish(variable.chatServer, msgChat);
         addChatToRedis(JSON.stringify(res._id), JSON.stringify(chat));
     })
 }
@@ -37,14 +48,14 @@ export function ReciveChat(msgChat :IMSGChat){
 }
 
 export function addChatToRedis(IdChatChannel :string, chat: string) {
-    redisClient.rpush(IdChatChannel, chat, (error, result) => {
+    redisChat.rpush(IdChatChannel, chat, (error, result) => {
         if (error) {
             console.error('1684567920 Failed to add chat message:', error);
         } else {
             console.log(`Dev 1684567933 Chat message added ${result}: `, chat);
             // Remove oldest message if we have more than MAX_CHAT
             if (result > variable.maxLengthChat) {
-                redisClient.ltrim(IdChatChannel, result - variable.maxLengthChat, -1, (error, result) => {
+                redisChat.ltrim(IdChatChannel, result - variable.maxLengthChat, -1, (error, result) => {
                     if (error) {
                         console.error('1684567941 Failed to remove oldest chat message:', error);
                     } else {
