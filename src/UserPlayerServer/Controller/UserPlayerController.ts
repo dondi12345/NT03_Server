@@ -1,3 +1,4 @@
+import redis from 'redis'
 import { UserJoinToGlobalChannel } from "../../ChatServer/Model/UserChatChannel";
 import { IMessage, Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
