@@ -1,4 +1,5 @@
 import { createClient } from "redis";
+import redis from 'redis'
 import { Redis } from "../../Enviroment/Env";
 
 export var redisClient;
@@ -6,7 +7,7 @@ export var redisClient;
   
    export function ConnectRedisService(){
     console.log("Redis connecting")
-    redisClient = createClient({
+    redisClient = redis.createClient({
         host: Redis.Host,
         port: Redis.Port,
         password: Redis.Password,
