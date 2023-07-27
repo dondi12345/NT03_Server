@@ -3,7 +3,6 @@
 //yarn ts-node ./src/App.ts
 // Import necessary modules
 import cluster from 'cluster';
-import { createClient } from 'redis';
 import {AppChild} from './AppChild';
 import { CreateRacingHourse, RacingHourse, RacingHourseManager } from './MiniGame/RacingHourse/Controller/RacingHourseCtroller';
 import mongoose, { Schema, Types } from 'mongoose';
@@ -17,9 +16,6 @@ import { LogServer } from './LogServer/Controller/LogController';
 import { LogCode } from './LogServer/Model/LogCode';
 import { LogType } from './LogServer/Model/LogModel';
 
-
-// Create Redis client
-const redisClient = createClient();
 
 // Define number of worker processes
 const numCPUs = 1;

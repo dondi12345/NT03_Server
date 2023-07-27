@@ -1,14 +1,12 @@
 import { Server, Socket } from "socket.io";
 import {port, variable} from "../../Enviroment/Env";
 import { UserSocketServer } from "../../UserSocket/Model/UserSocket";
-import { createClient } from 'redis';
 import { Chat, IChat } from "../Model/Chat";
 import { ChatRouter, ChatRouterWithoutSocket } from "../Router/ChatRouter";
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { IMSGChat, MSGChat } from "../Model/MSGChat";
-
-const redisSubscriber = createClient();
+import { redisClient } from "../../Service/Database/RedisConnect";
 
 export let userSocketChatServer : UserSocketServer;
 
@@ -17,9 +15,9 @@ export let isChatServerUseSocket : boolean;
 export function InitChatServer(){
     InitWithSocket();
     // InitWithMessageServer();
-    redisSubscriber.subscribe(variable.chatServer);
+    redisClient.subscribe(variable.chatServer);
 
-    redisSubscriber.on('message', (channel, data) => {
+    redisClient.on('message', (channel, data) => {
         var msgChat = MSGChat.Parse(data);
         console.log("Dev 1684603001 Listent "+ JSON.stringify(msgChat));
         ChatRouterWithoutSocket(msgChat);

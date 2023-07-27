@@ -3,21 +3,17 @@ import {port, Redis, variable} from "../../Enviroment/Env";
 import { Message } from "../Model/Message";
 import { IUserSocket, UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { MessageRouter } from "../Router/MessageRouter";
-import { createClient } from 'redis';
 import { MessageCode } from "../Model/MessageCode";
 import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
 import { AccountData } from "../../AccountServer/Model/AccountData";
 import { UserSocketData } from "../../UserSocket/Model/UserSocketData";
-
-const redisSubscriber = createClient();
-const redisAccountToken = createClient();
-const redisUserPlayerChannelSub = createClient();
+import { redisClient } from "../../Service/Database/RedisConnect";
 
 export let userSocketDictionary : UserSocketDictionary ={};
 
 export function InitMessageServerWithSocket(){
-    redisAccountToken.keys(Redis.KeyUserPlayerSession+'*', (error, keys) => {
+    redisClient.keys(Redis.KeyUserPlayerSession+'*', (error, keys) => {
         if (error) {
           console.error('Error retrieving keys:', error);
           return;
@@ -26,7 +22,7 @@ export function InitMessageServerWithSocket(){
         // If there are keys matching the pattern
         if (keys.length > 0) {
           // Delete the keys
-          redisAccountToken.del(...keys, (error, deletedCount) => {
+          redisClient.del(...keys, (error, deletedCount) => {
             if (error) {
               console.error('Error deleting keys:', error);
             } else {
@@ -59,7 +55,7 @@ function InitWithSocket() {
             console.log("Dev 1685025149 "+socket.id+" left MessageServer");
             try {
                 console.log("Dev 1685086000 ")
-                redisAccountToken.del(Redis.KeyUserPlayerSession + userSocket.IdUserPlayer,()=>{});
+                redisClient.del(Redis.KeyUserPlayerSession + userSocket.IdUserPlayer,()=>{});
             } catch (error) {
                 console.log("Dev 1685080913 "+error)
             }
@@ -78,8 +74,8 @@ function InitWithSocket() {
     //     MessageRouter(message);
     // });
 
-    redisUserPlayerChannelSub.subscribe(Redis.UserPlayerChannel);
-    redisUserPlayerChannelSub.on('message', (channel, data)=>{
+    redisClient.subscribe(Redis.UserPlayerChannel);
+    redisClient.on('message', (channel, data)=>{
         console.log("Dev 1685078357"+data)
         var message = Message.Parse(data);
         if(message.MessageCode == MessageCode.MessageServer_Disconnect){

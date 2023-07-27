@@ -7,10 +7,7 @@ import { variable } from '../../Enviroment/Env';
 import { MSGChatCode } from '../Model/MSGChatCode';
 import { Socket } from 'socket.io';
 import { IMSGChat, MSGChat } from '../Model/MSGChat';
-
-const redisChat = redis.createClient();
-
-const redisPublisher = redis.createClient();
+import { redisClient } from '../../Service/Database/RedisConnect';
 
 export function SendChat(msgChat :IMSGChat){
     var chat = Chat.Parse(msgChat.Data);
@@ -19,7 +16,7 @@ export function SendChat(msgChat :IMSGChat){
     msgChat.MSGChatCode = MSGChatCode.ReciveMSGChat;
     GetChatChannelById(chat.IdChatChannel).then((res : ChatChannel) => {
         if(res == null || res == undefined) return;
-        redisPublisher.publish(variable.chatServer, msgChat);
+        redisClient.publish(variable.chatServer, msgChat);
         addChatToRedis(JSON.stringify(res._id), JSON.stringify(chat));
     })
 }
@@ -40,14 +37,14 @@ export function ReciveChat(msgChat :IMSGChat){
 }
 
 export function addChatToRedis(IdChatChannel :string, chat: string) {
-    redisChat.rpush(IdChatChannel, chat, (error, result) => {
+    redisClient.rpush(IdChatChannel, chat, (error, result) => {
         if (error) {
             console.error('1684567920 Failed to add chat message:', error);
         } else {
             console.log(`Dev 1684567933 Chat message added ${result}: `, chat);
             // Remove oldest message if we have more than MAX_CHAT
             if (result > variable.maxLengthChat) {
-                redisChat.ltrim(IdChatChannel, result - variable.maxLengthChat, -1, (error, result) => {
+                redisClient.ltrim(IdChatChannel, result - variable.maxLengthChat, -1, (error, result) => {
                     if (error) {
                         console.error('1684567941 Failed to remove oldest chat message:', error);
                     } else {

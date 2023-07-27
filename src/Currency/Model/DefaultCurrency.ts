@@ -5,4 +5,5 @@ export const DefaultCurrency = {
     Gold : 0,
     Silver : 0,
     EnchanceStone : 0,
+    MagicStone : 0,
   };

@@ -14,6 +14,7 @@ export interface ICurrency{
     Gold : number,
     Silver : number,
     EnchanceStone : number,
+    MagicStone : number,
 }
 
 export class Currency implements ICurrency{
@@ -25,6 +26,7 @@ export class Currency implements ICurrency{
     Gold : number;
     Silver : number;
     EnchanceStone : number;
+    MagicStone : number;
     constructor() {
         
     }
@@ -47,6 +49,7 @@ const CurrencySchema = new Schema<ICurrency>(
         Gold : { type : Number, default : DefaultCurrency.Gold},
         Silver : { type : Number, default : DefaultCurrency.Silver},
         EnchanceStone : { type : Number, default : DefaultCurrency.EnchanceStone},
+        MagicStone : { type : Number, default : DefaultCurrency.MagicStone},
     }
 );
   
@@ -81,6 +84,7 @@ export async function UpdateCurrency(currency : ICurrency, idUserPlayer : Types.
             Gold : currency.Gold,
             Silver : currency.Silver,
             EnchanceStone : currency.EnchanceStone,
+            MagicStone : currency.MagicStone,
         }
     ).then(res=>{
         console.log("Dev 1684851978 " + JSON.stringify(res))

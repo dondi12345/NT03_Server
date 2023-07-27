@@ -32,6 +32,10 @@ export const variable = {
 }
 
 export const Redis = {
+    Host : "103.116.9.104",
+    Port : "6379",
+    Password : "Trunghung24",
+
     EventMessage : "message",
 
     AccountChannel : "AccountChannel",

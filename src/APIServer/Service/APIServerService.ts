@@ -7,6 +7,7 @@ import { AccountServerRouter } from "../../AccountServer/Router/AccountServerRou
 import { DataCenterRouter } from "../../DataCenter/Router/DataCenterRouter";
 import { InitDataVersion } from "../../DataCenter/Service/DataCenterService";
 import { LogFromClient } from "../../LogServer/Controller/LogController";
+import { CurrencyModel } from "../../Currency/Model/Currency";
 
 export function InitAPIServer(){
     console.log("Dev 1686217639 InitAPIServer")
@@ -28,6 +29,19 @@ export function InitAPIServer(){
             res.send(error);
         }
     })
+
+    app.post('/testFunction',(req, res)=>{
+        CurrencyModel.updateOne({_id : "64819daf8e62284b2f2b4baf"},{
+            $inc :{
+                "MagicStone" : -1
+            }
+        }).then(response=>{
+            res.send(response);
+        }).catch(error=>{
+            res.send(error)
+        })
+    })
+
 
     app.listen(port.portAPIServer, () => {
         console.log(`Dev 1686217637 APIServer listening on port ${port.portAPIServer}`)
