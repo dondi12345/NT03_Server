@@ -19,8 +19,8 @@ export interface IUserSocket{
 }
 
 export class UserSocket implements IUserSocket{
-    IdAccount : Types.ObjectId;
-    IdUserPlayer : Types.ObjectId;
+    IdAccount : Types.ObjectId = new Types.ObjectId();
+    IdUserPlayer : Types.ObjectId = new Types.ObjectId();
     Platform : PlatformCode;
     Socket : Socket;
     UserPlayer : UserPlayer;
