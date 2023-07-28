@@ -42,6 +42,12 @@ export const Redis = {
     UserPlayerChannel : "UserPlayerChannel",
 
     KeyUserPlayerSession : "UserPlayer:Session:",
-    KeyHeroSummon : "Hero:Summon:",
-
 }
+class RedisKey{
+    NameProject = "NT03";
+
+    KeyHeroSummon(userID){
+        return this.NameProject +":HeroSummon:"+userID;
+    }
+}
+export const RedisKeyConfig = new RedisKey();

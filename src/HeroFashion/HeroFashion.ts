@@ -25,12 +25,7 @@ export class HeroFashion implements IHeroFashion {
         
     }
 
-    static NewHero(index : String) {
-        var heroFashion = new HeroFashion();
-        heroFashion.Index = index;
-        return heroFashion;
-    }
-    static NewHero1(index : String, color : String) {
+    static NewHeroFashion(index : String, color : String = "FFFFFF") {
         var heroFashion = new HeroFashion();
         heroFashion.Index = index;
         heroFashion.Color = color;

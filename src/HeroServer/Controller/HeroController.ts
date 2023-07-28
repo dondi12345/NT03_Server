@@ -5,7 +5,7 @@ import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero, Upd
 import { HeroCode } from "../Model/HeroCode";
 import { ISummonHero, ISummonHeroSlot, SummonHero, SummonHeroSlot } from "../Model/SummonHero";
 import { RateSummon } from "../Model/VariableHero";
-import { Redis } from '../../Enviroment/Env';
+import { Redis, RedisKeyConfig } from '../../Enviroment/Env';
 import { MessageCode } from '../../MessageServer/Model/MessageCode';
 import { SendMessageToSocket } from '../../MessageServer/Service/MessageService';
 import { ChangeRes, ResLogin } from '../../Res/Controller/ResController';
@@ -92,7 +92,8 @@ export function RandomeHero(userSocket: IUserSocket){
         for (let property in rateSummon) {
             if(rate < rateSummon[property]){
                 var summonHeroSlot = new SummonHeroSlot();
-                var hero : Hero = Hero.NewHero({IdUserPlayer : userSocket.IdUserPlayer, HeroCode : HeroCode[property]})
+                var hero : Hero = new Hero();
+                hero.InitData(userSocket.IdUserPlayer, HeroCode)
                 summonHeroSlot.Hero = hero;
                 summonHeroSlot.Hired = false;
                 summonHero.Slots.push(summonHeroSlot);
@@ -101,7 +102,7 @@ export function RandomeHero(userSocket: IUserSocket){
             rate -= rateSummon[property];
         }
     }
-    redisHero.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
+    redisHero.set(RedisKeyConfig.KeyHeroSummon(userSocket.IdUserPlayer), JSON.stringify(summonHero));
     var message = new Message();
     message.MessageCode = MessageCode.Hero_SummonSuccess;
     message.Data = JSON.stringify(summonHero);
@@ -110,7 +111,7 @@ export function RandomeHero(userSocket: IUserSocket){
 }
 
 export function GetSummonResult(message : IMessage, userSocket: IUserSocket){
-    redisHero.get(Redis.KeyHeroSummon + userSocket.IdUserPlayer,  (error, result)=>{
+    redisHero.get(RedisKeyConfig.KeyHeroSummon(userSocket.IdUserPlayer),  (error, result)=>{
         var data;
         if(error || result == null || result == undefined){
             data = {};
@@ -127,7 +128,7 @@ export function GetSummonResult(message : IMessage, userSocket: IUserSocket){
 
 export function HireHero(message : IMessage, userSocket: IUserSocket){
     var summonHeroSlot : SummonHeroSlot = SummonHeroSlot.Parse(message.Data);
-    redisHero.get(Redis.KeyHeroSummon + userSocket.IdUserPlayer,  (error, result)=>{
+    redisHero.get(RedisKeyConfig.KeyHeroSummon(userSocket.IdUserPlayer),  (error, result)=>{
         if(error || result == null || result == undefined){
             SendMessageToSocket(HireFailMessage(), userSocket.Socket);
             LogUserSocket(LogCode.Hero_HireFail, userSocket, error, LogType.Error)
@@ -144,9 +145,10 @@ export function HireHero(message : IMessage, userSocket: IUserSocket){
                         break;
                     }
                 }
-                redisHero.set(Redis.KeyHeroSummon+userSocket.IdUserPlayer, JSON.stringify(summonHero));
+                var hero = Hero.Parse(summonHero.Slots[indexFindout].Hero);
+                if(hero.Code == HeroCode.Unknown) throw "Don't found hero";
+                redisHero.set(RedisKeyConfig.KeyHeroSummon(userSocket.IdUserPlayer), JSON.stringify(summonHero));
 
-                var hero = Hero.NewHero(summonHero.Slots[indexFindout].Hero);
                 LogUserSocket(LogCode.Hero_HireSuccess, userSocket, "", LogType.Normal)
                 HireHeroSuccess(hero, userSocket);
             } catch (error) {
