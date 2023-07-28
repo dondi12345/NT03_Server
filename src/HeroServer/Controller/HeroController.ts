@@ -93,7 +93,7 @@ export function RandomeHero(userSocket: IUserSocket){
             if(rate < rateSummon[property]){
                 var summonHeroSlot = new SummonHeroSlot();
                 var hero : Hero = new Hero();
-                hero.InitData(userSocket.IdUserPlayer, HeroCode)
+                hero.InitData(userSocket.IdUserPlayer, HeroCode[property])
                 summonHeroSlot.Hero = hero;
                 summonHeroSlot.Hired = false;
                 summonHero.Slots.push(summonHeroSlot);

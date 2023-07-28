@@ -19,7 +19,7 @@ import { LogType } from './LogServer/Model/LogModel';
 
 // Define number of worker processes
 const numCPUs = 1;
-const version = "0.0.9"
+const version = "0.0.10"
 // const numCPUs = require('os').cpus().length;
 // AppTest();
 InitApp();
