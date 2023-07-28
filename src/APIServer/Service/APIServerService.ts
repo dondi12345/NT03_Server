@@ -1,5 +1,5 @@
 import {io} from "socket.io-client"
-import { port, variable } from '../../Enviroment/Env';
+import { portConfig, variable } from '../../Enviroment/Env';
 import express from 'express';
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
@@ -43,8 +43,8 @@ export function InitAPIServer(){
     })
 
 
-    app.listen(port.portAPIServer, () => {
-        console.log(`Dev 1686217637 APIServer listening on port ${port.portAPIServer}`)
+    app.listen(portConfig.portAPIServer, () => {
+        console.log(`Dev 1686217637 APIServer listening on port ${portConfig.portAPIServer}`)
     })
 
     InitDataVersion();

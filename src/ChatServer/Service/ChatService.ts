@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import {Redis, port, variable} from "../../Enviroment/Env";
+import {Redis, portConfig, variable} from "../../Enviroment/Env";
 import { UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { createClient } from 'redis';
 import { Chat, IChat } from "../Model/Chat";
@@ -33,8 +33,8 @@ export function InitChatServer(){
 function InitWithSocket() {
     isChatServerUseSocket = true;
     userSocketChatServer = {};
-    const io = new Server(port.portChatServer);
-    console.log(`Dev 1684563910 Worker ${process.pid} listening to ChatServer on port: ${port.portChatServer}`);
+    const io = new Server(portConfig.portChatServer);
+    console.log(`Dev 1684563910 Worker ${process.pid} listening to ChatServer on port: ${portConfig.portChatServer}`);
     io.on(variable.eventSocketConnection, (socket : Socket) => {
         console.log("Dev 1684563926 Socket connect to ChatServer");
         socket.on(variable.eventSocketListening, (data) => {

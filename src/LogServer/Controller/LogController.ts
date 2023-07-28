@@ -1,6 +1,5 @@
 import { readFileSync, writeFile } from 'fs';
 import { join } from 'path';
-
 import { UserSocket } from "../../UserSocket/Model/UserSocket";
 import { LogCode } from "../Model/LogCode";
 import { LogModel, LogType } from "../Model/LogModel";
@@ -46,7 +45,7 @@ export function LogFromClient(log : string){
 }
 
 function WriteLog(data : any){
-  var path = "./Log"
+  var path = "../../../public/log"
   var date = new Date();
   var dateFormat = dateUtils.GetCurrentDateNumber();
   var fileName = dateFormat+".log"

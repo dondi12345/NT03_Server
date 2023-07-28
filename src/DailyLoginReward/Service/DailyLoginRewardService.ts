@@ -1,4 +1,4 @@
-import { port, variable } from '../../Enviroment/Env';
+import { portConfig, variable } from '../../Enviroment/Env';
 import express from 'express';
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
@@ -26,7 +26,7 @@ export function InitDailyLoginReward(){
         }
     })
 
-    app.listen(port.portDailyLoginReward, () => {
-        console.log(`Dev 1686217636 DailyLoginReward listening on port ${port.portDailyLoginReward}`)
+    app.listen(portConfig.portDailyLoginReward, () => {
+        console.log(`Dev 1686217636 DailyLoginReward listening on port ${portConfig.portDailyLoginReward}`)
     })
 }

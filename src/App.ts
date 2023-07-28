@@ -15,6 +15,7 @@ import { InitAccountServer } from './AccountServer/Service/AccountService';
 import { LogServer } from './LogServer/Controller/LogController';
 import { LogCode } from './LogServer/Model/LogCode';
 import { LogType } from './LogServer/Model/LogModel';
+import { InitWebServer } from './WebServer';
 
 
 // Define number of worker processes
@@ -41,6 +42,7 @@ function InitApp(){
       console.log(`Dev 1684475542 worker ${worker.process.pid} died`);
     });
     API();
+    InitWebServer();
     // AppTest();
     var date = new Date();
     var dateFormat = date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear()

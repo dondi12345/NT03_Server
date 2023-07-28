@@ -1,5 +1,5 @@
 import {io} from "socket.io-client"
-import { port, variable } from './Enviroment/Env';
+import { portConfig, variable } from './Enviroment/Env';
 import express from 'express';
 import { AuthenGetToken, AuthenVerify } from "./AuthenServer/AuthenController";
 
@@ -12,7 +12,7 @@ export function API(){
   let socketMessage
   let resMessage;
   app.get('/message', (req, res) => {
-    socketMessage = io("ws://"+variable.localhost+":"+port.portMessageServer);
+    socketMessage = io("ws://"+variable.localhost+":"+portConfig.portMessageServer);
     socketMessage.on(variable.eventSocketListening, (arg)=>{
       console.log("Dev 1684561396 from MessageServer: "+JSON.stringify(arg));
     })
@@ -35,7 +35,7 @@ export function API(){
   //ChatServer
   let socketChat
   app.get('/chat', (req, res) =>{
-    socketChat = io("ws://"+variable.localhost+":"+port.portChatServer);
+    socketChat = io("ws://"+variable.localhost+":"+portConfig.portChatServer);
     socketChat.on(variable.eventSocketListening, (arg)=>{
       console.log("Dev 1684568352 from ChatServer: "+arg);
     })
@@ -52,7 +52,7 @@ export function API(){
       res.send("suc");
   })
 
-  app.listen(port.portAPI, () => {
-      console.log(`Dev 1684475518 Example app listening on port ${port.portAPI}`)
+  app.listen(portConfig.portAPI, () => {
+      console.log(`Dev 1684475518 Example app listening on port ${portConfig.portAPI}`)
     })
 }

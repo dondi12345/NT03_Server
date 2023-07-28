@@ -1,5 +1,5 @@
 import {io} from "socket.io-client"
-import { port, variable } from '../../Enviroment/Env';
+import { portConfig, variable } from '../../Enviroment/Env';
 import express from 'express';
 import { AuthenGetToken, AuthenVerify } from "../../AuthenServer/AuthenController";
 import { Account, CountAccount } from "../Model/Account";

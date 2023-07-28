@@ -1,10 +1,11 @@
-export const port = {
+export const portConfig = {
     portAPI : 3000,
     portAPIServer : 3001,
     portMessageServer : 3002,
     portChatServer : 3003,
     portAccountServer : 3004,
     portDailyLoginReward : 3005,
+    portWebServer : 3006,
 }
 
 export const Mongo = {

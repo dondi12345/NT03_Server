@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import {port, Redis, variable} from "../../Enviroment/Env";
+import {portConfig, Redis, variable} from "../../Enviroment/Env";
 import { Message } from "../Model/Message";
 import { IUserSocket, UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { MessageRouter } from "../Router/MessageRouter";
@@ -53,8 +53,8 @@ export function InitMessageServerWithSocket(){
 }
 
 function InitWithSocket() {
-    const io = new Server(port.portMessageServer);
-    console.log(`Dev 1684424393 Worker ${process.pid} listening to MessageServer on port: ${port.portMessageServer}`);
+    const io = new Server(portConfig.portMessageServer);
+    console.log(`Dev 1684424393 Worker ${process.pid} listening to MessageServer on port: ${portConfig.portMessageServer}`);
     io.on(variable.eventSocketConnection, (socket : Socket) => {
         console.log("Dev 1684424410 "+socket.id+" connec to MessageServer");
         let userSocket = new UserSocket();
