@@ -4,6 +4,7 @@ import { UserSocket } from "../../UserSocket/Model/UserSocket";
 import { LogCode } from "../Model/LogCode";
 import { LogModel, LogType } from "../Model/LogModel";
 import { dateUtils } from '../../Utils/DateUtils';
+import { rootDir } from '../../..';
 
 export function LogUserSocket(logCode : LogCode, userSocket : UserSocket, data : string = "", type : LogType = LogType.Unknow){
     var logMode = new LogModel();
@@ -45,7 +46,7 @@ export function LogFromClient(log : string){
 }
 
 function WriteLog(data : any){
-  var path = "../../../public/log"
+  var path = rootDir + "/public/log"
   var date = new Date();
   var dateFormat = dateUtils.GetCurrentDateNumber();
   var fileName = dateFormat+".log"

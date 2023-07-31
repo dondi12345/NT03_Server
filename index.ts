@@ -1,7 +1,3 @@
-const number = 4;
+import path from 'path';
 
-function add(a: number, b : number){
-    return a + b;
-}
-
-console.log(add(number, 10))
+export var rootDir = __dirname;
