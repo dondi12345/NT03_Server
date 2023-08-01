@@ -57,6 +57,7 @@ export enum LogCode {
     HeroEquip_ChangeResError = 6006,
     HeroEquip_CreateNewFail = 6007,
     HeroEquip_SaveFail = 6008,
+    HeroEquip_InitFail = 6009,
 
     Res_Test = 7000,
     Res_SaveFail = 7001,
@@ -82,4 +83,5 @@ export enum LogCode {
 
     DataCenter_Test = 12000,
     DataCenter_InitFail = 12001,
+    DataCenter_NotFoundInDB = 12002,
 }

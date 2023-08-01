@@ -12,7 +12,7 @@ import { DataResService } from "../../Res/Service/ResService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipById, FindHeroEquipByIdUserPlayer, HeroEquip, HeroEquipUpgradeLv, HeroEquips, HeroWearEquip, IHeroEquip, UpdateHeroEquip } from "../Model/HeroEquip";
 import { HeroEquipType } from "../Model/HeroEquipType";
-import { IndexHeroEquipCraft, RateCraft, RateCraftWhite } from "../Model/VariableHeroEquip";
+import { IndexHeroEquipCraft, RateCraft } from "../Model/HeroEquipConfig";
 import { dataHeroEquipDictionary } from "../Service/HeroEquipService";
 import { UpdateCurrencyCtrl } from "../../Currency/Controller/CurrencyController";
 import { LogUserSocket } from "../../LogServer/Controller/LogController";
