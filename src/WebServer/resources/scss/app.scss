@@ -1,0 +1,81 @@
+@import 'variable';
+
+.w200 {
+    width: 200px;
+}
+.w500 {
+    width: 500px;
+}
+
+.layer{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.card_carousel{
+    width: 400px;
+}
+
+.hover-underline {
+    color: #18272F;
+    position: relative;
+    text-decoration: none;
+  }
+  
+  .hover-underline::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform .5s ease-in-out;
+  }
+  
+  .hover-underline:hover::before {
+    transform-origin: left;
+    transform: scaleX(1);
+  }
+  
+  .hover-red::before {
+    background-color: red;
+  }
+  
+  .hover-red:hover::before {
+    background-color: red;
+  }
+  .hover-blue::before {
+    background-color: blue;
+  }
+  
+  .hover-blue:hover::before {
+    background-color: blue;
+  }
+  .hover-black::before {
+    background-color: black;
+  }
+  
+  .hover-black:hover::before {
+    background-color: black;
+  }
+ 
+
+  .page-container {
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  
+  .content-wrap {
+    flex:1;   /* Footer height */
+  }
+  
+  .hl {
+    border-top: 1px solid;
+    margin-right: 5%;
+    margin-left: 5%;
+  }
+
+  
