@@ -32,13 +32,14 @@
     "i": "^0.3.7",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.4",
+    "node-sass": "^9.0.0",
     "node-schedule": "^2.1.1",
     "nodemon": "^2.0.22",
     "npm": "^9.6.7",
     "redis": "^3.1.2",
+    "sass": "^1.62.1",
     "socket.io": "^4.6.1",
-    "socket.io-client": "^4.6.1",
-    "sass": "^1.62.1"
+    "socket.io-client": "^4.6.1"
   },
   "repository": "https://github.com/dondi12345/NT03_Server.git",
   "author": "Nguyễn Trung Hưng <43608238+dondi12345@users.noreply.github.com>"
