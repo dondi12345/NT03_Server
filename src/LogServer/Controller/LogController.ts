@@ -46,7 +46,7 @@ export function LogFromClient(log : string){
 }
 
 function WriteLog(data : any){
-  var path = rootDir + "/public/log"
+  var path = rootDir+"/public/Log"
   var date = new Date();
   var dateFormat = dateUtils.GetCurrentDateNumber();
   var fileName = dateFormat+".log"

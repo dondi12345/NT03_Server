@@ -7,8 +7,7 @@ import { rootDir } from '../..';
 export function InitWebServer() {
     const app = express();
     const port = portConfig.portWebServer;
-
-    app.use(express.static(path.join(rootDir, "public")));
+    app.use(express.static(path.join(rootDir, './public')));
     app.engine(
         'hbs',
         engine({
@@ -17,7 +16,7 @@ export function InitWebServer() {
         }),
     );
     app.set('view engine', 'hbs');
-    app.set('views', path.join(rootDir, '/resources/WebServer/views'));
+    app.set('views', path.join(rootDir, './resources/views'));
 
     app.get('/', (req, res) => {
         res.render('home');

@@ -1,3 +1,4 @@
 import path from 'path';
+import { rootPath } from 'get-root-path';
 
-export var rootDir = __dirname;
+export var rootDir = rootPath;
