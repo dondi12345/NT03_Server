@@ -3,7 +3,7 @@ import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
 import { DataVersion, DataVersionDictionary, GetDataVersionByName } from "../Model/DataVersion";
 
-const dataNames = ["TestData", "MonsterData", "BulletData", "DamageEffectData"]
+const dataNames = ["TestData", "DataMonster", "DataBullet", "DataDamageEffect", "DataHeroEquip"]
 
 export let dataVersionDictionary : DataVersionDictionary;
 

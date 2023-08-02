@@ -7,9 +7,9 @@ import { DataHeroEquip, DataHeroEquipDictionary } from "../Model/HeroEquip";
 
 export var dataHeroEquipDictionary : DataHeroEquipDictionary;
 
-export function InitHeroEquip(){
+export async function InitHeroEquip(){
     dataHeroEquipDictionary = {};
-    GetDataVersionByName(DataName.DataHeroEquip).then((res: DataVersion)=>{
+    await GetDataVersionByName(DataName.DataHeroEquip).then((res: DataVersion)=>{
         res.Data.forEach(element => {
             var dataHeroEquip = DataHeroEquip.Parse(element);
             dataHeroEquipDictionary[element.Code] = dataHeroEquip;
