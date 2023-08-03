@@ -116,7 +116,7 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket) 
     }
     var heroEquipData = heroEquipDataDictionary[heroEquip.Code];
     var heroEquip_Old;
-    console.log("Dev 1691055136 Type: "+heroEquipData.Type+" | "+heroEquipData.Type.toString())
+    console.log("Dev 1691055136 Type: "+heroEquipData.Type)
     if(heroEquipData.Type === HeroEquipType.Weapon){
         if(hero.Gear.IdWeapon != undefined && hero.Gear.IdWeapon != null)
             heroEquip_Old = userSocket.HeroEquip[hero.Gear.IdWeapon.toString()];
