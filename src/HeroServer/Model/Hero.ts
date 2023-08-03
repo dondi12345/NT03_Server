@@ -9,15 +9,15 @@ import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
 
 export interface IGear{
-    IdWeapon ?: string,
-    IdArmor ?: string,
-    IdHelmet ?: string,
+    IdWeapon ?: Types.ObjectId,
+    IdArmor ?: Types.ObjectId,
+    IdHelmet ?: Types.ObjectId,
 }
 
 export class Gear implements IGear{
-    IdWeapon ?: string;
-    IdArmor ?: string;
-    IdHelmet ?: string;
+    IdWeapon ?: Types.ObjectId;
+    IdArmor ?: Types.ObjectId;
+    IdHelmet ?: Types.ObjectId;
 }
 
 export class HeroUpgradeLv{
@@ -159,9 +159,9 @@ const HeroSchema = new Schema<IHero>(
         Hair : { Index : { type : String}, Color : { type : String}, },
         Mouths : { Index : { type : String}, Color : { type : String}, },
         Gear :{
-            IdWeapon : { type : String},
-            IdArmor : { type : String},
-            IdHelmet : { type : String},
+            IdWeapon : { type : mongoose.Schema.Types.ObjectId, ref: 'HeroEquip' },
+            IdArmor : { type : mongoose.Schema.Types.ObjectId, ref: 'HeroEquip' },
+            IdHelmet : { type : mongoose.Schema.Types.ObjectId, ref: 'HeroEquip' },
         }
     }
 );

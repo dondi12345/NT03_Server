@@ -1,6 +1,6 @@
 import redis from 'redis';
 import { IMessage, Message } from "../../MessageServer/Model/Message";
-import { IUserSocket } from "../../UserSocket/Model/UserSocket";
+import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
 import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero, UpdateHero, HeroUpgradeLv, FindHeroById } from "../Model/Hero";
 import { HeroCode } from "../Model/HeroCode";
 import { ISummonHero, ISummonHeroSlot, SummonHero, SummonHeroSlot } from "../Model/SummonHero";
@@ -35,9 +35,11 @@ export function CreateNewHero(){
 export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
     await FindHeroByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
         var dataHeroes = new Heroes();
+        userSocket.Hero = {};
         for (let item of respone) {
             var hero = Hero.Parse(item);
             dataHeroes.Elements.push(hero);
+            userSocket.Hero[hero._id.toString()] = hero;
         }
         console.log("Dev 1685979990 "+ dataHeroes.Elements.length);
         if(dataHeroes.Elements.length > 0) console.log("Dev 1685293708 "+JSON.stringify(dataHeroes.Elements[0]))
@@ -185,6 +187,13 @@ export function UpdateHeroes(heroes : Heroes, userSocket: IUserSocket){
     var message = new Message();
     message.MessageCode = MessageCode.Hero_UpdateHeroes;
     message.Data = JSON.stringify(heroes);
+    SendMessageToSocket(message, userSocket.Socket)
+}
+
+export function UpdateHeroToClient(hero : Hero, userSocket : UserSocket){
+    var message = new Message();
+    message.MessageCode = MessageCode.Hero_UpdateHero;
+    message.Data = JSON.stringify(hero);
     SendMessageToSocket(message, userSocket.Socket)
 }
 

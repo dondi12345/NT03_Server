@@ -22,8 +22,8 @@ import { InitWebServer } from './WebServer';
 const numCPUs = 1;
 const version = "0.0.12"
 // const numCPUs = require('os').cpus().length;
-AppTest();
-// InitApp();
+// AppTest();
+InitApp();
 
 // Check if current process is master or worker
 function InitApp(){

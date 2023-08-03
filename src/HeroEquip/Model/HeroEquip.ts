@@ -4,14 +4,14 @@ import { ResCode } from "../../Res/Model/ResCode";
 import { HeroEquipCode } from "./HeroEquipCode";
 import { QualityItemCode } from "../../QualityItem/QualityItem";
 import { HeroCode } from "../../HeroServer/Model/HeroCode";
-import { dataHeroEquipDictionary } from "../Service/HeroEquipService";
+import { heroEquipDataDictionary } from "../Service/HeroEquipService";
 import { LogServer } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
 
 export class HeroWearEquip{
     IdHero : Types.ObjectId;
-    IdHeroEquips : Types.ObjectId[] = [];
+    IdHeroEquip : Types.ObjectId;
 
     static Parse(data) : HeroWearEquip{
         try{
@@ -46,9 +46,9 @@ export class CraftHeroEquip{
         }
     }
 }
-export type DataHeroEquipDictionary = Record<string, DataHeroEquip>;
+export type HeroEquipDataDictionary = Record<string, HeroEquipData>;
 
-export class DataHeroEquip{
+export class HeroEquipData{
     Index : string; 
     Code : HeroEquipCode;
     Type : HeroEquipType;
@@ -77,7 +77,7 @@ export class DataHeroEquip{
     CostUpgrade: number;
     CostUpgradeRise: number;
 
-    static Parse(data) : DataHeroEquip{
+    static Parse(data) : HeroEquipData{
         try{
             return JSON.parse(data);
         }catch{
@@ -94,7 +94,7 @@ export interface IHeroEquip{
     _id : Types.ObjectId,
     Code : HeroEquipCode,
     IdUserPlayer: Types.ObjectId,
-    IdHero ?: string,
+    IdHero ?: Types.ObjectId,
     Type : HeroEquipType,
     Lv : number,
 }
@@ -105,7 +105,7 @@ export class HeroEquip implements IHeroEquip{
     _id : Types.ObjectId;
     Code : HeroEquipCode;
     IdUserPlayer: Types.ObjectId;
-    IdHero ?: string;
+    IdHero ?: Types.ObjectId;
     Type : HeroEquipType;
     Lv : number;
 
@@ -116,10 +116,10 @@ export class HeroEquip implements IHeroEquip{
 
     static HeroEquip(code : HeroEquipCode, idUserPlayer : Types.ObjectId) {
         var heroEquip = new HeroEquip();
-        var dataHeroEquip = dataHeroEquipDictionary[code];
+        var heroEquipData = heroEquipDataDictionary[code];
         heroEquip.Code = code;
         heroEquip.IdUserPlayer = idUserPlayer;
-        heroEquip.Type = dataHeroEquip.Type;
+        heroEquip.Type = heroEquipData.Type;
         heroEquip.Lv = 1;
         console.log("Dev 1686842053 ", JSON.stringify(heroEquip));
         return heroEquip;
@@ -146,7 +146,7 @@ const HeroEquipSchema = new Schema<IHeroEquip>(
     {
         Code : { type : Number, enum : HeroEquipCode},
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
-        IdHero: { type: String},
+        IdHero: { type: mongoose.Schema.Types.ObjectId, ref: 'Hero'},
         Type : { type : Number, enum : HeroEquipType},
         Lv : { type : Number, default : 1},
     }

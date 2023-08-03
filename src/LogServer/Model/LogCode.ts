@@ -58,6 +58,8 @@ export enum LogCode {
     HeroEquip_CreateNewFail = 6007,
     HeroEquip_SaveFail = 6008,
     HeroEquip_InitFail = 6009,
+    HeroEquip_UnequipFail = 6010,
+    HeroEquip_EquipFail = 6011,
 
     Res_Test = 7000,
     Res_SaveFail = 7001,

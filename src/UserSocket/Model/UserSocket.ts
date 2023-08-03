@@ -14,6 +14,8 @@ export interface IUserSocket{
     Platform : PlatformCode,
     Socket : Socket,
     UserPlayer : UserPlayer,
+    Hero : HeroDictionary,
+    HeroEquip : HeroEquipDictionary,
     Currency : Currency,
     HeroTeam : HeroTeam,
 }
@@ -24,6 +26,8 @@ export class UserSocket implements IUserSocket{
     Platform : PlatformCode;
     Socket : Socket;
     UserPlayer : UserPlayer;
+    Hero : HeroDictionary;
+    HeroEquip : HeroEquipDictionary;
     Currency : Currency;
     HeroTeam : HeroTeam;
 }
