@@ -51,7 +51,7 @@ export type HeroEquipDataDictionary = Record<string, HeroEquipData>;
 export class HeroEquipData{
     Index : string; 
     Code : HeroEquipCode;
-    Type : HeroEquipType;
+    HeroEquipType : HeroEquipType;
     ModelName : string;
     QualityItemCode : QualityItemCode;
     IconName : string;
@@ -119,7 +119,7 @@ export class HeroEquip implements IHeroEquip{
         var heroEquipData = heroEquipDataDictionary[code];
         heroEquip.Code = code;
         heroEquip.IdUserPlayer = idUserPlayer;
-        heroEquip.Type = heroEquipData.Type;
+        heroEquip.Type = heroEquipData.HeroEquipType;
         heroEquip.Lv = 1;
         console.log("Dev 1686842053 ", JSON.stringify(heroEquip));
         return heroEquip;
