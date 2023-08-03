@@ -121,18 +121,21 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket) 
             heroEquip_Old = userSocket.HeroEquip[hero.Gear.IdWeapon.toString()];
         hero.Gear.IdWeapon = heroEquip._id;
         heroEquip.IdHero = hero._id;
+        console.log("Dev 1691055136 IdWeapon")
     }
     if(heroEquipData.Type == HeroEquipType.Armor){
         if(hero.Gear.IdArmor != undefined && hero.Gear.IdArmor != null)
             heroEquip_Old = userSocket.HeroEquip[hero.Gear.IdArmor.toString()];
         hero.Gear.IdArmor = heroEquip._id;
         heroEquip.IdHero = hero._id;
+        console.log("Dev 1691055137 IdArmor")
     }
     if(heroEquipData.Type == HeroEquipType.Helmet){
         if(hero.Gear.IdHelmet != undefined && hero.Gear.IdHelmet != null)
             heroEquip_Old = userSocket.HeroEquip[hero.Gear.IdHelmet.toString()];
         hero.Gear.IdHelmet = heroEquip._id;
         heroEquip.IdHero = hero._id;
+        console.log("Dev 1691055138 IdHelmet")
     }
 
     if(heroEquip_Old != null && heroEquip_Old != undefined){
