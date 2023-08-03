@@ -103,8 +103,6 @@ function CraftHeroEquipFail(userSocket: IUserSocket){
 }
 
 export async function WearingEquip(message : Message, userSocket : IUserSocket) {
-    var heroeEquipsUpdate = new HeroEquips();
-    var heroesUpdate = new Heroes();
     var heroWearEquip = HeroWearEquip.Parse(message.Data);
     var hero = userSocket.Hero[heroWearEquip.IdHero.toString()]
     if(hero == null || hero == undefined || hero.Code == HeroCode.Unknown){
@@ -141,7 +139,10 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket) 
         delete heroEquip["IdHero"];
         RemoveHeroFromHeroEquip(heroEquip_Old, userSocket);
     }
-
+    console.log("Dev 1691055132 hero:", hero)
+    console.log("Dev 1691055133 heroEquip:", heroEquip)
+    console.log("Dev 1691055134 heroEquipData:", heroEquipData)
+    console.log("Dev 1691055135 heroEquip_Old:", heroEquip_Old)
     AddHeroToHeroEquip(heroEquip, userSocket);
     AddHeroEquipToHero(hero, userSocket);
 }
