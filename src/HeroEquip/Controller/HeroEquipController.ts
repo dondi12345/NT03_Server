@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 import { UpdateHeroToClient, UpdateHeroes } from "../../HeroServer/Controller/HeroController";
 import { FindHeroById, Gear, Hero, HeroModel, Heroes, IHero, UpdateHero } from "../../HeroServer/Model/Hero";
 import { HeroCode } from "../../HeroServer/Model/HeroCode";
-import { IMessage, Message } from "../../MessageServer/Model/Message";
+import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { ChangeRes } from "../../Res/Controller/ResController";
@@ -20,7 +20,7 @@ import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
 import { HeroEquipCode } from "../Model/HeroEquipCode";
 
-export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket){
+export async function HeroEquipLogin(message : Message, userSocket: IUserSocket){
     await FindHeroEquipByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
         var heroEquips : HeroEquips = new HeroEquips;
         userSocket.HeroEquip = {};
@@ -46,7 +46,7 @@ export async function HeroEquipLogin(message : IMessage, userSocket: IUserSocket
 }
 
 // 10f;80f;800f;10000f;100000f;1000000f;1000000f;
-export async function CraftEquip(message : IMessage, userSocket: IUserSocket) {
+export async function CraftEquip(message : Message, userSocket: IUserSocket) {
     var craftHeroEquip = CraftHeroEquip.Parse(message.Data);
     ChangeRes(craftHeroEquip.ResCode, -1, userSocket).then(respone=>{
         console.log("Dev 1686209545 "+ respone);

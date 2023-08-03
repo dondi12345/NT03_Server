@@ -3,15 +3,10 @@ import { MessageCode } from "./MessageCode";
 import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
-export interface IMessage{
-    MessageCode : MessageCode,
-    Data : any,
-}
-
-export class Message implements IMessage {
+export class Message{
     MessageCode: MessageCode;                              
     Data: any;
-
+    Token : string;
     constructor() {
         
     }

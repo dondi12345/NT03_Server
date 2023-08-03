@@ -1,14 +1,14 @@
 import { LogUserSocket } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
-import { IMessage, Message } from "../../MessageServer/Model/Message";
+import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { CreateRes, FindItemByIdUserPlayerAndCode as FindResByIdUserPlayerAndCode, FindResByIdUserPlayer, IRes, Res, Reses, UpdateRes } from "../Model/Res";
 import { ResCode } from "../Model/ResCode";
 
-export async function ResLogin(message : IMessage, userSocket: IUserSocket){
+export async function ResLogin(message : Message, userSocket: IUserSocket){
     await FindResByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
         var reses = new Reses();
         for (let item of respone) {

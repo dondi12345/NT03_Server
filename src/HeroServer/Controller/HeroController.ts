@@ -1,5 +1,5 @@
 import redis from 'redis';
-import { IMessage, Message } from "../../MessageServer/Model/Message";
+import { Message } from "../../MessageServer/Model/Message";
 import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
 import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero, UpdateHero, HeroUpgradeLv, FindHeroById } from "../Model/Hero";
 import { HeroCode } from "../Model/HeroCode";
@@ -32,7 +32,7 @@ export function CreateNewHero(){
     }
 }
 
-export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
+export async function HeroLogin(message : Message, userSocket: IUserSocket){
     await FindHeroByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
         var dataHeroes = new Heroes();
         userSocket.Hero = {};
@@ -58,7 +58,7 @@ export async function HeroLogin(message : IMessage, userSocket: IUserSocket){
     })
 }
 
-export function Summon(message : IMessage, userSocket: IUserSocket){
+export function Summon(message : Message, userSocket: IUserSocket){
     if(userSocket.Currency == null || userSocket.Currency == undefined){
         ResLogin(new Message(), userSocket);
         LogUserSocket(LogCode.Hero_DontLoginRes, userSocket, "Hero_DontLoginRes", LogType.Error)
@@ -112,7 +112,7 @@ export function RandomeHero(userSocket: IUserSocket){
     LogUserSocket(LogCode.Hero_SummonSuccess, userSocket, "", LogType.Normal)
 }
 
-export function GetSummonResult(message : IMessage, userSocket: IUserSocket){
+export function GetSummonResult(message : Message, userSocket: IUserSocket){
     redisHero.get(RedisKeyConfig.KeyHeroSummon(userSocket.IdUserPlayer),  (error, result)=>{
         var data;
         if(error || result == null || result == undefined){
@@ -128,7 +128,7 @@ export function GetSummonResult(message : IMessage, userSocket: IUserSocket){
     })
 }
 
-export function HireHero(message : IMessage, userSocket: IUserSocket){
+export function HireHero(message : Message, userSocket: IUserSocket){
     var summonHeroSlot : SummonHeroSlot = SummonHeroSlot.Parse(message.Data);
     redisHero.get(RedisKeyConfig.KeyHeroSummon(userSocket.IdUserPlayer),  (error, result)=>{
         if(error || result == null || result == undefined){

@@ -1,14 +1,14 @@
 import { Types } from "mongoose";
 import { LogUserSocket } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
-import { IMessage, Message } from "../../MessageServer/Model/Message";
+import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
 import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
 import { CreateHeroTeam, FindHeroTeamByIdUserPlayer, HeroTeam, HeroTeamModel, RemoveSlotHeroTeam, SelectHero, UpdateHeroTeam } from "../Model/HeroTeam";
 import { LogType } from "../../LogServer/Model/LogModel";
 
-export async function HeroTeamLogin(message : IMessage, userSocket: IUserSocket){
+export async function HeroTeamLogin(message : Message, userSocket: IUserSocket){
     await FindHeroTeamByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
         if(respone == null || respone == undefined){
             var heroTeam = new HeroTeam();

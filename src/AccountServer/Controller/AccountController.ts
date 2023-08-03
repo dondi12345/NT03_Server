@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { CreateAccount, FindByUserName, IAccount, Account, AccountModel } from "../Model/Account";
-import { IMessage, Message } from "../../MessageServer/Model/Message";
+import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { AccountAuthen, IAccountAuthen } from "../Model/AccountAuthen";
 import { AccountData } from "../Model/AccountData";
@@ -13,7 +13,7 @@ import { LogType } from '../../LogServer/Model/LogModel';
 
 const saltRounds = 10;
 
-export async function AccountRegister(message : IMessage, response) {
+export async function AccountRegister(message : Message, response) {
     try {
         var account = Account.Parse(message.Data);
         

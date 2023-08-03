@@ -1,8 +1,8 @@
-import { IMessage, Message } from "../../MessageServer/Model/Message";
+import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { CreateDailyLoginReward, DailyLoginReward, FindDailyLoginRewardByIdUser, UpdateDailyLoginReward } from "../Model/DailyLoginReward";
 
-export async function DailyLoginRewardLogin(message : IMessage, response) {
+export async function DailyLoginRewardLogin(message : Message, response) {
     var data = DailyLoginReward.Parse(message.Data);
     FindDailyLoginRewardByIdUser(data.IdUser).then(res=>{
         console.log("Dev 1688972225 ",res)
@@ -22,7 +22,7 @@ export async function DailyLoginRewardLogin(message : IMessage, response) {
         }
     })
 }
-export async function DailyLoginRewardCheck(message : IMessage, response) {
+export async function DailyLoginRewardCheck(message : Message, response) {
     var data = DailyLoginReward.Parse(message.Data);
     FindDailyLoginRewardByIdUser(data.IdUser).then((res : DailyLoginReward)=>{
         console.log("Dev 1688974013 ",res)

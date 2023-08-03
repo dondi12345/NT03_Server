@@ -1,4 +1,4 @@
-import { IMessage, Message } from "../Model/Message";
+import { Message } from "../Model/Message";
 import { MessageCode } from "../Model/MessageCode";
 import { Connect } from "../Controller/MessageController";
 import { UpdateCurrencyCtrl, CurrencyLogin } from "../../Currency/Controller/CurrencyController";
@@ -12,7 +12,7 @@ import { DeselectHeroTeamCtrl, HeroTeamLogin, SelectHeroTeamCtrl } from "../../H
 import { ProtectedFailCtrl, ProtectedSuccessCtrl } from "../../TDWave/Controller/TDWaveController";
 
 
-export function MessageRouter(message : IMessage, userSocket : IUserSocket){
+export function MessageRouter(message : Message, userSocket : IUserSocket){
     if(message.MessageCode == MessageCode.MessageServer_Test){
         console.log("Dev 1684475214 Test Message")
     }

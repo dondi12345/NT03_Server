@@ -1,6 +1,6 @@
 import redis from 'redis'
 import { UserJoinToGlobalChannel } from "../../ChatServer/Model/UserChatChannel";
-import { IMessage, Message } from "../../MessageServer/Model/Message";
+import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { AddUserSocketDictionary, SendMessageToSocket, userSocketDictionary } from "../../MessageServer/Service/MessageService";
 import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
@@ -24,7 +24,7 @@ const redisPub = redis.createClient({
     password: Redis.Password,
   });
 
-export async function UserPlayerLogin(message : IMessage, userSocket : IUserSocket) {
+export async function UserPlayerLogin(message : Message, userSocket : IUserSocket) {
     var serverGame = ServerGame.Parse(message.Data);
     if(!(serverGame.ServerGameCode in ServerGameCode)) return;
     await FindByIdAccountAndServerGameCode(userSocket.IdAccount, serverGame.ServerGameCode).then(res=>{

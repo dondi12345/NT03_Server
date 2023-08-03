@@ -5,14 +5,14 @@ import { AccountTocken } from "../../AccountServer/Model/AccountTocken";
 import { ITockenAuthen, TockenAuthen } from "../../AccountServer/Model/TockenAuthen";
 import { AuthenVerify } from "../../AuthenServer/AuthenController";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { IMessage, Message } from "../Model/Message";
+import { Message } from "../Model/Message";
 import { MessageCode } from "../Model/MessageCode";
 import { SendMessageToSocket } from "../Service/MessageService";
 import { LogServer, LogUserSocket } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
 
-export async function Connect(message : IMessage, userSocket : IUserSocket){
+export async function Connect(message : Message, userSocket : IUserSocket){
     var tockenAuthen = TockenAuthen.Parse(message.Data);
     var data = AuthenVerify(tockenAuthen.Token);
     if(data == null || data == undefined){
