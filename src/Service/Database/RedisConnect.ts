@@ -1,20 +1,20 @@
 import { error } from "console";
 import { createClient } from "redis";
-import { Redis } from "../../Enviroment/Env";
+import { RedisConfig } from "../../Enviroment/Env";
 
 export let redisClient = createClient({
-  host: Redis.Host,
-  port: Redis.Port,
-  password: Redis.Password,
+  host: RedisConfig.Host,
+  port: RedisConfig.Port,
+  password: RedisConfig.Password,
 });
 
 
  export function InitRedisService(){
   console.log("redisClient connecting")
   redisClient = createClient({
-    host: Redis.Host,
-    port: Redis.Port,
-    password: Redis.Password,
+    host: RedisConfig.Host,
+    port: RedisConfig.Port,
+    password: RedisConfig.Password,
   });
   redisClient.on('error', function (err) {
     console.log('redis went wrong ' + err);

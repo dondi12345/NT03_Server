@@ -1,6 +1,6 @@
 export class TokenAccount{
-    IdAccount: String;
-    IdDevice: String;
+    IdAccount: string;
+    IdDevice: string;
 
     constructor() {
         

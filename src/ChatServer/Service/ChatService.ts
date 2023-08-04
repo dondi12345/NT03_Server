@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import {Redis, portConfig, variable} from "../../Enviroment/Env";
+import {RedisConfig, portConfig, variable} from "../../Enviroment/Env";
 import { UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { createClient } from 'redis';
 import { Chat, IChat } from "../Model/Chat";
@@ -9,9 +9,9 @@ import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { IMSGChat, MSGChat } from "../Model/MSGChat";
 
 const redisSubscriber = createClient({
-    host: Redis.Host,
-    port: Redis.Port,
-    password: Redis.Password,
+    host: RedisConfig.Host,
+    port: RedisConfig.Port,
+    password: RedisConfig.Password,
   });
 
 export let userSocketChatServer : UserSocketServer;

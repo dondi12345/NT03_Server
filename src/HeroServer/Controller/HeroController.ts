@@ -5,7 +5,7 @@ import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero, Upd
 import { HeroCode } from "../Model/HeroCode";
 import { ISummonHero, ISummonHeroSlot, SummonHero, SummonHeroSlot } from "../Model/SummonHero";
 import { RateSummon } from "../Model/VariableHero";
-import { Redis, RedisKeyConfig } from '../../Enviroment/Env';
+import { RedisConfig, RedisKeyConfig } from '../../Enviroment/Env';
 import { MessageCode } from '../../MessageServer/Model/MessageCode';
 import { SendMessageToSocket } from '../../MessageServer/Service/MessageService';
 import { ChangeRes, ResLogin } from '../../Res/Controller/ResController';
@@ -19,9 +19,9 @@ import { LogCode } from '../../LogServer/Model/LogCode';
 import { LogUserSocket } from '../../LogServer/Controller/LogController';
 
 const redisHero = redis.createClient({
-    host: Redis.Host,
-    port: Redis.Port,
-    password: Redis.Password,
+    host: RedisConfig.Host,
+    port: RedisConfig.Port,
+    password: RedisConfig.Password,
   });
 
 export function CreateNewHero(){

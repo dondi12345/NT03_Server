@@ -3,21 +3,21 @@ import { Chat, IChat } from "../Model/Chat";
 import { ChatChannel, GetChatChannelById } from '../Model/ChatChannel';
 import { GetIdUserPlayerByIdChatChannel, UserChatChannel } from '../Model/UserChatChannel';
 import { SendToSocketById } from '../Service/ChatService';
-import { Redis, variable } from '../../Enviroment/Env';
+import { RedisConfig, variable } from '../../Enviroment/Env';
 import { MSGChatCode } from '../Model/MSGChatCode';
 import { Socket } from 'socket.io';
 import { IMSGChat, MSGChat } from '../Model/MSGChat';
 
 const redisChat = redis.createClient({
-    host: Redis.Host,
-    port: Redis.Port,
-    password: Redis.Password,
+    host: RedisConfig.Host,
+    port: RedisConfig.Port,
+    password: RedisConfig.Password,
   });
 
 const redisPublisher = redis.createClient({
-    host: Redis.Host,
-    port: Redis.Port,
-    password: Redis.Password,
+    host: RedisConfig.Host,
+    port: RedisConfig.Port,
+    password: RedisConfig.Password,
   });
 
 export function SendChat(msgChat :IMSGChat){

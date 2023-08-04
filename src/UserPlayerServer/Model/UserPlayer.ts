@@ -4,6 +4,15 @@ import { ServerGameCode } from './ServerGameCode';
 import { LogIdUserPlayer, LogServer, LogUserSocket } from '../../LogServer/Controller/LogController';
 import { LogCode } from '../../LogServer/Model/LogCode';
 import { LogType } from '../../LogServer/Model/LogModel';
+import { Socket } from "socket.io";
+
+export type UserPlayerSocketDictionary = Record<string, UserPlayerSocket>;
+
+export class UserPlayerSocket{
+    Token:string;
+    UserPlayerId:string;
+    Socket:Socket;
+}
 
 export interface IUserPlayer{
     _id : Types.ObjectId;

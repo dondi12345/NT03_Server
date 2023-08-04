@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import {portConfig, Redis, variable} from "../../Enviroment/Env";
+import {portConfig, RedisConfig, variable} from "../../Enviroment/Env";
 import { Message } from "../Model/Message";
 import { IUserSocket, UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { MessageRouter } from "../Router/MessageRouter";
@@ -10,25 +10,25 @@ import { AccountData } from "../../AccountServer/Model/AccountData";
 import { UserSocketData } from "../../UserSocket/Model/UserSocketData";
 
 const redisSubscriber = createClient({
-    host: Redis.Host,
-    port: Redis.Port,
-    password: Redis.Password,
+    host: RedisConfig.Host,
+    port: RedisConfig.Port,
+    password: RedisConfig.Password,
   });
 const redisAccountToken = createClient({
-    host: Redis.Host,
-    port: Redis.Port,
-    password: Redis.Password,
+    host: RedisConfig.Host,
+    port: RedisConfig.Port,
+    password: RedisConfig.Password,
   });
 const redisUserPlayerChannelSub = createClient({
-    host: Redis.Host,
-    port: Redis.Port,
-    password: Redis.Password,
+    host: RedisConfig.Host,
+    port: RedisConfig.Port,
+    password: RedisConfig.Password,
   });
 
 export let userSocketDictionary : UserSocketDictionary ={};
 
 export function InitMessageServerWithSocket(){
-    redisAccountToken.keys(Redis.KeyUserPlayerSession+'*', (error, keys) => {
+    redisAccountToken.keys(RedisConfig.KeyUserPlayerSession+'*', (error, keys) => {
         if (error) {
           console.error('Error retrieving keys:', error);
           return;
@@ -70,7 +70,7 @@ function InitWithSocket() {
             console.log("Dev 1685025149 "+socket.id+" left MessageServer");
             try {
                 console.log("Dev 1685086000 ")
-                redisAccountToken.del(Redis.KeyUserPlayerSession + userSocket.IdUserPlayer,()=>{});
+                redisAccountToken.del(RedisConfig.KeyUserPlayerSession + userSocket.IdUserPlayer,()=>{});
             } catch (error) {
                 console.log("Dev 1685080913 "+error)
             }
@@ -89,7 +89,7 @@ function InitWithSocket() {
     //     MessageRouter(message);
     // });
 
-    redisUserPlayerChannelSub.subscribe(Redis.UserPlayerChannel);
+    redisUserPlayerChannelSub.subscribe(RedisConfig.UserPlayerChannel);
     redisUserPlayerChannelSub.on('message', (channel, data)=>{
         console.log("Dev 1685078357"+data)
         var message = Message.Parse(data);

@@ -22,6 +22,12 @@ export enum LogCode {
     UserPlayerServer_CreateFail= 3005,
     UserPlayerServer_SaveToken = 3006,
     UserPlayerServer_SaveTokenFail = 3007,
+    UserPlayerServer_AuthenTokenFail = 3008,
+    UserPlayerServer_LoginFail = 3009,
+    UserPlayerServer_CheckRedisSessionNone = 3010,
+    UserPlayerServer_CheckRedisSessionExist = 3011,
+    UserPlayerServer_RedisSaveFail = 3012,
+    UserPlayerServer_RedisSaveSuccess = 3013,
 
     Currency_Test = 4000,
     Currency_UpdateFail = 4001,

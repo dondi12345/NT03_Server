@@ -36,7 +36,7 @@ export const SocketConfig = {
     Listening : "listening",
 }
 
-export const Redis = {
+export const RedisConfig = {
     Host : "103.116.9.104",
     Port : "6379",
     Password : "Trunghung24",
