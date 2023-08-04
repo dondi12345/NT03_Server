@@ -52,3 +52,23 @@ function WriteLog(data : any){
   var fileName = dateFormat+".log"
   writeFile(join(path, fileName), JSON.stringify(data)+",\n", { flag: "a" }, err => {});
 }
+
+class LogController{
+    LogDev(...str){
+        console.log(str);
+    }
+
+    LogMessage(logCode : LogCode, data, token : string){
+        console.log(logCode, data, token);
+    }
+
+    LogWarring(logCode : LogCode, data, token : string){
+        console.log(logCode, data, token);
+    }
+
+    LogError(logCode : LogCode, data, token : string){
+        console.log(logCode, data, token);
+    }
+}
+
+export const logController = new LogController();

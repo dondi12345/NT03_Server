@@ -3,7 +3,6 @@ import { portConfig, variable } from '../../Enviroment/Env';
 import express from 'express';
 import { AuthenGetToken, AuthenVerify } from "../../AuthenServer/AuthenController";
 import { Account, CountAccount } from "../Model/Account";
-import { AccountLogin, AccountLoginTocken, AccountRegister } from "../Controller/AccountController";
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { scheduleJob } from 'node-schedule';

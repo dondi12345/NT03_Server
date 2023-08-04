@@ -1,19 +1,17 @@
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
-import { AccountLogin, AccountLoginTocken, AccountRegister } from "../Controller/AccountController";
+import { TransferData } from "../../TransferData";
+import {accountController } from "../Controller/AccountController";
 
-export function AccountServerRouter(data, res){
+export function AccountServerRouter(data, transferData: TransferData){
     var message = Message.Parse(data);
+    transferData.Token = message.Token;
     if(message.MessageCode == MessageCode.AccountServer_Register){
-        AccountRegister(message, res);
+        accountController.AccountRegister(message, transferData);
         return;
     }
     if(message.MessageCode == MessageCode.AccountServer_Login){
-        AccountLogin(message, res)
-        return;
-    }
-    if(message.MessageCode == MessageCode.AccountServer_LoginToken){
-        AccountLoginTocken(message, res);
+        accountController.AccountLogin(message, transferData)
         return;
     }
 }

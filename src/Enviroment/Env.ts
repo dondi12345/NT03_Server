@@ -32,6 +32,10 @@ export const variable = {
     // localhost : "45.124.95.182",
 }
 
+export const SocketConfig = {
+    Listening : "listening",
+}
+
 export const Redis = {
     Host : "103.116.9.104",
     Port : "6379",

@@ -3,6 +3,16 @@ import { LogServer } from '../../LogServer/Controller/LogController';
 import { LogCode } from '../../LogServer/Model/LogCode';
 import { LogType } from '../../LogServer/Model/LogModel';
 
+export class AccountLoginData{
+    Username: string;
+    Password: string;
+    IdDevice: string;
+}
+export class AccountRegisterData{
+    Username: string;
+    Password: string;
+}
+
 export interface IAccount{
     _id : Types.ObjectId;
     Username: String;

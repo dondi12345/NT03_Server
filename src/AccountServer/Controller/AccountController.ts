@@ -1,54 +1,117 @@
 import bcrypt from 'bcrypt'
-import { CreateAccount, FindByUserName, IAccount, Account, AccountModel } from "../Model/Account";
+import { CreateAccount, FindByUserName, IAccount, Account, AccountModel, AccountLoginData, AccountRegisterData } from "../Model/Account";
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
-import { AccountAuthen, IAccountAuthen } from "../Model/AccountAuthen";
-import { AccountData } from "../Model/AccountData";
-import { AccountTocken } from "../Model/AccountTocken";
-import { AuthenGetToken, AuthenVerify } from "../../AuthenServer/AuthenController";
-import { TockenAuthen } from "../Model/TockenAuthen";
-import { LogServer } from '../../LogServer/Controller/LogController';
+import { logController } from '../../LogServer/Controller/LogController';
 import { LogCode } from '../../LogServer/Model/LogCode';
-import { LogType } from '../../LogServer/Model/LogModel';
+import { TransferData } from '../../TransferData';
+import { DataModel } from '../../Utils/DataModel';
+import { TokenAccount } from '../../Token/Model/TokenAccount';
+import { TokenModel } from '../../Token/Model/TokenModel';
+import { tockenController } from '../../Token/Controller/TockenController';
 
 const saltRounds = 10;
 
-export async function AccountRegister(message : Message, response) {
-    try {
-        var account = Account.Parse(message.Data);
-        
-        var isExisten = false;
-        if(account.Username == null || account.Username == undefined) {
-            response.send(RegisterFailMessage("Inval Username"));
-            return; 
-        }
-        await FindByUserName(account.Username).then(res=>{
-            if(res == null || res == undefined) return;
-            isExisten = true;
-        })
-        if(isExisten) {
-            LogServer(LogCode.AccountServer_RegisterFail, "Account existen", LogType.Warning);
-            response.send(RegisterFailMessage("Account existen"));
-            return;
-        }
-
-        if(account.Password == null || account.Password == undefined){
-            LogServer(LogCode.AccountServer_RegisterFail, "Wrong confirm password", LogType.Warning);
-            response.send(RegisterFailMessage("Wrong confirm password"));
-        }
-        var pass = account.Password == undefined ? "" : account.Password+"";
-        bcrypt.hash(pass, saltRounds, function(err, hash) {
-            account.Password = hash;
-            CreateAccount(account).then((res: IAccount)=>{
-                console.log("Dev 1684646335 "+ res);
-                LogServer(LogCode.AccountServer_RegisterSuccess, "", LogType.Normal);
-                response.send(RegisterSuccessMessage());
+class AccountController{
+    async AccountRegister(message:Message, transferData : TransferData) {
+        try {
+            var accountRegisterData = DataModel.Parse<AccountRegisterData>(message.Data);
+     
+            var isExisten = false;
+            if(accountRegisterData.Username == null || accountRegisterData.Username == undefined) {
+                transferData.Send(JSON.stringify(RegisterFailMessage("Inval Username")));
+                return; 
+            }
+            await FindByUserName(accountRegisterData.Username).then(res=>{
+                if(res == null || res == undefined) return;
+                isExisten = true;
             })
-        });
-    } catch (error) {
-        console.log("Dev 1684641453 "+error);
-        LogServer(LogCode.AccountServer_RegisterFail, JSON.stringify(error), LogType.Error);
-        response.send(RegisterFailMessage(error));
+            if(isExisten) {
+                logController.LogWarring(LogCode.AccountServer_RegisterFail, "Account existen", accountRegisterData.Username);
+                transferData.Send(JSON.stringify(RegisterFailMessage("Account existen")));
+                return;
+            }
+    
+            if(accountRegisterData.Password == null || accountRegisterData.Password == undefined){
+                logController.LogWarring(LogCode.AccountServer_RegisterFail, "Wrong confirm password", accountRegisterData.Username);
+                transferData.Send(JSON.stringify(RegisterFailMessage("Wrong confirm password")));
+            }
+            var pass = accountRegisterData.Password == undefined ? "" : accountRegisterData.Password+"";
+            bcrypt.hash(pass, saltRounds, function(err, hash) {
+                var account = new Account();
+                account.Username = accountRegisterData.Username;
+                account.Password = hash;
+                CreateAccount(account).then((res: IAccount)=>{
+                    console.log("Dev 1684646335 "+ res);
+                    logController.LogMessage(LogCode.AccountServer_RegisterSuccess, accountRegisterData.Username, "Server");
+                    transferData.Send(JSON.stringify(RegisterSuccessMessage()));
+                })
+            });
+        } catch (error) {
+            console.log("Dev 1684641453 "+error);
+            logController.LogError(LogCode.AccountServer_RegisterFail, JSON.stringify(error), "Server");
+            transferData.Send(JSON.stringify(RegisterFailMessage(error)));
+        }
+    }
+
+    async AccountLogin(message:Message, transferData : TransferData){
+        logController.LogDev("1684684863 Login");
+        try {
+            var accountLoginData = DataModel.Parse<AccountLoginData>(message.Data);        
+    
+            if(accountLoginData.Username == null || accountLoginData.Username == undefined || accountLoginData.Password == null || accountLoginData.Password== undefined){
+                logController.LogDev("1684937233 error format")
+                logController.LogWarring(LogCode.AccountServer_LoginFail,accountLoginData.Username+ " Inval format", "Server");
+                transferData.Send(JSON.stringify(LoginFailMessage("Inval format")));
+                return;
+            }
+            else
+            {
+                FindByUserName(accountLoginData.Username).then((res: Account)=>{
+                    if(res == null || res == undefined){
+                        logController.LogDev("1685266848 Account not found")
+                        logController.LogWarring(LogCode.AccountServer_LoginFail, accountLoginData.Username +" Account not found", "Server")
+                        transferData.Send(JSON.stringify(LoginFailMessage("Account not found")));
+                        return;
+                    }
+                    if(res.Password == null || res.Password == undefined){
+                        logController.LogDev("1685266848 Error password")
+                        transferData.Send(JSON.stringify(LoginFailMessage("Error password")));
+                        logController.LogWarring(LogCode.AccountServer_LoginFail,accountLoginData.Username+ " Error password", "Server")
+                        return;
+                    }
+                    bcrypt.compare(accountLoginData.Password.toString(), res.Password.toString(), async function(err, result) {
+                        if(result){
+                            logController.LogDev("1684684470 Login successfull: ", res._id)
+
+                            var tokenAccount = new TokenAccount();
+                            tokenAccount.IdAccount = res._id.toString();
+                            tokenAccount.IdDevice = accountLoginData.IdDevice;
+                            
+                            var tokenModel = new TokenModel();
+                            try {
+                                tokenModel.Token = tockenController.AuthenGetToken(JSON.parse(JSON.stringify(tokenAccount)))
+                            } catch (error) {
+                                console.log(error)
+                            }
+                            transferData.Send(JSON.stringify(LoginSuccessMessage(JSON.stringify(tokenModel))));
+                            logController.LogMessage(LogCode.AccountServer_LoginSuccess, accountLoginData.Username.toString(), tokenModel.Token)
+                            return;
+                        }else{
+                            logController.LogDev("1684684249 WrongPassword")
+                            logController.LogWarring(LogCode.AccountServer_LoginFail, accountLoginData.Username +" WrongPassword", "Server")
+                            transferData.Send(JSON.stringify(LoginFailMessage("WrongPassword")));
+                            return;
+                        }
+                    });
+                })
+            }
+           
+        } catch (error){
+            console.log("Dev 1684684560 "+error);
+            logController.LogError(LogCode.AccountServer_LoginFail, error, "Server");
+            transferData.Send(LoginFailMessage(error))
+        }
     }
 }
 
@@ -64,63 +127,6 @@ function RegisterSuccessMessage(){
     return message;
 }
 
-export async function AccountLogin(message:Message, response){
-    console.log("Dev 1684684863 Login")
-    try {
-        var accountAuthen = AccountAuthen.Parse(message.Data);
-        
-
-        if(accountAuthen.Username == null || accountAuthen.Username == undefined || accountAuthen.Password == null || accountAuthen.Password== undefined){
-            console.log("Dev 1684937233 error format")
-            LogServer(LogCode.AccountServer_LoginFail, "Inval format", LogType.Warning)
-            response.send(JSON.stringify(LoginFailMessage("Inval format")));
-            return;
-        }
-        else
-        {
-            await FindByUserName(accountAuthen.Username).then((res: IAccount)=>{
-                if(res == null || res == undefined){
-                    console.log("Dev 1685266848 Account not found")
-                    LogServer(LogCode.AccountServer_LoginFail, "Account not found", LogType.Warning)
-                    response.send(JSON.stringify(LoginFailMessage("Account not found")));
-                    return;
-                }
-                if(res.Password == null || res.Password == undefined){
-                    console.log("Dev 1685266848 Error password")
-                    response.send(JSON.stringify(LoginFailMessage("Error password")));
-                    LogServer(LogCode.AccountServer_LoginFail, "Error password", LogType.Warning)
-                    return;
-                }
-                bcrypt.compare(accountAuthen.Password.toString(), res.Password.toString(), async function(err, result) {
-                    if(result){
-                        console.log("Dev 1684684470 Login successfull: ")
-                        var accountData = new AccountData();
-                        accountData.IdAccount = res._id.toString();
-                        accountData.IdDevice = accountAuthen.IdDevice;
-
-                        var accountTocken = new AccountTocken();
-                        accountTocken.IdAccount = accountData.IdAccount;
-                        accountTocken.Token = AuthenGetToken(JSON.parse(JSON.stringify(accountData)));
-                        LogServer(LogCode.AccountServer_LoginSuccess, accountAuthen.Username.toString(), LogType.Normal)
-                        LoginSuccess(accountTocken, response);
-                        return;
-                    }else{
-                        console.log("Dev 1684684249 WrongPassword")
-                        LogServer(LogCode.AccountServer_LoginFail, "WrongPassword", LogType.Warning)
-                        response.send(JSON.stringify(LoginFailMessage("WrongPassword")));
-                        return;
-                    }
-                });
-            })
-        }
-       
-    } catch (error){
-        console.log("Dev 1684684560 "+error);
-        LogServer(LogCode.AccountServer_LoginFail, error, LogType.Error);
-        response.send(LoginFailMessage(error))
-    }
-}
-
 function LoginFailMessage(error : string){
     var message = new Message();
     message.MessageCode = MessageCode.AccountServer_LoginFail;
@@ -128,35 +134,12 @@ function LoginFailMessage(error : string){
     return message;
 }
 
-export function AccountLoginTocken(message : Message, response){
-    var tockenAuthen = TockenAuthen.Parse(message.Data);
-    var data = AuthenVerify(tockenAuthen.Token);
-    if(data == null || data == undefined){
-        response.send(LoginFailMessage("Wrong token"));
-        LogServer(LogCode.AccountServer_LoginFail, "Wrong token", LogType.Warning)
-        console.log("Dev 1684937265 wrong token")
-        return;
-    }else{
-        var accountData = AccountData.Parse(data);
-        if(accountData.IdDevice != tockenAuthen.IdDevice){
-            console.log("Dev 1684937311 wrong device")
-            LogServer(LogCode.AccountServer_LoginFail, "Wrong device", LogType.Warning)
-            response.send(LoginFailMessage("Wrong device"));
-            return; 
-        }
-
-        var accountTocken = new AccountTocken();
-        accountTocken.IdAccount = accountData.IdAccount;
-        accountTocken.Token = tockenAuthen.Token;
-
-        LoginSuccess(accountTocken, response);
-    }
-}
-
-export function LoginSuccess(accountTocken : AccountTocken, response){
-
+function LoginSuccessMessage(data: string){
     var message = new Message();
     message.MessageCode = MessageCode.AccountServer_LoginSuccess;
-    message.Data = JSON.stringify(accountTocken);
-    response.send(JSON.stringify(message));
-} 
+    message.Data = data;
+    return message;
+}
+
+
+export const accountController = new AccountController();

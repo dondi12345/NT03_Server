@@ -8,6 +8,7 @@ import { DataCenterRouter } from "../../DataCenter/Router/DataCenterRouter";
 import { InitDataVersion } from "../../DataCenter/Service/DataCenterService";
 import { LogFromClient } from "../../LogServer/Controller/LogController";
 import { CurrencyModel } from "../../Currency/Model/Currency";
+import { TransferData } from "../../TransferData";
 
 export function InitAPIServer(){
     console.log("Dev 1686217639 InitAPIServer")
@@ -15,7 +16,9 @@ export function InitAPIServer(){
     app.use(express.json())
 
     app.post('/account',(req, res)=>{
-        AccountServerRouter(req.body, res);
+        var transferData = new TransferData();
+        transferData.ResAPI = res;
+        AccountServerRouter(req.body, transferData);
     })
 
     app.post('/datacenter',(req, res)=>{

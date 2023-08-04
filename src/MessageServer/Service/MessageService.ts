@@ -5,7 +5,6 @@ import { IUserSocket, UserSocket, UserSocketDictionary, UserSocketServer } from 
 import { MessageRouter } from "../Router/MessageRouter";
 import { createClient } from 'redis';
 import { MessageCode } from "../Model/MessageCode";
-import { AccountLogin, AccountRegister } from "../../AccountServer/Controller/AccountController";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
 import { AccountData } from "../../AccountServer/Model/AccountData";
 import { UserSocketData } from "../../UserSocket/Model/UserSocketData";
