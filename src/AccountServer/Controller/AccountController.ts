@@ -8,7 +8,7 @@ import { TransferData } from '../../TransferData';
 import { DataModel } from '../../Utils/DataModel';
 import { TokenAccount } from '../../Token/Model/TokenAccount';
 import { TokenModel } from '../../Token/Model/TokenModel';
-import { tockenController } from '../../Token/Controller/TockenController';
+import { tokenController } from '../../Token/Controller/TockenController';
 
 const saltRounds = 10;
 
@@ -90,7 +90,7 @@ class AccountController{
                             
                             var tokenModel = new TokenModel();
                             try {
-                                tokenModel.Token = tockenController.AuthenGetToken(JSON.parse(JSON.stringify(tokenAccount)))
+                                tokenModel.Token = tokenController.AuthenGetToken(JSON.parse(JSON.stringify(tokenAccount)))
                             } catch (error) {
                                 console.log(error)
                             }

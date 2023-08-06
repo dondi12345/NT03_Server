@@ -3,15 +3,16 @@ import { MessageCode } from "../Model/MessageCode";
 import { Connect } from "../Controller/MessageController";
 import { UpdateCurrencyCtrl, CurrencyLogin } from "../../Currency/Controller/CurrencyController";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
+import { UserPlayerLogin, userPlayerController } from "../../UserPlayerServer/Controller/UserPlayerController";
 import { GetSummonResult, HeroLogin, HeroUpgradeLvCtrl, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
 import { CraftEquip, HeroEquipLogin, HeroEquipUpgradeLvCtrl, UnwearingEquip, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
 import { ResLogin } from "../../Res/Controller/ResController";
 import { DeselectHeroTeamCtrl, HeroTeamLogin, SelectHeroTeamCtrl } from "../../HeroTeam/Controller/HeroTeamCtrl";
 import { ProtectedFailCtrl, ProtectedSuccessCtrl } from "../../TDWave/Controller/TDWaveController";
+import { TransferData } from "../../TransferData";
 
 
-export function MessageRouter(message : Message, userSocket : IUserSocket){
+export function MessageRouterCtrl(message : Message, userSocket : IUserSocket){
     if(message.MessageCode == MessageCode.MessageServer_Test){
         console.log("Dev 1684475214 Test Message")
     }
@@ -99,3 +100,18 @@ export function MessageRouter(message : Message, userSocket : IUserSocket){
         return;
     }
 }
+
+class MessageRouter{
+    Router(message : Message, transferData : TransferData){
+        if(message.MessageCode == MessageCode.UserPlayerServer_Login){
+            userPlayerController.UserPlayerLogin(message, transferData);
+            return;
+        }
+        if(message.MessageCode == MessageCode.UserPlayerServer_Logout){
+            userPlayerController.UserPlayerLogout(message);
+        }
+
+    }
+}
+
+export const messageRouter = new MessageRouter();

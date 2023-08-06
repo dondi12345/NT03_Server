@@ -14,6 +14,11 @@ export class UserPlayerSocket{
     Socket:Socket;
 }
 
+export class UserPlayerWithToken{
+    Token:string;
+    UserPlayerId:string;
+}
+
 export interface IUserPlayer{
     _id : Types.ObjectId;
     IdAccount : Types.ObjectId;

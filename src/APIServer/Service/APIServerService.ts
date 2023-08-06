@@ -9,11 +9,17 @@ import { InitDataVersion } from "../../DataCenter/Service/DataCenterService";
 import { LogFromClient } from "../../LogServer/Controller/LogController";
 import { CurrencyModel } from "../../Currency/Model/Currency";
 import { TransferData } from "../../TransferData";
+import { messageRouter } from "../../MessageServer/Router/MessageRouter";
+import { DataModel } from "../../Utils/DataModel";
 
 export function InitAPIServer(){
     console.log("Dev 1686217639 InitAPIServer")
     const app = express()
     app.use(express.json())
+
+    app.post('/',(req, res)=>{
+        res.send("Hello world")
+    })
 
     app.post('/account',(req, res)=>{
         var transferData = new TransferData();
@@ -31,6 +37,14 @@ export function InitAPIServer(){
         } catch (error) {
             res.send(error);
         }
+    })
+
+    app.post('/message', (req, res)=>{
+        var message = DataModel.Parse<Message>(req.body)
+        var transferData = new TransferData();
+        transferData.ResAPI = res;
+        transferData.Token = message.Token;
+        messageRouter.Router(message, transferData);
     })
 
     app.post('/testFunction',(req, res)=>{

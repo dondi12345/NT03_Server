@@ -41,18 +41,22 @@ export const RedisConfig = {
     Port : "6379",
     Password : "Trunghung24",
 
-    EventMessage : "message",
+    MessagePubSub : "MessagePubSub",
 
     AccountChannel : "AccountChannel",
     UserPlayerChannel : "UserPlayerChannel",
 
-    KeyUserPlayerSession : "UserPlayer:Session:",
+    KeyUserPlayerSession : "NT03:UserPlayer:Session:",
 }
 class RedisKey{
     NameProject = "NT03";
 
     KeyHeroSummon(userID){
         return this.NameProject +":HeroSummon:"+userID;
+    }
+
+    KeyUserPlayerSession(userID){
+        return this.NameProject+":UserPlayer:"+userID+":Session"
     }
 }
 export const RedisKeyConfig = new RedisKey();

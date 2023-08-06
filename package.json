@@ -7,11 +7,8 @@
     "start-dev": "yarn ts-node ./src/App.ts",
     "start-debug": "yarn ts-node/register/transpile-only ./src/App.ts",
     "start": "node  ./build/src/App.js",
-    "build": "yarn build-scss && tsc",
-    "build-scss": "node-sass src/WebServer/resources/scss/ --output public/css/",
-    "clean": "rm -rf ./build",
-    "copy-public": "cp -a ./public/ ./build/",
-    "copy-resources": "cp -a ./resources/ ./build/"
+    "build": "tsc",
+    "build-scss": "yarn node-sass src/WebServer/resources/scss/ --output public/css/"
   },
   "license": "MIT",
   "devDependencies": {

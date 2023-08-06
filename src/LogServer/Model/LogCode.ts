@@ -28,6 +28,8 @@ export enum LogCode {
     UserPlayerServer_CheckRedisSessionExist = 3011,
     UserPlayerServer_RedisSaveFail = 3012,
     UserPlayerServer_RedisSaveSuccess = 3013,
+    UserPlayerServer_RedisExpireFail = 3014,
+    UserPlayerServer_RedisExpireSuccess = 3015,
 
     Currency_Test = 4000,
     Currency_UpdateFail = 4001,

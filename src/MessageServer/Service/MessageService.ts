@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import {portConfig, RedisConfig, variable} from "../../Enviroment/Env";
 import { Message } from "../Model/Message";
 import { IUserSocket, UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
-import { MessageRouter } from "../Router/MessageRouter";
+import { MessageRouterCtrl } from "../Router/MessageRouter";
 import { createClient } from 'redis';
 import { MessageCode } from "../Model/MessageCode";
 import { UserPlayerLogin } from "../../UserPlayerServer/Controller/UserPlayerController";
@@ -63,7 +63,7 @@ function InitWithSocket() {
 
             if(!userSocket.Socket) userSocket.Socket = socket;
 
-            MessageRouter(message, userSocket);
+            MessageRouterCtrl(message, userSocket);
         });
 
         socket.on("disconnect", () => {
