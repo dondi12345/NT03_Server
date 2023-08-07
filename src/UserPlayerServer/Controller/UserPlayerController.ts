@@ -16,7 +16,7 @@ import { TransferData } from '../../TransferData';
 import { TokenAccount } from '../../Token/Model/TokenAccount';
 import { tokenController } from '../../Token/Controller/TockenController';
 import { DataModel } from '../../Utils/DataModel';
-import { Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { redisClient, redisPub } from '../../Service/Database/RedisConnect';
 import { userPlayerLoginCache as userPlayerCache } from '../Service/UserPlayerService';
 import { TokenUserPlayer } from '../../Token/Model/TokenUserPlayer';
@@ -29,30 +29,6 @@ const redisUserPlayerSession = redis.createClient({
     password: RedisConfig.Password,
   });
 
-export async function UserPlayerLogin(message : Message, userSocket : IUserSocket) {
-    var serverGame = ServerGame.Parse(message.Data);
-    if(!(serverGame.ServerGameCode in ServerGameCode)) return;
-    await FindByIdAccountAndServerGameCode(userSocket.IdAccount, serverGame.ServerGameCode).then(res=>{
-        if(res == null || res == undefined){
-            var userPlayer = UserPlayer.NewUserPlayer(userSocket.IdAccount, serverGame.ServerGameCode);
-            CreateUserPlayer(userPlayer).then(res=>{
-                if(res == null || res == undefined){
-                    SendMessageToSocket(LoginFailMessage("User create fail"), userSocket.Socket);
-                    return;
-                }else{
-                    userPlayer = UserPlayer.Parse(res);
-                    CheckUserLoginedFromRedis(userPlayer, userSocket);
-                    InitNewUserPlayer(userPlayer);
-                    return;
-                }
-            })
-        }else{
-            userPlayer = UserPlayer.Parse(res);
-            CheckUserLoginedFromRedis(userPlayer, userSocket);
-            return;
-        }
-    })
-}
 
 function InitNewUserPlayer(userPlayer : UserPlayer){
     UserJoinToGlobalChannel(userPlayer._id, userPlayer.ServerGameCode);
@@ -63,48 +39,6 @@ function LoginFailMessage(error){
     message.MessageCode = MessageCode.UserPlayerServer_LoginFail;
     message.Data = error;
     return message;
-}
-function LoginSuccessMessage(userPlayer : IUserPlayer){
-    var message = new Message();
-    message.MessageCode = MessageCode.UserPlayerServer_LoginSuccess;
-    message.Data = JSON.stringify(userPlayer);
-    return message;
-}
-
-export function addAccountTokenToRedis(idUserPlayer :string, token: string) {
-    redisUserPlayerSession.set(RedisConfig.KeyUserPlayerSession + idUserPlayer, token, (error, result) => {
-        if (error) {
-            console.error("Dev 1685008521 Failed to save token:", error);
-            LogIdUserPlayer(LogCode.UserPlayerServer_SaveTokenFail, idUserPlayer, "", LogType.Normal)
-        } else {
-            console.log(`Dev 1685008516 Token added ${result}: `, token);
-            LogIdUserPlayer(LogCode.UserPlayerServer_SaveToken, idUserPlayer, "", LogType.Normal)
-        }
-    });
-}
-
-export async function CheckUserLoginedFromRedis(userPlayer:IUserPlayer, userSocket : IUserSocket){
-    await redisUserPlayerSession.get(RedisConfig.KeyUserPlayerSession + userPlayer._id.toString(), (error, result)=>{
-        console.log("Dev 1685077900 "+result);
-        if(error || result == null || result == undefined){
-            userSocket.IdUserPlayer = userPlayer._id;
-            addAccountTokenToRedis(userSocket.IdUserPlayer.toString(), userSocket.IdAccount.toString());
-            AddUserSocketDictionary(userSocket);
-            console.log("Dev 1685080451 "+Object.keys(userSocketDictionary).length)
-            userSocket.UserPlayer = userPlayer;
-            SendMessageToSocket(LoginSuccessMessage(userPlayer), userSocket.Socket);
-        }else{
-            var message = new Message();
-            message.MessageCode = MessageCode.MessageServer_Disconnect;
-            var userSocketData = new UserSocketData();
-            userSocketData.IdUserPlayer = userPlayer._id;
-            userSocketData.IdSocket = userSocket.Socket.id;
-            message.Data = JSON.stringify(userSocketData);
-            console.log(JSON.stringify(message));
-            userSocket.Socket.disconnect();
-            redisPub.publish(RedisConfig.UserPlayerChannel, JSON.stringify(message));  
-        }
-    });
 }
 
 export function UpdateUserPlayerCtrl(userSocket : UserSocket) {
@@ -152,7 +86,7 @@ class UserPlayerController{
                         transferData.Send(JSON.stringify(LoginFailMessage("Create Fail")))
                     })
                 }else{
-                    userPlayer = UserPlayer.Parse(res);
+                    var userPlayer = UserPlayer.Parse(res);
                     UserPlayerLoginSuccess(userPlayer, transferData, tokenAccount);
                     return;
                 }
@@ -171,6 +105,26 @@ class UserPlayerController{
         if(userPlayer.Token != userPlayerWithToken.Token && userPlayer.Socket != null && userPlayer.Socket != undefined){
             userPlayer.Socket.disconnect();
         }
+    }
+
+    GetUserPlayer(token : string){
+        return new Promise(async(reslove, rejects)=>{
+            var data = DataModel.Parse<TokenUserPlayer>(tokenController.AuthenVerify(token));
+            if(data == null || data == undefined){
+                logController.LogDev("1684937265 wrong token");
+                logController.LogWarring(LogCode.UserPlayerServer_AuthenTokenFail,"Token authen fail", token);
+                reslove(null);
+            }else{
+                redisClient.get(RedisKeyConfig.KeyUserPlayerData(data.IdUserPlayer), (error, result)=>{
+                    if(error){
+                        logController.LogWarring(LogCode.UserPlayerServer_RedisGetUserPlayerFail, error, token);
+                        reslove(null);
+                    }else{
+                        reslove(DataModel.Parse<UserPlayer>(result));
+                    }
+                })
+            }
+        })
     }
 }
 
@@ -220,6 +174,14 @@ function UserPlayerLoginSuccess(userPlayer : UserPlayer, transferData : Transfer
             }
         })
 
+        redisClient.set(RedisKeyConfig.KeyUserPlayerData(userPlayer._id.toString()), JSON.stringify(userPlayer), (error, result)=>{
+            if(error){
+                logController.LogError(LogCode.UserPlayerServer_RedisCacheUserPlayerFail, error, transferData.Token)
+            }else{
+                logController.LogMessage(LogCode.UserPlayerServer_RedisCacheUserPlayerSuccess, result, transferData.Token)
+            }
+        });
+
         var userPlayerSocket = new UserPlayerSocket();
         userPlayerSocket.Socket = transferData.Socket;
         userPlayerSocket.Token = transferData.Token;
@@ -229,6 +191,11 @@ function UserPlayerLoginSuccess(userPlayer : UserPlayer, transferData : Transfer
         var message = new Message();
         message.MessageCode = MessageCode.UserPlayerServer_LoginSuccess;
         message.Data = JSON.stringify(tokenModel);
-        transferData.Send(JSON.stringify(message));
+
+        var message_1 = new Message();
+        message_1.MessageCode = MessageCode.UserPlayerServer_Update;
+        message_1.Data = JSON.stringify(userPlayer);
+
+        transferData.Send(JSON.stringify(message), JSON.stringify(message_1));
     });
 }

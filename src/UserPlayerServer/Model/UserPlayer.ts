@@ -23,7 +23,7 @@ export interface IUserPlayer{
     _id : Types.ObjectId;
     IdAccount : Types.ObjectId;
     ServerGameCode : ServerGameCode;
-    Name : string;
+    PlayerName : string;
 
     Wave : number;
 }
@@ -32,7 +32,7 @@ export class UserPlayer implements IUserPlayer{
     _id : Types.ObjectId = new Types.ObjectId();
     IdAccount : Types.ObjectId;
     ServerGameCode : ServerGameCode;
-    Name : string = "Player"+ (10000+Math.floor(Math.random()*90000));
+    PlayerName : string = "Player"+ (10000+Math.floor(Math.random()*90000));
 
     Wave : number = 0;
 
@@ -42,6 +42,7 @@ export class UserPlayer implements IUserPlayer{
 
     static NewUserPlayer(idAccount : Types.ObjectId, serverGameCode : ServerGameCode){
         var userPlayer = new UserPlayer();
+        console.log(userPlayer.PlayerName);
         userPlayer.IdAccount = idAccount;
         userPlayer.ServerGameCode = serverGameCode;
         return userPlayer;
@@ -60,6 +61,7 @@ const UserPlayerSchema = new Schema<IUserPlayer>(
       _id : { type: Schema.Types.ObjectId, default: new Types.ObjectId()},
       IdAccount: {type: Schema.Types.ObjectId, ref : 'Account'},
       ServerGameCode : {type : Number, enum : ServerGameCode},
+      PlayerName : {type : String, default: "Player"},
       Wave : {type : Number, default : 0}
     }
 );
@@ -98,7 +100,7 @@ export async function UpdateUserPlayer(userPlayer : UserPlayer) {
     console.log("Dev 1688027507 ", userPlayer);
     UserPlayerModel.updateOne({_id : userPlayer._id},{
         ServerGameCode : userPlayer.ServerGameCode,
-        Name : userPlayer.Name,
+        Name : userPlayer.PlayerName,
         Wave : userPlayer.Wave ? userPlayer.Wave : 0,
     }).then(res=>{
         LogIdUserPlayer(LogCode.UserPlayerServer_SaveUserPlayer, userPlayer._id.toString(), "",LogType.Normal);

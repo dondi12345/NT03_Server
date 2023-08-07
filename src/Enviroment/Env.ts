@@ -58,5 +58,8 @@ class RedisKey{
     KeyUserPlayerSession(userID){
         return this.NameProject+":UserPlayer:"+userID+":Session"
     }
+    KeyUserPlayerData(userID){
+        return this.NameProject+":UserPlayer:"+userID+":Data"
+    }
 }
 export const RedisKeyConfig = new RedisKey();
