@@ -21,6 +21,7 @@ export enum MessageCode {
     UserPlayerServer_LoginSuccess = 3003,
     UserPlayerServer_Update = 3004,
     UserPlayerServer_Logout = 3005,
+    UserPlayerServer_Disconnect = 3006,
 
     Currency_Test = 4000,
     Currency_Login  = 4001,

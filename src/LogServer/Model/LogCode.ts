@@ -43,6 +43,7 @@ export enum LogCode {
     Currency_IncreaseNumberFail = 4006,
     Currency_IncreaseNumber = 4007,
     Currency_LoginSuccess = 4008,
+    Currency_NotFoundInDB = 4009,
 
     Hero_Test = 5000,
     Hero_ErrorLoadHeroData = 5001,

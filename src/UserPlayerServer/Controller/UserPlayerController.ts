@@ -107,8 +107,8 @@ class UserPlayerController{
         }
     }
 
-    GetUserPlayer(token : string){
-        return new Promise(async(reslove, rejects)=>{
+    async GetUserPlayerCached(token : string){
+        var data = await new Promise(async(reslove, rejects)=>{
             var data = DataModel.Parse<TokenUserPlayer>(tokenController.AuthenVerify(token));
             if(data == null || data == undefined){
                 logController.LogDev("1684937265 wrong token");
@@ -120,11 +120,15 @@ class UserPlayerController{
                         logController.LogWarring(LogCode.UserPlayerServer_RedisGetUserPlayerFail, error, token);
                         reslove(null);
                     }else{
-                        reslove(DataModel.Parse<UserPlayer>(result));
+                        reslove(result);
                     }
                 })
             }
         })
+        if(data == null || data == undefined){
+            return null;
+        }
+        return DataModel.Parse<UserPlayer>(data)
     }
 }
 
@@ -149,6 +153,7 @@ function UserPlayerLoginSuccess(userPlayer : UserPlayer, transferData : Transfer
                 logController.LogMessage(LogCode.UserPlayerServer_CheckRedisSessionNone, "", transferData.Token)
             }
         }else{
+            // Logout userplayer is logined
             logController.LogDev("1685077900 KeyUserPlayerSession Exsist")
             var userPlayerWithToken = new UserPlayerWithToken();
             userPlayerWithToken.UserPlayerId = userPlayer._id.toString();

@@ -37,6 +37,7 @@ export class Currency implements ICurrency{
         }catch(err){}
         return data;
     }
+    
 }
 
 const CurrencySchema = new Schema<ICurrency>(

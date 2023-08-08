@@ -9,7 +9,9 @@ import { ChangeRes } from "../../Res/Controller/ResController";
 import { ResCode } from "../../Res/Model/ResCode";
 import { TransferData } from "../../TransferData";
 import { UpdateUserPlayerCtrl, userPlayerController } from "../../UserPlayerServer/Controller/UserPlayerController";
+import { UserPlayer } from "../../UserPlayerServer/Model/UserPlayer";
 import { UserSocket } from "../../UserSocket/Model/UserSocket";
+import { DataModel } from "../../Utils/DataModel";
 import { TDWaveReward5Lv, TDWaveRewardGrow5Lv, TDWaveRewardGrowLv, TDWaveRewardLv } from "./TDWaveData";
 
 export function ProtectedSuccessCtrl(message : Message, userSocket : UserSocket) {
@@ -48,15 +50,20 @@ export function ProtectedFailCtrl(message : Message, userSocket : UserSocket) {
 }
 
 class TDWaveController {
-    ProtectedSuccessCtrl(message : Message, transferData : TransferData) {
-        var userPlayer = userPlayerController.GetUserPlayer(transferData.Token);
+    async ProtectedSuccessCtrl(message : Message, transferData : TransferData) {
+        var userPlayer = await userPlayerController.GetUserPlayerCached(transferData.Token);
+        if(userPlayer == null || userPlayer == undefined){
+            var message = new Message();
+            message.MessageCode = MessageCode.UserPlayerServer_Disconnect;
+            transferData.Send(JSON.stringify(message));
+            return;
+        }
         //Reward
         logController.LogMessage(LogCode.TDWave_ProtectedSuccess, "", transferData.Token);
-        LogUserSocket(LogCode.TDWave_ProtectedSuccess, userSocket, "", LogType.Normal);
-        if(userSocket.UserPlayer.Wave == undefined || userSocket.UserPlayer.Wave == null){
-            userSocket.UserPlayer.Wave = 0;
+        if(userPlayer.Wave == undefined || userPlayer.Wave == null){
+            userPlayer.Wave = 0;
         }
-        if(userSocket.UserPlayer.Wave % 5 == 0){
+        if(userPlayer.Wave % 5 == 0){
             userSocket.Currency.Money += TDWaveRewardLv.Money + TDWaveRewardGrowLv.Money * userSocket.UserPlayer.Wave;
             userSocket.Currency.Food += TDWaveRewardLv.Food + TDWaveRewardGrowLv.Food * userSocket.UserPlayer.Wave;
             UpdateCurrencyCtrl(userSocket);
