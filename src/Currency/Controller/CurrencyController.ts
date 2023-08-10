@@ -84,34 +84,19 @@ class CurrencyController{
             return;
         }
         
-        redisClient.get(RedisKeyConfig.KeyCurrencyData(userPlayer._id,))
-
-        await FindCurrencyByIdUserPlayer(userPlayer._id).then(async (respone)=>{
-            if(respone == null || respone == undefined){
-                var currency = new Currency();
-                currency.IdUserPlayer = userSocket.IdUserPlayer;
-                await CreateUserPlayerCurrency(currency).then(respone=>{
-                    console.log("Dev 1684837963 " + respone)
-                    userSocket.Currency = respone;
-                    LogUserSocket(LogCode.Currency_LoginSuccess, userSocket, "", LogType.Normal)
-                    SendMessageToSocket(LoginSuccessMessage(userSocket.Currency), userSocket.Socket);
-                }).catch((error)=>{
-                    LogUserSocket(LogCode.Currency_LoginFail, userSocket, error, LogType.Error)
-                    LoginFail(userSocket);
-                })
-            }else{
-                console.log("Dev 1684837891 " + respone)
-                userSocket.Currency = respone;
-                LogUserSocket(LogCode.Currency_LoginSuccess, userSocket, "", LogType.Normal)
-                SendMessageToSocket(LoginSuccessMessage(userSocket.Currency), userSocket.Socket);
-            }
-        }).catch(()=>{
-            LoginFail(userSocket);
-        })
+        redisClient.set(RedisKeyConfig.KeyCurrencyData(userPlayer._id), )
     }
 }
 
 export const currencyController = new CurrencyController();
+
+async function LoginSuccess(){
+
+}
+
+async function LoginFail() {
+    
+}
 
 async function FindByIdUserPlayer(idUserPlayer: Types.ObjectId) {
     var data;

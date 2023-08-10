@@ -1,5 +1,7 @@
 export enum LogCode {
     Server_ServerStart = 100,
+    Server_RedisSetSuccess = 101,
+    Server_RedisSetFail = 102,
 
     MessageServer_Test = 1000,
     MessageServer_TokenAuthenFail = 1001,

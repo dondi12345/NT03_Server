@@ -6,6 +6,7 @@ import { DataModel } from "../../Utils/DataModel";
 import { messageRouter } from "../../MessageServer/Router/MessageRouter";
 import { TransferData } from "../../TransferData";
 import { logController } from "../../LogServer/Controller/LogController";
+import { LogCode } from "../../LogServer/Model/LogCode";
 
 export const redisClient = createClient({
   host: RedisConfig.Host,
@@ -24,23 +25,45 @@ export const redisSub = createClient({
   password: RedisConfig.Password,
 });
 
-
 export function InitRedisService() {
-  console.log("redisClient connecting")
+  console.log("redisClient connecting");
 
-  redisClient.on('error', function (err) {
-    console.log('redis went wrong ' + err);
+  redisClient.on("error", function (err) {
+    console.log("redis went wrong " + err);
   });
 
   redisClient.on("connect", () => {
-    console.log('connect redis success !')
-  })
+    console.log("connect redis success !");
+  });
   redisSub.subscribe(RedisConfig.MessagePubSub);
-  redisSub.on("message", (channel, data)=>{
-    logController.LogDev("Dev 1691208962 Listion on ",channel)
+  redisSub.on("message", (channel, data) => {
+    logController.LogDev("Dev 1691208962 Listion on ", channel);
     var message = DataModel.Parse<Message>(data);
-    logController.LogDev("Dev 1691208963: ",data, message)
+    logController.LogDev("Dev 1691208963: ", data, message);
     messageRouter.Router(message, new TransferData());
-  })
+  });
 }
 
+class RedisConnect {
+  Set(key: string, value: string) {
+    redisClient.set(key, value, (error, result) => {
+      if (error) {
+        logController.LogError(LogCode.Server_RedisSetFail, error, "Server");
+      } else {
+        logController.LogMessage(
+          LogCode.Server_RedisSetSuccess,
+          result,
+          "Server"
+        );
+      }
+    });
+  }
+
+  async Get(key: string) {
+    var data = new Promise(async (resolve, reject) => {
+      await redisClient.get(key, (error, result) => { });
+    });
+  }
+}
+
+export const redisConnect = new RedisConnect();
