@@ -10,7 +10,7 @@ import { IUserSocket } from "../../UserSocket/Model/UserSocket";
 import { CreateUserPlayerCurrency, FindCurrencyByIdUserPlayer, ICurrency, Currency, UpdateCurrency, IncreaseNumber, CurrencyModel } from "../Model/Currency";
 import { DataModel } from "../../Utils/DataModel";
 import { userPlayerController } from "../../UserPlayerServer/Controller/UserPlayerController";
-import { redisClient } from "../../Service/Database/RedisConnect";
+import { redisClient, redisConnect } from "../../Service/Database/RedisConnect";
 import { RedisKeyConfig } from "../../Enviroment/Env";
 
 export async function CurrencyLogin(message : Message, userSocket: IUserSocket){
@@ -71,47 +71,71 @@ class CurrencyController{
     async CurrencyLogin(message : Message, transferData: TransferData){
         var userPlayer = await userPlayerController.GetUserPlayerCached(transferData.Token);
         if(userPlayer == null || userPlayer == undefined){
-            var message = new Message();
-            message.MessageCode = MessageCode.UserPlayerServer_Disconnect;
-            transferData.Send(JSON.stringify(message));
-            return;
+            return LoginFail_New(transferData);
         }
         var currency = await FindByIdUserPlayer(userPlayer._id);
         if(currency == null|| currency == undefined){
-            var message = new Message();
-            message.MessageCode = MessageCode.Currency_LoginFail;
-            transferData.Send(JSON.stringify(message));
-            return;
+            logController.LogDev("1685077925 Dev Not found currency")
+            return LoginFail_New(transferData);
         }
-        
-        redisClient.set(RedisKeyConfig.KeyCurrencyData(userPlayer._id), )
+        redisConnect.Set(RedisKeyConfig.KeyCurrencyData(userPlayer._id), JSON.stringify(currency));
+        return LoginSuccess(currency, transferData);
+    }
+
+    async AddCurrency(idUserPlayer, data, token){
+        var status = false;
+        await CurrencyModel.updateOne(
+            {
+                IdUserPlayer : idUserPlayer
+            },
+            {
+                $inc: data
+            }
+        ).then(res=>{
+            logController.LogMessage(LogCode.Currency_AddSuccess, res, token);
+            status = true;
+        }).catch(err=>{
+            logController.LogWarring(LogCode.Currency_AddFail, err, token);
+        })
+        return status;
     }
 }
 
 export const currencyController = new CurrencyController();
 
-async function LoginSuccess(){
-
+async function LoginSuccess(currency : Currency, transferData : TransferData){
+    var message = new Message();
+    message.MessageCode = MessageCode.Currency_LoginSuccess;
+    message.Data = JSON.stringify(currency)
+    transferData.Send(JSON.stringify(message));
+    return message;
 }
 
-async function LoginFail() {
-    
+async function LoginFail_New(transferData: TransferData) {
+    var message = new Message();
+    message.MessageCode = MessageCode.Currency_LoginFail;
+    transferData.Send(JSON.stringify(message));
+    return message;
 }
 
 async function FindByIdUserPlayer(idUserPlayer: Types.ObjectId) {
     var data;
     await CurrencyModel.findOne({IdUserPlayer : idUserPlayer}).then((res)=>{
         data = res;
+        logController.LogDev("1685077936 Dev ", res)
     }).catch(async err=>{
         logController.LogWarring(LogCode.Currency_NotFoundInDB, idUserPlayer+":"+err, "Server");
+    })
+    if(data == null || data == undefined){
         var currency = new Currency();
         currency.IdUserPlayer = idUserPlayer;
         await CurrencyModel.create(currency).then(res=>{
             data = res;
+            logController.LogDev("1685077947 Dev ", res)
         }).catch(err=>{
             logController.LogWarring(LogCode.Currency_CreateNewFail, idUserPlayer+":"+err, "Server");
             data = null;
         })
-    })
+    }
     return DataModel.Parse<Currency>(data)
 }

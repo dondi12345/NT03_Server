@@ -15,6 +15,9 @@ export interface ICurrency{
     Silver : number,
     EnchanceStone : number,
     MagicStone : number,
+
+    HeroScroll_White : number,
+    BlueprintHeroEquip_White : number,
 }
 
 export class Currency implements ICurrency{
@@ -27,6 +30,10 @@ export class Currency implements ICurrency{
     Silver : number;
     EnchanceStone : number;
     MagicStone : number;
+
+    HeroScroll_White : number;
+    BlueprintHeroEquip_White : number;
+    
     constructor() {
         
     }
@@ -51,8 +58,12 @@ const CurrencySchema = new Schema<ICurrency>(
         Silver : { type : Number, default : DefaultCurrency.Silver},
         EnchanceStone : { type : Number, default : DefaultCurrency.EnchanceStone},
         MagicStone : { type : Number, default : DefaultCurrency.MagicStone},
+        HeroScroll_White : { type : Number, default : DefaultCurrency.HeroScroll_White},
+        BlueprintHeroEquip_White : { type : Number, default : DefaultCurrency.BlueprintHeroEquip_White},
     }
 );
+
+CurrencySchema.index({ IdUserPlayer: 1 }, { background: true });
   
 export const CurrencyModel = mongoose.model<ICurrency>('Currency', CurrencySchema);
 

@@ -50,19 +50,22 @@ class RedisConnect {
       if (error) {
         logController.LogError(LogCode.Server_RedisSetFail, error, "Server");
       } else {
-        logController.LogMessage(
-          LogCode.Server_RedisSetSuccess,
-          result,
-          "Server"
-        );
+        logController.LogMessage(LogCode.Server_RedisSetSuccess, result, "Server");
       }
     });
   }
 
   async Get(key: string) {
-    var data = new Promise(async (resolve, reject) => {
-      await redisClient.get(key, (error, result) => { });
+    var data = await new Promise(async (resolve, reject) => {
+      await redisClient.get(key, (error, result) => { 
+        if(error){
+          resolve(null);
+        }else{
+          resolve(result)
+        }
+      });
     });
+    return data;
   }
 }
 

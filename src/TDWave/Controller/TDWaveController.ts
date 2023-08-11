@@ -1,4 +1,4 @@
-import { UpdateCurrencyCtrl } from "../../Currency/Controller/CurrencyController";
+import { UpdateCurrencyCtrl, currencyController } from "../../Currency/Controller/CurrencyController";
 import { LogUserSocket, logController } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
@@ -63,20 +63,26 @@ class TDWaveController {
         if(userPlayer.Wave == undefined || userPlayer.Wave == null){
             userPlayer.Wave = 0;
         }
+        var reward;
         if(userPlayer.Wave % 5 == 0){
-            userSocket.Currency.Money += TDWaveRewardLv.Money + TDWaveRewardGrowLv.Money * userSocket.UserPlayer.Wave;
-            userSocket.Currency.Food += TDWaveRewardLv.Food + TDWaveRewardGrowLv.Food * userSocket.UserPlayer.Wave;
-            UpdateCurrencyCtrl(userSocket);
+            reward = {
+                Money : TDWaveRewardLv.Money + TDWaveRewardGrowLv.Money * userPlayer.Wave,
+                Food : TDWaveRewardLv.Food + TDWaveRewardGrowLv.Food * userPlayer.Wave,
+                HeroScroll_White : 0,
+                BlueprintHeroEquip_White : 0,
+            }
         }else{
-            userSocket.Currency.Money += TDWaveReward5Lv.Money + TDWaveRewardGrow5Lv.Money * userSocket.UserPlayer.Wave;
-            userSocket.Currency.Food += TDWaveReward5Lv.Food + TDWaveRewardGrow5Lv.Food * userSocket.UserPlayer.Wave;
-            UpdateCurrencyCtrl(userSocket);
-            var heroScroll_White = Math.floor(TDWaveReward5Lv.HeroScroll_White + TDWaveRewardGrow5Lv.HeroScroll_White * userSocket.UserPlayer.Wave);
-            var blueprintHeroEquip_White = Math.floor(TDWaveReward5Lv.BlueprintHeroEquip_White + TDWaveRewardGrow5Lv.BlueprintHeroEquip_White * userSocket.UserPlayer.Wave);
-            ChangeRes(ResCode.HeroScroll_White, heroScroll_White, userSocket);
-            ChangeRes(ResCode.BlueprintHeroEquip_White, blueprintHeroEquip_White, userSocket);
+            reward = {
+                Money : TDWaveReward5Lv.Money + TDWaveRewardGrow5Lv.Money * userPlayer.Wave,
+                Food : TDWaveReward5Lv.Food + TDWaveRewardGrow5Lv.Food * userPlayer.Wave,
+                HeroScroll_White : Math.floor(TDWaveReward5Lv.HeroScroll_White + TDWaveRewardGrow5Lv.HeroScroll_White * userPlayer.Wave),
+                BlueprintHeroEquip_White : Math.floor(TDWaveReward5Lv.BlueprintHeroEquip_White + TDWaveRewardGrow5Lv.BlueprintHeroEquip_White * userPlayer.Wave)
+            }
         }
         //Update
+        if(await currencyController.AddCurrency(userPlayer._id, reward, transferData.Token)){
+            
+        }
         userSocket.UserPlayer.Wave ++;
         UpdateUserPlayerCtrl(userSocket);
         

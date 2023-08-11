@@ -6,4 +6,6 @@ export const DefaultCurrency = {
     Silver : 0,
     EnchanceStone : 0,
     MagicStone : 0,
+    HeroScroll_White : 0,
+    BlueprintHeroEquip_White : 0,
   };

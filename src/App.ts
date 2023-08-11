@@ -19,7 +19,7 @@ import { InitWebServer } from './WebServer';
 
 
 // Define number of worker processes
-const numCPUs = 2;
+const numCPUs = 1;
 const version = "0.0.13"
 // const numCPUs = require('os').cpus().length;
 // AppTest();

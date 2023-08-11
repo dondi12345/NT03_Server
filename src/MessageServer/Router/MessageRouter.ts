@@ -1,9 +1,9 @@
 import { Message } from "../Model/Message";
 import { MessageCode } from "../Model/MessageCode";
 import { Connect } from "../Controller/MessageController";
-import { UpdateCurrencyCtrl, CurrencyLogin } from "../../Currency/Controller/CurrencyController";
+import { UpdateCurrencyCtrl, CurrencyLogin, currencyController } from "../../Currency/Controller/CurrencyController";
 import { IUserSocket } from "../../UserSocket/Model/UserSocket";
-import { UserPlayerLogin, userPlayerController } from "../../UserPlayerServer/Controller/UserPlayerController";
+import {userPlayerController } from "../../UserPlayerServer/Controller/UserPlayerController";
 import { GetSummonResult, HeroLogin, HeroUpgradeLvCtrl, HireHero, Summon } from "../../HeroServer/Controller/HeroController";
 import { CraftEquip, HeroEquipLogin, HeroEquipUpgradeLvCtrl, UnwearingEquip, WearingEquip } from "../../HeroEquip/Controller/HeroEquipController";
 import { ResLogin } from "../../Res/Controller/ResController";
@@ -22,10 +22,6 @@ export function MessageRouterCtrl(message : Message, userSocket : IUserSocket){
     }
     if(userSocket.IdAccount == null || userSocket.IdAccount == undefined){
         console.log("Dev 1684769809 Logout Acount")
-        return;
-    }
-    if(message.MessageCode == MessageCode.UserPlayerServer_Login){
-        UserPlayerLogin(message, userSocket);
         return;
     }
     if(userSocket.IdUserPlayer == null || userSocket.IdUserPlayer == undefined){
@@ -109,6 +105,11 @@ class MessageRouter{
         }
         if(message.MessageCode == MessageCode.UserPlayerServer_Logout){
             userPlayerController.UserPlayerLogout(message);
+            return;
+        }
+        if(message.MessageCode == MessageCode.Currency_Login){
+            currencyController.CurrencyLogin(message, transferData);
+            return;
         }
 
     }
