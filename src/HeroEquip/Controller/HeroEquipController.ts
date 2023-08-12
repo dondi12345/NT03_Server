@@ -14,8 +14,7 @@ import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipById, FindHeroEquipByIdUs
 import { HeroEquipType } from "../Model/HeroEquipType";
 import { IndexHeroEquipCraft, RateCraft } from "../Model/HeroEquipConfig";
 import { heroEquipDataDictionary } from "../Service/HeroEquipService";
-import { UpdateCurrencyCtrl } from "../../Currency/Controller/CurrencyController";
-import { LogServer, LogUserSocket } from "../../LogServer/Controller/LogController";
+import { LogUserSocket } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
 import { HeroEquipCode } from "../Model/HeroEquipCode";
@@ -118,23 +117,23 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket) 
     var heroEquip_Old;
     console.log("Dev 1691055136 Type: "+heroEquipData.HeroEquipType)
     if(heroEquipData.HeroEquipType === HeroEquipType.Weapon){
-        if(hero.Gear.IdWeapon != undefined && hero.Gear.IdWeapon != null)
-            heroEquip_Old = userSocket.HeroEquip[hero.Gear.IdWeapon.toString()];
-        hero.Gear.IdWeapon = heroEquip._id;
+        if(hero.IdWeapon != undefined && hero.IdWeapon != null)
+            heroEquip_Old = userSocket.HeroEquip[hero.IdWeapon.toString()];
+        hero.IdWeapon = heroEquip._id;
         heroEquip.IdHero = hero._id;
         console.log("Dev 1691055136 IdWeapon")
     }
     if(heroEquipData.HeroEquipType === HeroEquipType.Armor){
-        if(hero.Gear.IdArmor != undefined && hero.Gear.IdArmor != null)
-            heroEquip_Old = userSocket.HeroEquip[hero.Gear.IdArmor.toString()];
-        hero.Gear.IdArmor = heroEquip._id;
+        if(hero.IdArmor != undefined && hero.IdArmor != null)
+            heroEquip_Old = userSocket.HeroEquip[hero.IdArmor.toString()];
+        hero.IdArmor = heroEquip._id;
         heroEquip.IdHero = hero._id;
         console.log("Dev 1691055137 IdArmor")
     }
     if(heroEquipData.HeroEquipType === HeroEquipType.Helmet){
-        if(hero.Gear.IdHelmet != undefined && hero.Gear.IdHelmet != null)
-            heroEquip_Old = userSocket.HeroEquip[hero.Gear.IdHelmet.toString()];
-        hero.Gear.IdHelmet = heroEquip._id;
+        if(hero.IdHelmet != undefined && hero.IdHelmet != null)
+            heroEquip_Old = userSocket.HeroEquip[hero.IdHelmet.toString()];
+        hero.IdHelmet = heroEquip._id;
         heroEquip.IdHero = hero._id;
         console.log("Dev 1691055138 IdHelmet")
     }
@@ -157,14 +156,14 @@ export async function UnwearingEquip(message : Message, userSocket : IUserSocket
     if(hero == null || hero == undefined || hero.Code == HeroCode.Unknown){
         UnwearingEquipFail(userSocket);
     }else{
-        if(hero.Gear.IdWeapon != undefined && hero.Gear.IdWeapon != null && hero.Gear.IdWeapon == heroWearEquip.IdHeroEquip){
-            delete hero.Gear.IdWeapon;
+        if(hero.IdWeapon != undefined && hero.IdWeapon != null && hero.IdWeapon == heroWearEquip.IdHeroEquip){
+            delete hero.IdWeapon;
         }
-        if(hero.Gear.IdArmor != undefined && hero.Gear.IdArmor != null && hero.Gear.IdArmor == heroWearEquip.IdHeroEquip){
-            delete hero.Gear.IdArmor;
+        if(hero.IdArmor != undefined && hero.IdArmor != null && hero.IdArmor == heroWearEquip.IdHeroEquip){
+            delete hero.IdArmor;
         }
-        if(hero.Gear.IdHelmet != undefined && hero.Gear.IdHelmet != null && hero.Gear.IdHelmet == heroWearEquip.IdHeroEquip){
-            delete hero.Gear.IdHelmet;
+        if(hero.IdHelmet != undefined && hero.IdHelmet != null && hero.IdHelmet == heroWearEquip.IdHeroEquip){
+            delete hero.IdHelmet;
         }
         RemoveHeroEquipFromHero(hero, userSocket);
     }
@@ -198,7 +197,7 @@ export async function RemoveHeroEquipFromHero(hero : Hero, userSocket : UserSock
             _id : hero._id
         },
         {
-            $set : {Gear : hero.Gear},
+            $set : {Gear : hero},
         }
     ).then(()=>{
         UpdateHeroToClient(hero, userSocket);
@@ -228,7 +227,7 @@ export async function AddHeroEquipToHero(hero : Hero, userSocket : UserSocket){
             _id : hero._id
         },
         {
-            $set : {Gear : hero.Gear}
+            $set : {Gear : hero}
         }
     ).then(()=>{
         UpdateHeroToClient(hero, userSocket);
@@ -281,7 +280,7 @@ export function HeroEquipUpgradeLvCtrl(message : Message, userSocket : IUserSock
             var heroeEquips = new HeroEquips();
             heroeEquips.Elements.push(res);
             UpdateHeroEquips(heroeEquips, userSocket);
-            UpdateCurrencyCtrl(userSocket);
+            // UpdateCurrencyCtrl(userSocket);
         }
     })
 

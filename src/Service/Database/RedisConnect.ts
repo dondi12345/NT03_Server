@@ -50,7 +50,7 @@ class RedisControler {
       if (error) {
         logController.LogError(LogCode.Server_RedisSetFail, error, "Server");
       } else {
-        logController.LogMessage(LogCode.Server_RedisSetSuccess, result, "Server");
+        logController.LogMessage(LogCode.Server_RedisSetSuccess, result +" "+key, "Server");
       }
     });
   }

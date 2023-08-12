@@ -79,7 +79,10 @@ export interface IHero{
     Eyebrow : HeroFashion,
     Hair : HeroFashion,
     Mouths : HeroFashion,
-    Gear : Gear,
+
+    IdWeapon ?: Types.ObjectId;
+    IdArmor ?: Types.ObjectId;
+    IdHelmet ?: Types.ObjectId;
 
     InitData
 }
@@ -96,7 +99,10 @@ export class Hero implements IHero{
     Eyebrow : HeroFashion;
     Hair : HeroFashion;
     Mouths : HeroFashion;
-    Gear : Gear;
+
+    IdWeapon ?: Types.ObjectId;
+    IdArmor ?: Types.ObjectId;
+    IdHelmet ?: Types.ObjectId;
 
     constructor() {
         this._id = new Types.ObjectId();
@@ -158,11 +164,9 @@ const HeroSchema = new Schema<IHero>(
         Eyebrow : { Index : { type : String}, Color : { type : String}, },
         Hair : { Index : { type : String}, Color : { type : String}, },
         Mouths : { Index : { type : String}, Color : { type : String}, },
-        Gear :{
-            IdWeapon : { type : mongoose.Schema.Types.ObjectId, ref: 'HeroEquip' },
-            IdArmor : { type : mongoose.Schema.Types.ObjectId, ref: 'HeroEquip' },
-            IdHelmet : { type : mongoose.Schema.Types.ObjectId, ref: 'HeroEquip' },
-        }
+        IdWeapon : { type : mongoose.Schema.Types.ObjectId, ref: 'HeroEquip' },
+        IdArmor : { type : mongoose.Schema.Types.ObjectId, ref: 'HeroEquip' },
+        IdHelmet : { type : mongoose.Schema.Types.ObjectId, ref: 'HeroEquip' },
     }
 );
 
@@ -200,7 +204,7 @@ export async function FindHeroById(id : Types.ObjectId){
 
 export async function UpdateHero(hero:IHero) {
     console.log("Dev 1687174057 ", hero);
-    HeroModel.updateOne({_id : hero._id},{Lv : hero.Lv, Gear : hero.Gear}).then((res)=>{
+    HeroModel.updateOne({_id : hero._id},{Lv : hero.Lv}).then((res)=>{
         LogServer(LogCode.Hero_SaveHero, "", LogType.Normal)
         console.log("Dev 1685723761 ",res);
     }).catch(err=>{

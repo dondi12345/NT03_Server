@@ -70,6 +70,13 @@ export enum LogCode {
     Hero_SaveHeroFail = 5011,
     Hero_CreateNew = 5012,
     Hero_CreateFail = 5013,
+    Hero_NotFoundInDB = 5014,
+    Hero_Empty = 5015,
+    Hero_SummonFail = 5016,
+    Hero_NotEnoughtSummon = 5017,
+    Hero_GetSummonResultFail = 5018,
+    Hero_GetSummonResultSuc = 5019,
+    Hero_CreateSuc = 5020,
 
     HeroEquip_Test = 6000,
     HeroEquip_LoginFail = 6001,

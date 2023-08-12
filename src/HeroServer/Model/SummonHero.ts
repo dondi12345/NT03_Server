@@ -22,21 +22,7 @@ export class SummonHeroSlot implements ISummonHeroSlot{
     }
 }
 
-export interface ISummonHero{
-    _id : Types.ObjectId,
-    IdUserPlayer : Types.ObjectId,
-    Slots : SummonHeroSlot[],
-}
-
-export class SummonHero implements ISummonHero{
-    _id : Types.ObjectId = new Types.ObjectId();
-    IdUserPlayer : Types.ObjectId;
+export class SummonHero{
+    Version : string;
     Slots : SummonHeroSlot[];
-    static Parse(data) : ISummonHero{
-        try{
-            return JSON.parse(data);
-        }catch{
-            return data;
-        }
-    }
 }

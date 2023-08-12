@@ -52,7 +52,7 @@ class RedisKey{
     NameProject = "NT03";
 
     KeyHeroSummon(userID){
-        return this.NameProject +":HeroSummon:"+userID;
+        return this.NameProject +":UserPlayer:"+userID+":HeroSummon";
     }
 
     KeyUserPlayerSession(userID){
@@ -63,6 +63,9 @@ class RedisKey{
     }
     KeyCurrencyData(userID){
         return this.NameProject+":UserPlayer:"+userID+":Currency"
+    }
+    KeyHeroData(userID, heroID){
+        return this.NameProject+":UserPlayer:"+userID+":Hero:"+heroID
     }
 }
 export const RedisKeyConfig = new RedisKey();

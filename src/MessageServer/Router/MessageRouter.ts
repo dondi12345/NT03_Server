@@ -5,6 +5,7 @@ import {userPlayerController } from "../../UserPlayerServer/Controller/UserPlaye
 import { TransferData } from "../../TransferData";
 import { tdWaveController } from "../../TDWave/Controller/TDWaveController";
 import { accountController } from "../../AccountServer/Controller/AccountController";
+import { heroController } from "../../HeroServer/Controller/HeroController";
 
 class MessageRouter{
     Router(message : Message, transferData : TransferData){
@@ -18,6 +19,22 @@ class MessageRouter{
         }
         if(message.MessageCode == MessageCode.Currency_Login){
             currencyController.CurrencyLogin(message, transferData);
+            return;
+        }
+        if(message.MessageCode == MessageCode.Hero_Login){
+            heroController.Login(message, transferData);
+            return;
+        }
+        if(message.MessageCode == MessageCode.Hero_Summon){
+            heroController.Summon(message, transferData);
+            return;
+        }
+        if(message.MessageCode == MessageCode.Hero_GetSummonResult){
+            heroController.GetSummonResult(message, transferData);
+            return;
+        }
+        if(message.MessageCode == MessageCode.Hero_HireHero){
+            heroController.HireHero(message, transferData);
             return;
         }
         if(message.MessageCode == MessageCode.TDWave_ProtectedSuccess){
