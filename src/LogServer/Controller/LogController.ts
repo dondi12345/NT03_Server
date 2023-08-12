@@ -5,6 +5,7 @@ import { LogCode } from "../Model/LogCode";
 import { LogModel, LogType } from "../Model/LogModel";
 import { dateUtils } from '../../Utils/DateUtils';
 import { rootDir } from '../../..';
+import { enumUtils } from '../../Utils/EnumUtils';
 
 export function LogUserSocket(logCode : LogCode, userSocket : UserSocket, data : string = "", type : LogType = LogType.Unknow){
     var logMode = new LogModel();
@@ -59,15 +60,15 @@ class LogController{
     }
 
     LogMessage(logCode : LogCode, data, token : string){
-        console.log(logCode, data, token);
+        console.log(enumUtils.ToString(LogCode, logCode), data, token);
     }
 
     LogWarring(logCode : LogCode, data, token : string){
-        console.log(logCode, data, token);
+        console.log(enumUtils.ToString(LogCode, logCode), data, token);
     }
 
     LogError(logCode : LogCode, data, token : string){
-        console.log(logCode, data, token);
+        console.log(enumUtils.ToString(LogCode, logCode), data, token);
     }
 }
 

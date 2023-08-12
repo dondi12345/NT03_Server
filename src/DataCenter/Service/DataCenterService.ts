@@ -1,7 +1,8 @@
 import { LogServer } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
-import { DataVersion, DataVersionDictionary, GetDataVersionByName } from "../Model/DataVersion";
+import { dataMonster } from "../Data/MonsterData";
+import { DataVersion, DataVersionDictionary, DataVersionModel, GetDataVersionByName } from "../Model/DataVersion";
 
 const dataNames = ["TestData", "DataMonster", "DataBullet", "DataDamageEffect", "DataHeroEquip"]
 
@@ -26,3 +27,24 @@ export async function InitDataVersion(){
     // });
     console.log("Dev 1689075214 InitDataVersion "+Object.keys(dataVersionDictionary).length)
 }
+
+class DataCenterService{
+    dataVersionDictionary : DataVersionDictionary
+
+    constructor(){
+        this.Init()
+    }
+
+    async Init(){
+        this.dataVersionDictionary = {};
+        var data
+        await DataVersionModel.find({
+            Name: "DataMonster"
+        }).then(respone => {
+            data = respone
+        });
+        this.dataVersionDictionary["DataMonster"] = data
+    }
+}
+
+export const dataCenterService = new DataCenterService();

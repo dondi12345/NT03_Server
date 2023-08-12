@@ -60,35 +60,48 @@ class TDWaveController {
         }
         //Reward
         logController.LogMessage(LogCode.TDWave_ProtectedSuccess, "", transferData.Token);
+        logController.LogDev("12355334 Dev: " ,userPlayer)
         if(userPlayer.Wave == undefined || userPlayer.Wave == null){
             userPlayer.Wave = 0;
         }
         var reward;
         if(userPlayer.Wave % 5 == 0){
             reward = {
-                Money : TDWaveRewardLv.Money + TDWaveRewardGrowLv.Money * userPlayer.Wave,
-                Food : TDWaveRewardLv.Food + TDWaveRewardGrowLv.Food * userPlayer.Wave,
-                HeroScroll_White : 0,
-                BlueprintHeroEquip_White : 0,
-            }
-        }else{
-            reward = {
                 Money : TDWaveReward5Lv.Money + TDWaveRewardGrow5Lv.Money * userPlayer.Wave,
                 Food : TDWaveReward5Lv.Food + TDWaveRewardGrow5Lv.Food * userPlayer.Wave,
                 HeroScroll_White : Math.floor(TDWaveReward5Lv.HeroScroll_White + TDWaveRewardGrow5Lv.HeroScroll_White * userPlayer.Wave),
                 BlueprintHeroEquip_White : Math.floor(TDWaveReward5Lv.BlueprintHeroEquip_White + TDWaveRewardGrow5Lv.BlueprintHeroEquip_White * userPlayer.Wave)
             }
+        }else{
+            reward = {
+                Money : TDWaveRewardLv.Money + TDWaveRewardGrowLv.Money * userPlayer.Wave,
+                Food : TDWaveRewardLv.Food + TDWaveRewardGrowLv.Food * userPlayer.Wave,
+                HeroScroll_White : 0,
+                BlueprintHeroEquip_White : 0,
+            }
         }
         //Update
-        if(await currencyController.AddCurrency(userPlayer._id, reward, transferData.Token)){
-            
+        console.log(userPlayer, reward, userPlayer.Wave % 5 == 0)
+        userPlayer = await userPlayerController.UserPlayerChangeAdd({Wave : 1}, transferData.Token)
+        var currency = await currencyController.AddCurrency(reward, transferData.Token)
+        if(currency == null || currency == undefined){
+            tdWaveController.ProtectedFailCtrl(new Message(), transferData);
+            return;
         }
-        userSocket.UserPlayer.Wave ++;
-        UpdateUserPlayerCtrl(userSocket);
+        
+        var messageUpdateUserPlayer = new Message();
+        messageUpdateUserPlayer.MessageCode = MessageCode.UserPlayerServer_Update;
+        messageUpdateUserPlayer.Data = JSON.stringify(userPlayer);
+
+        var messageCurrency = new Message();
+        messageCurrency.MessageCode = MessageCode.Currency_Update;
+        messageCurrency.Data = JSON.stringify(currency);
         
         var message = new Message();
         message.MessageCode = MessageCode.TDWave_BattleWin;
-        SendMessageToSocket(message, userSocket.Socket);
+        message.Data = JSON.stringify(reward);
+
+        transferData.Send(JSON.stringify(messageUpdateUserPlayer), JSON.stringify(messageCurrency), JSON.stringify(message))
     }
 
     ProtectedFailCtrl(message : Message, transferData : TransferData) {

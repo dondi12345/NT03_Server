@@ -16,12 +16,4 @@ export function DataCenterRouter(data, res){
     if(message.MessageCode == MessageCode.DataCenter_UpdateVersion){
         InitDataVersion();
     }
-    // if(message.MessageCode == MessageCode.AccountServer_Login){
-    //     AccountLogin(message, res)
-    //     return;
-    // }
-    // if(message.MessageCode == MessageCode.AccountServer_LoginToken){
-    //     AccountLoginTocken(message, res);
-    //     return;
-    // }
 }

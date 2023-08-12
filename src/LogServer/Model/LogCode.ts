@@ -35,6 +35,11 @@ export enum LogCode {
     UserPlayerServer_RedisCacheUserPlayerSuccess = 3016,
     UserPlayerServer_RedisCacheUserPlayerFail = 3017,
     UserPlayerServer_RedisGetUserPlayerFail = 3018,
+    UserPlayerServer_ChangeAddSuc = 3019,
+    UserPlayerServer_ChangeAddFail = 3020,
+    UserPlayerServer_ChangeAddNotFound = 3021,
+    UserPlayerServer_FoundInBD = 3022,
+    UserPlayerServer_NotFoundInBD = 3023,
 
     Currency_Test = 4000,
     Currency_UpdateFail = 4001,
@@ -48,6 +53,8 @@ export enum LogCode {
     Currency_NotFoundInDB = 4009,
     Currency_AddSuccess = 4010,
     Currency_AddFail = 4011,
+    Currency__AuthenTokenFail = 4012,
+    Currency_AddNotFound = 4013,
 
     Hero_Test = 5000,
     Hero_ErrorLoadHeroData = 5001,

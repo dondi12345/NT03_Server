@@ -44,7 +44,7 @@ export function InitRedisService() {
   });
 }
 
-class RedisConnect {
+class RedisControler {
   Set(key: string, value: string) {
     redisClient.set(key, value, (error, result) => {
       if (error) {
@@ -69,4 +69,4 @@ class RedisConnect {
   }
 }
 
-export const redisConnect = new RedisConnect();
+export const redisControler = new RedisControler();
