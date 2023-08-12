@@ -37,7 +37,7 @@ export function InitAPIServer() {
 
     app.post('/getRedis', async (req, res) => {
         var data;
-        for (let index = 0; index < 1000; index++) {
+        for (let index = 0; index < req.body.number; index++) {
             data = {
                 Index: index,
                 Data: await redisControler.Get("NT03:DataCenter:DataMonster")
@@ -47,7 +47,7 @@ export function InitAPIServer() {
     })
     app.post('/getVar', async (req, res) => {
         var data;
-        for (let index = 0; index < 1000; index++) {
+        for (let index = 0; index < req.body.number; index++) {
             data = {
                 Index: index,
                 Data: dataCenterService.dataVersionDictionary["DataMonster"]
@@ -57,7 +57,7 @@ export function InitAPIServer() {
     })
     app.post('/getDB', async (req, res) => {
         var data;
-        for (let index = 0; index < 1000; index++) {
+        for (let index = 0; index < req.body.number; index++) {
             await DataVersionModel.find({
                 Name: "DataMonster"
             }).then(respone => {

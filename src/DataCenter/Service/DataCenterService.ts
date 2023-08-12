@@ -30,7 +30,7 @@ export async function InitDataVersion(){
 
 class DataCenterService{
     dataVersionDictionary : DataVersionDictionary
-
+    a = 0;
     constructor(){
         this.Init()
     }
