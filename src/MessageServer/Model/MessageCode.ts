@@ -1,4 +1,8 @@
 export enum MessageCode {
+    Server_ReadBD = 100,
+    Server_ReadRedis = 101,
+    Server_ReadVar = 102,
+
     MessageServer_Test = 1000,
     MessageServer_Connect = 1001,
     MessageConnectResponse = 1002,

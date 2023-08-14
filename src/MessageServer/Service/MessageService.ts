@@ -1,10 +1,11 @@
 import { Server, Socket } from "socket.io";
-import {portConfig, RedisConfig, variable} from "../../Enviroment/Env";
+import {portConfig, RedisConfig, SocketConfig, variable} from "../../Enviroment/Env";
 import { Message } from "../Model/Message";
 import { IUserSocket, UserSocket, UserSocketDictionary, UserSocketServer } from "../../UserSocket/Model/UserSocket";
 import { createClient } from 'redis';
 import { MessageCode } from "../Model/MessageCode";
 import { UserSocketData } from "../../UserSocket/Model/UserSocketData";
+import { testPerform } from "../../TestPerform/TestPerform";
 
 const redisSubscriber = createClient({
     host: RedisConfig.Host,
@@ -54,9 +55,10 @@ function InitWithSocket() {
     io.on(variable.eventSocketConnection, (socket : Socket) => {
         console.log("Dev 1684424410 "+socket.id+" connec to MessageServer");
         let userSocket = new UserSocket();
-        socket.on(variable.eventSocketListening, (data) => {
+        socket.on(SocketConfig.Listening, (data) => {
             console.log("Dev 1684424442:" + data);
             var message = Message.Parse(data);
+            testPerform.Router(message, socket);
 
             if(!userSocket.Socket) userSocket.Socket = socket;
 

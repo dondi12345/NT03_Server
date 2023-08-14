@@ -1,5 +1,5 @@
 import { io } from "socket.io-client"
-import { portConfig, variable } from './Enviroment/Env';
+import { SocketConfig, portConfig, variable } from './Enviroment/Env';
 import express from 'express';
 import { AuthenGetToken, AuthenVerify } from "./AuthenServer/AuthenController";
 import fetch from 'node-fetch';
@@ -29,8 +29,10 @@ export function API() {
     }
     resMessage = res;
     console.log("Dev 1684475504 " + JSON.stringify(req.body));
-    socketMessage.emit(variable.eventSocketListening, JSON.stringify(req.body));
-    res.send("suc");
+    socketMessage.emit(SocketConfig.Listening, JSON.stringify(req.body));
+    socketMessage.on(SocketConfig.Listening, (arg)=>{
+      res.send(arg)
+    })
   })
 
   //ChatServer
@@ -55,9 +57,8 @@ export function API() {
 
   app.post('/getRedis', async (req, res) => {
     var data;
-    console.log(req.body)
-    for (let index = 0; index < req.body.number1; index++) {
-      await Post("http://103.116.9.104:3001/getRedis", {number:req.body.number2}, async (err, res) => {
+    for (let index = 0; index < 1; index++) {
+      await Post("http://localhost:3001/getRedis", {number:req.body.number2}, async (err, res) => {
         data = {
           Index: index,
           Data: res
@@ -69,8 +70,8 @@ export function API() {
   })
   app.post('/getVar', async (req, res) => {
     var data;
-    for (let index = 0; index < req.body.number1; index++) {
-      await Post("http://103.116.9.104:3001/getVar", null, async (err, res) => {
+    for (let index = 0; index < 1; index++) {
+      await Post("http://localhost:3001/getVar", null, async (err, res) => {
         data = {
           Index: index,
           Data: res
@@ -81,8 +82,8 @@ export function API() {
   })
   app.post('/getDB', async (req, res) => {
     var data;
-    for (let index = 0; index < req.body.number1; index++) {
-      await Post("http://103.116.9.104:3001/getDB", null, async (err, res) => {
+    for (let index = 0; index < 1; index++) {
+      await Post("http://localhost:3001/getDB", null, async (err, res) => {
         data = {
           Index: index,
           Data: res

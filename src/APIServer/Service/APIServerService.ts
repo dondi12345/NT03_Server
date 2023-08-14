@@ -13,6 +13,7 @@ import { apiServerRouter } from "../Router/APIServerRouter";
 import { DataVersionModel } from "../../DataCenter/Model/DataVersion";
 import { redisClient, redisControler } from "../../Service/Database/RedisConnect";
 import { dataMonster } from "../../DataCenter/Data/MonsterData";
+import { testPerform } from "../../TestPerform/TestPerform";
 
 export function InitAPIServer() {
     console.log("Dev 1686217639 InitAPIServer")
@@ -36,37 +37,15 @@ export function InitAPIServer() {
     })
 
     app.post('/getRedis', async (req, res) => {
-        var data;
-        for (let index = 0; index < 1; index++) {
-            data = {
-                Index: index,
-                Data: await redisControler.Get("NT03:DataCenter:DataMonster")
-            };
-        }
+        var data = await testPerform.ReadRedis();
         res.send(data);
     })
     app.post('/getVar', async (req, res) => {
-        var data;
-        for (let index = 0; index < 1; index++) {
-            data = {
-                Index: index,
-                Data: dataCenterService.dataVersionDictionary["DataMonster"]
-            };
-        }
+        var data = await testPerform.ReadVar();
         res.send(data);
     })
     app.post('/getDB', async (req, res) => {
-        var data;
-        for (let index = 0; index < 1; index++) {
-            await DataVersionModel.find({
-                Name: "DataMonster"
-            }).then(respone => {
-                data = {
-                    Index: index,
-                    Data: respone
-                };
-            })
-        }
+        var data = await testPerform.ReadDB();
         res.send(data);
     })
 
