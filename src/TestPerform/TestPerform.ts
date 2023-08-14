@@ -19,7 +19,6 @@ class TestPerform{
             data = res;
         })
         this.dataMonster = data;
-        await redisControler.Set("NT03:DataCenter:DataMonster", JSON.stringify(data));
         console.log("TestPerform Inited")
     }
 

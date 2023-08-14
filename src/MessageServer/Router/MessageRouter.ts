@@ -37,6 +37,10 @@ class MessageRouter{
             heroController.HireHero(message, transferData);
             return;
         }
+        if(message.MessageCode == MessageCode.Hero_UpgradeLv){
+            heroController.UpgradeLv(message, transferData);
+            return;
+        }
         if(message.MessageCode == MessageCode.TDWave_ProtectedSuccess){
             tdWaveController.ProtectedSuccessCtrl(message, transferData)
             return;

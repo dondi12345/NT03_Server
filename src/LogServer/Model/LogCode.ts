@@ -2,6 +2,7 @@ export enum LogCode {
     Server_ServerStart = 100,
     Server_RedisSetSuccess = 101,
     Server_RedisSetFail = 102,
+    Server_InitDataCenterSuc = 103,
 
     MessageServer_Test = 1000,
     MessageServer_TokenAuthenFail = 1001,
@@ -77,6 +78,10 @@ export enum LogCode {
     Hero_GetSummonResultFail = 5018,
     Hero_GetSummonResultSuc = 5019,
     Hero_CreateSuc = 5020,
+    Hero_UpgradeLvFail = 5021,
+    Hero_UpgradeLvSuc = 5022,
+    Hero_HeroLvUpSuc = 5023,
+    Hero_HeroLvUpFail = 5024,
 
     HeroEquip_Test = 6000,
     HeroEquip_LoginFail = 6001,

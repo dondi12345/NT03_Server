@@ -16,6 +16,7 @@ import { LogServer } from './LogServer/Controller/LogController';
 import { LogCode } from './LogServer/Model/LogCode';
 import { LogType } from './LogServer/Model/LogModel';
 import { InitWebServer } from './WebServer';
+import { dataCenterController } from './DataCenter/Controller/DataCenterController';
 
 
 // Define number of worker processes
@@ -52,6 +53,7 @@ function InitApp(){
       InitAPIServer();
       InitAccountServer();
       InitDailyLoginReward();
+      dataCenterController;
     }).catch((err) => {
       
     });

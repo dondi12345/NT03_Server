@@ -9,6 +9,7 @@ import { InitHeroEquip } from "./HeroEquip/Service/HeroEquipService";
 import { HeroModel } from "./HeroServer/Model/Hero";
 import { InitHero } from "./HeroServer/Service/HeroService";
 import { InitShop } from "./Shop/Service/ShopService";
+import { dataCenterController } from "./DataCenter/Controller/DataCenterController";
 
 // Function to create app child instance
 export function AppChild() {
@@ -20,6 +21,7 @@ export function AppChild() {
         InitRes();
         InitHeroEquip();
         InitShop();
+        dataCenterController;
     }).catch(err=>{
         console.log(err);
     })

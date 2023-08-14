@@ -1,7 +1,7 @@
 import redis from 'redis';
 import { Message } from "../../MessageServer/Model/Message";
 import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero, UpdateHero, HeroUpgradeLv, FindHeroById } from "../Model/Hero";
+import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero, UpdateHero, HeroUpgradeLv, FindHeroById, HeroData } from "../Model/Hero";
 import { HeroCode } from "../Model/HeroCode";
 import { SummonHero, SummonHeroSlot } from "../Model/SummonHero";
 import { RateSummon } from "../Model/VariableHero";
@@ -23,6 +23,7 @@ import { redisControler } from '../../Service/Database/RedisConnect';
 import { Currency } from '../../Currency/Model/Currency';
 import { currencyController } from '../../Currency/Controller/CurrencyController';
 import { dateUtils } from '../../Utils/DateUtils';
+import { dataCenterController, dataCenterName } from '../../DataCenter/Controller/DataCenterController';
 
 const redisHero = redis.createClient({
     host: RedisConfig.Host,
@@ -122,14 +123,6 @@ export function HeroUpgradeLvFail(userSocket: IUserSocket) {
     var message = new Message();
     message.MessageCode = MessageCode.Hero_UpgradeLvFail;
     SendMessageToSocket(message, userSocket.Socket);
-}
-
-export function HeroCostUpgradeLv(lv: number, lvRise: number, start: number, raise: number) {
-    var result = 0;
-    for (let i = lv; i < lv + lvRise; i++) {
-        result += start + raise * i * (i + 1);
-    }
-    return result;
 }
 
 class HeroController {
@@ -257,6 +250,66 @@ class HeroController {
 
         transferData.Send(JSON.stringify(messageHero), JSON.stringify(messageResult));
     }
+
+    async UpgradeLv(message : Message, transferData : TransferData){
+        var tokenUserPlayer = tokenController.AuthenTokenUserPlayer(transferData.Token);
+        if (tokenUserPlayer == null || tokenUserPlayer == undefined) {
+            transferData.Send(JSON.stringify(UpgradeFail()));
+            return;
+        }
+        var heroUpgradeLv = DataModel.Parse<HeroUpgradeLv>(message.Data);
+        var hero = DataModel.Parse<Hero>(await redisControler.Get(RedisKeyConfig.KeyHeroData(tokenUserPlayer.IdUserPlayer, heroUpgradeLv.IdHero)));
+        if(hero == null || hero == undefined){
+            logController.LogError(LogCode.Hero_UpgradeLvFail, "Not found hero in cache", transferData.Token);
+            transferData.Send(JSON.stringify(UpgradeFail()));
+            return;
+        }
+        var heroData = DataModel.Parse<HeroData>(await redisControler.Get(RedisKeyConfig.KeyDataCenterElement(dataCenterName.DataHero, hero.Code.toString())));
+        if(heroData == null || heroData == undefined){
+            logController.LogError(LogCode.Hero_UpgradeLvFail, "Not found heroData in cache", transferData.Token);
+            transferData.Send(JSON.stringify(UpgradeFail()));
+            return;
+        }
+
+        var cost = HeroCostUpgradeLv(hero.Lv, heroUpgradeLv.NumberLv, heroData.CostUpgrade, heroData.CostUpgradeRise);
+
+        var currency = DataModel.Parse<Currency>(await redisControler.Get(RedisKeyConfig.KeyCurrencyData(tokenUserPlayer.IdUserPlayer)));
+        if(currency == null || currency == undefined){
+            logController.LogError(LogCode.Hero_UpgradeLvFail, "Not found currency in cache", transferData.Token);
+            transferData.Send(JSON.stringify(UpgradeFail()));
+            return;
+        }
+
+        if(currency.Food < cost){
+            logController.LogError(LogCode.Hero_UpgradeLvFail, "Not currency don't enought", transferData.Token);
+            transferData.Send(JSON.stringify(UpgradeFail()));
+            return;
+        }
+
+        hero = await HeroLvUp(heroUpgradeLv.IdHero, heroUpgradeLv.NumberLv);
+        if(hero == null || hero == undefined){
+            logController.LogError(LogCode.Hero_UpgradeLvFail, "HeroLvUp Fail", transferData.Token);
+            transferData.Send(JSON.stringify(UpgradeFail()));
+            return;
+        }
+        currency = await currencyController.AddCurrency({Food : -cost}, transferData.Token);
+        if(currency == null || currency == undefined){
+            logController.LogError(LogCode.Hero_UpgradeLvFail, "Currency update Fail", transferData.Token);
+            await HeroLvUp(heroUpgradeLv.IdHero, -heroUpgradeLv.NumberLv);
+            transferData.Send(JSON.stringify(UpgradeFail()));
+            return;
+        }
+
+        var messageUdHero = new Message();
+        messageUdHero.MessageCode = MessageCode.Hero_UpdateHero;
+        messageUdHero.Data = JSON.stringify(hero);
+
+        var messageUdCurrency = new Message();
+        messageUdCurrency.MessageCode = MessageCode.Currency_Update;
+        messageUdCurrency.Data = JSON.stringify(currency);
+
+        transferData.Send(JSON.stringify(messageUdHero), JSON.stringify(messageUdCurrency))
+    }
 }
 
 export const heroController = new HeroController();
@@ -334,4 +387,59 @@ async function CreateNewHero(hero : Hero, token){
         data = null;
     })
     return DataModel.Parse<Hero>(data);
+}
+
+function UpgradeFail(){
+    var message = new Message();
+    message.MessageCode = MessageCode.Hero_UpgradeLvFail;
+    return message;
+}
+
+function HeroCostUpgradeLv(lv: number, lvRise: number, start: number, raise: number) {
+    var result = 0;
+    for (let i = lv; i < lv + lvRise; i++) {
+        result += start + raise * i * (i + 1);
+    }
+    return result;
+}
+
+async function HeroLvUp(idHero, lv){
+    var hero;
+        await HeroModel.updateOne(
+        {
+            _id : idHero
+        },
+        {
+            $inc :{ Lv : lv}
+        }
+    ).then(async res => {
+        logController.LogMessage(LogCode.Hero_HeroLvUpSuc, res, idHero);
+        if (res.modifiedCount == 0) {
+            logController.LogError(LogCode.Hero_HeroLvUpFail,idHero, "Server");
+            hero = null;
+            return hero;
+        } else {
+            hero = await FindById(idHero);
+            return hero;
+        }
+    }).catch(err => {
+        logController.LogWarring(LogCode.Hero_HeroLvUpFail, err, "Server");
+        return null;
+    })
+    return hero
+}
+
+async function FindById(idHero){
+    var hero;
+    await HeroModel.find({_id : idHero})
+    .then(res=>{
+        hero = res
+        return hero;
+    })
+    .catch(err=>{
+        logController.LogError(LogCode.Hero_NotFoundInDB,idHero, "Server");
+        hero = null;
+        return hero;
+    })
+    return hero;
 }

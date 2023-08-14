@@ -50,6 +50,12 @@ export const RedisConfig = {
 }
 class RedisKey{
     NameProject = "NT03";
+    KeyDataCenterDetail(dataName : string){
+        return this.NameProject +":DataCenter:"+dataName+":Detail";
+    }
+    KeyDataCenterElement(dataName : string, index: string){
+        return this.NameProject +":DataCenter:"+dataName+":Element:"+index;
+    }
 
     KeyHeroSummon(userID){
         return this.NameProject +":UserPlayer:"+userID+":HeroSummon";
