@@ -19,8 +19,12 @@ class TestPerform{
             data = res;
         })
         this.dataMonster = data;
-        await redisControler.Set("NT03:DataCenter:DataMonster", data);
+        await redisControler.Set("NT03:DataCenter:DataMonster", JSON.stringify(data));
         console.log("TestPerform Inited")
+    }
+
+    constructor(){
+        this.Init()
     }
 
     async ReadDB(){
@@ -33,7 +37,7 @@ class TestPerform{
             ).then(res=>{
                 data = {
                     Index : index,
-                    Data: res,
+                    Data: JSON.stringify(res),
                 }
             })
         }
@@ -56,7 +60,7 @@ class TestPerform{
         for (let index = 0; index < 100; index++) {
             data={
                 Index : index,
-                Data : this.dataMonster,
+                Data : JSON.stringify(this.dataMonster),
             }
         }
         return data
