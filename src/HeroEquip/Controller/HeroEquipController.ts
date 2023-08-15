@@ -306,31 +306,37 @@ class HeroEquipController{
         var tokenUserPlayer = tokenController.AuthenTokenUserPlayer(transferData.Token);
         if (tokenUserPlayer == null || tokenUserPlayer == undefined) {
             logController.LogWarring(LogCode.HeroEquip_LoginFail, "Authen fail", transferData.Token);
-            return CraftFail(transferData)
+            transferData.Send(JSON.stringify(CraftFail()));
+            return CraftFail()
         }
         var craftHeroEquip = DataModel.Parse<CraftHeroEquip>(message.Data);
 
         var currency = await currencyController.GetCurrencyCached(tokenUserPlayer.IdUserPlayer);
         if(currency == null || currency == undefined){
-            return CraftFail(transferData)
+            transferData.Send(JSON.stringify(CraftFail()));
+            return CraftFail()
         }
         if(currency.BlueprintHeroEquip_White < 1){
             logController.LogWarring(LogCode.HeroEquip_NotEnoughForCraft, "BlueprintHeroEquip_White", transferData.Token);
-            return CraftFail(transferData)
+            transferData.Send(JSON.stringify(CraftFail()));
+            return CraftFail()
         }
 
         currency = await currencyController.AddCurrency({BlueprintHeroEquip_White : -1}, transferData.Token);
         if(currency == null || currency == undefined){
-            return CraftFail(transferData);
+            transferData.Send(JSON.stringify(CraftFail()));
+            return CraftFail()
         }
-        var heroEquip = await CreateRandomHeroEquip_White(tokenUserPlayer.IdUserPlayer);
-        if(heroEquip == null || heroEquip == undefined){
-            return CraftFail(transferData);
-        }
-
+        
         var messageUdCurrency = new Message();
         messageUdCurrency.MessageCode = MessageCode.Currency_Update;
         messageUdCurrency.Data = JSON.stringify(currency);
+
+        var heroEquip = await CreateRandomHeroEquip_White(tokenUserPlayer.IdUserPlayer);
+        if(heroEquip == null || heroEquip == undefined){
+            transferData.Send(JSON.stringify(messageUdCurrency) ,JSON.stringify(CraftFail()));
+            return CraftFail()
+        }
 
         var messageCraftSuc = new Message();
         messageCraftSuc.MessageCode = MessageCode.HeroEquip_CraftSuccess;
@@ -368,10 +374,9 @@ async function FindHeroEquipsByIdUserPlayer(idUserPlayer: string) {
     return heroEquips;
 }
 
-function CraftFail(transferData : TransferData){
+function CraftFail(){
     var message = new Message();
     message.MessageCode = MessageCode.HeroEquip_CraftFail;
-    transferData.Send(JSON.stringify(message));
     return message;
 }
 
@@ -398,11 +403,12 @@ async function AddHeroEquip(heroEquip:HeroEquip) {
     var data
     await HeroEquipModel.create(heroEquip).then(res=>{
         data = res;
+        logController.LogDev("1692095950",res)
     }).catch(err=>{
         logController.LogError(LogCode.HeroEquip_CreateNewFail, err, "Server")
         data = null;
     })
-    return null;
+    return data;
 }
 
 export const heroEquipController  = new HeroEquipController();
