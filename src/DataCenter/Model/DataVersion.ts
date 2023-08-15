@@ -13,6 +13,8 @@ export const dataCenterName = {
     DataBullet: "DataBullet",
     DataDamageEffect: "DataDamageEffect",
     DataHeroEquip: "DataHeroEquip",
+    DataQualityItem: "DataQualityItem",
+    DataItem: "DataItem",
 }
 
 export type DataVersionDictionary = Record<string, DataVersion>;

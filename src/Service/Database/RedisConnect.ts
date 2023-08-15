@@ -65,6 +65,10 @@ class RedisControler {
         }
       });
     });
+    if(data == null || data == undefined){
+      logController.LogError(LogCode.Server_RedisGetNull, key, "Server");
+      return null;
+    }
     return data;
   }
 }

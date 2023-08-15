@@ -46,6 +46,10 @@ class MessageRouter{
             heroEquipController.Login(message, transferData);
             return;
         }
+        if(message.MessageCode == MessageCode.HeroEquip_Craft){
+            heroEquipController.CraftEquip(message, transferData);
+            return;
+        }
         if(message.MessageCode == MessageCode.TDWave_ProtectedSuccess){
             tdWaveController.ProtectedSuccessCtrl(message, transferData)
             return;

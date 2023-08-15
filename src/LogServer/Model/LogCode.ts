@@ -3,6 +3,7 @@ export enum LogCode {
     Server_RedisSetSuccess = 101,
     Server_RedisSetFail = 102,
     Server_InitDataCenterSuc = 103,
+    Server_RedisGetNull = 104,
 
     MessageServer_Test = 1000,
     MessageServer_TokenAuthenFail = 1001,

@@ -114,14 +114,12 @@ export class HeroEquip implements IHeroEquip{
         this.Lv = 1;
     }
 
-    static HeroEquip(code : HeroEquipCode, idUserPlayer : Types.ObjectId) {
+    static New(code : HeroEquipCode, idUserPlayer : Types.ObjectId, type: HeroEquipType) {
         var heroEquip = new HeroEquip();
-        var heroEquipData = heroEquipDataDictionary[code];
         heroEquip.Code = code;
         heroEquip.IdUserPlayer = idUserPlayer;
-        heroEquip.Type = heroEquipData.HeroEquipType;
+        heroEquip.Type = type;
         heroEquip.Lv = 1;
-        console.log("Dev 1686842053 ", JSON.stringify(heroEquip));
         return heroEquip;
     }
 

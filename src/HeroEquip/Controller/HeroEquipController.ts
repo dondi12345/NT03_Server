@@ -9,7 +9,7 @@ import { ChangeRes } from "../../Res/Controller/ResController";
 import { ResCode } from "../../Res/Model/ResCode";
 import { DataResService } from "../../Res/Service/ResService";
 import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
-import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipById, FindHeroEquipByIdUserPlayer, HeroEquip, HeroEquipModel, HeroEquipUpgradeLv, HeroEquips, HeroWearEquip, IHeroEquip, UpdateHeroEquip } from "../Model/HeroEquip";
+import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipById, FindHeroEquipByIdUserPlayer, HeroEquip, HeroEquipData, HeroEquipModel, HeroEquipUpgradeLv, HeroEquips, HeroWearEquip, IHeroEquip, UpdateHeroEquip } from "../Model/HeroEquip";
 import { HeroEquipType } from "../Model/HeroEquipType";
 import { IndexHeroEquipCraft, RateCraft } from "../Model/HeroEquipConfig";
 import { heroEquipDataDictionary } from "../Service/HeroEquipService";
@@ -24,6 +24,9 @@ import { DataModel } from "../../Utils/DataModel";
 import { redisControler } from "../../Service/Database/RedisConnect";
 import { RedisKeyConfig } from "../../Enviroment/Env";
 import { currencyController } from "../../Currency/Controller/CurrencyController";
+import { ItemData } from "../../Item/Model/ItemData";
+import { dataCenterName } from "../../DataCenter/Model/DataVersion";
+import { ItemCode } from "../../Item/Model/ItemCode";
 
 
 // 10f;80f;800f;10000f;100000f;1000000f;1000000f;
@@ -56,7 +59,7 @@ export function RandomHeroEquip(craftHeroEquip : CraftHeroEquip, userSocket: IUs
     IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]]
     var code = IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]][Math.floor(Math.random()*IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]].length)];
     var heroEquip = new HeroEquip();
-    heroEquip = HeroEquip.HeroEquip(code, userSocket.IdUserPlayer)
+    heroEquip = HeroEquip.New(code, userSocket.IdUserPlayer, 1)
     CreateHeroEquip(heroEquip).then(respone=>{
         if(respone == null || respone == undefined){
             LogUserSocket(LogCode.HeroEquip_CraftEquipFail, userSocket, "", LogType.Normal)
@@ -316,17 +319,24 @@ class HeroEquipController{
             return CraftFail(transferData)
         }
 
-        ChangeRes(craftHeroEquip.ResCode, -1, userSocket).then(respone=>{
-            console.log("Dev 1686209545 "+ respone);
-            if(respone){
-                RandomHeroEquip(craftHeroEquip, userSocket);
-            }else{
-                LogUserSocket(LogCode.HeroEquip_ChangeResFail, userSocket, "", LogType.Normal)
-                CraftHeroEquipFail(userSocket);
-            }
-        }).catch(err=>{
-            LogUserSocket(LogCode.HeroEquip_ChangeResError, userSocket, err, LogType.Error)
-        })
+        currency = await currencyController.AddCurrency({BlueprintHeroEquip_White : -1}, transferData.Token);
+        if(currency == null || currency == undefined){
+            return CraftFail(transferData);
+        }
+        var heroEquip = await CreateRandomHeroEquip_White(tokenUserPlayer.IdUserPlayer);
+        if(heroEquip == null || heroEquip == undefined){
+            return CraftFail(transferData);
+        }
+
+        var messageUdCurrency = new Message();
+        messageUdCurrency.MessageCode = MessageCode.Currency_Update;
+        messageUdCurrency.Data = JSON.stringify(currency);
+
+        var messageCraftSuc = new Message();
+        messageCraftSuc.MessageCode = MessageCode.HeroEquip_CraftSuccess;
+        messageCraftSuc.Data = JSON.stringify(heroEquip);
+
+        transferData.Send(JSON.stringify(messageUdCurrency), JSON.stringify(messageCraftSuc))
     }
 }
 
@@ -365,38 +375,34 @@ function CraftFail(transferData : TransferData){
     return message;
 }
 
-function RandomHeroEquip_White(){
+async function CreateRandomHeroEquip_White(userPlayerID : string){
     var maxRate = RateCraft["BlueprintHeroEquip_White"];
     var totalRate = 0;
-    totalRate += DataResService[craftHeroEquip.ResCode].CraftHeroEquip;
+    var itemData = DataModel.Parse<ItemData>(await redisControler.Get(RedisKeyConfig.KeyDataCenterElement(dataCenterName.DataItem, ItemCode["BlueprintHeroEquip_White"].toString())));
+    if(itemData == null) return null;
+
+    totalRate += itemData.CraftHeroEquip;
     var rand = Math.random()*maxRate;
-    console.log(rand +" - "+ totalRate+" - "+maxRate);
-    if(rand > totalRate){
-        LogUserSocket(LogCode.HeroEquip_ChangeResFail, userSocket, "", LogType.Normal)
-        CraftHeroEquipFail(userSocket);
-        return;
-    }
-    IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]]
-    var code = IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]][Math.floor(Math.random()*IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]].length)];
-    var heroEquip = new HeroEquip();
-    heroEquip = HeroEquip.HeroEquip(code, userSocket.IdUserPlayer)
-    CreateHeroEquip(heroEquip).then(respone=>{
-        if(respone == null || respone == undefined){
-            LogUserSocket(LogCode.HeroEquip_CraftEquipFail, userSocket, "", LogType.Normal)
-            CraftHeroEquipFail(userSocket);
-            return;
-        }
-        var newEquip = HeroEquip.Parse(respone);
-        var message = new Message();
-        message.MessageCode = MessageCode.HeroEquip_CraftSuccess;
-        message.Data = JSON.stringify(newEquip);
-        SendMessageToSocket(message, userSocket.Socket);
-    }).catch(e=>{
-        LogUserSocket(LogCode.HeroEquip_CreateNewFail, userSocket, e, LogType.Error)
-        console.log("Dev 1686210916 "+e);
-        CraftHeroEquipFail(userSocket);
-        return;
+    logController.LogDev("1692095948 "+ rand +" - "+ totalRate+" - "+maxRate)
+    if(rand > totalRate) return null;
+    var code = IndexHeroEquipCraft["BlueprintHeroEquip_White"][Math.floor(Math.random()*IndexHeroEquipCraft["BlueprintHeroEquip_White"].length)];
+    logController.LogDev("1692095949 "+code)
+    var heroEquipData = DataModel.Parse<HeroEquipData>(await redisControler.Get(RedisKeyConfig.KeyDataCenterElement(dataCenterName.DataHeroEquip, code.toString())));
+    var heroEquip = HeroEquip.New(code, new Types.ObjectId(userPlayerID), heroEquipData.HeroEquipType);
+    var newHE = await AddHeroEquip(heroEquip);
+    if(newHE == null || newHE == undefined) return null;
+    return heroEquip;
+}
+
+async function AddHeroEquip(heroEquip:HeroEquip) {
+    var data
+    await HeroEquipModel.create(heroEquip).then(res=>{
+        data = res;
+    }).catch(err=>{
+        logController.LogError(LogCode.HeroEquip_CreateNewFail, err, "Server")
+        data = null;
     })
+    return null;
 }
 
 export const heroEquipController  = new HeroEquipController();

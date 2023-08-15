@@ -17,6 +17,7 @@ class DataCenterService{
         this.InitData(dataCenterName.DataBullet);
         this.InitData(dataCenterName.DataDamageEffect);
         this.InitData(dataCenterName.DataHeroEquip);
+        this.InitData(dataCenterName.DataItem);
     }
 
     async InitData(dataName : string){
