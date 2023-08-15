@@ -106,5 +106,8 @@ export enum MessageCode {
     DataCenter_CheckVersion = 12001,
     DataCenter_VersionUpToDate = 12002,
     DataCenter_VersionUpdate = 12003,
+    DataCenter_FailUpdate = 12005,
     DataCenter_UpdateVersion = 12004,
+    DataCenter_UpdateVersionSuc = 12006,
+    DataCenter_UpdateVersionFail = 12007,
 }

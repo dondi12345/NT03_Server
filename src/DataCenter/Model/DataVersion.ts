@@ -7,6 +7,14 @@ export const DataName = {
     DataHeroEquip : "DataHeroEquip"
 }
 
+export const dataCenterName = {
+    DataHero: "DataHero",
+    DataMonster: "DataMonster",
+    DataBullet: "DataBullet",
+    DataDamageEffect: "DataDamageEffect",
+    DataHeroEquip: "DataHeroEquip",
+}
+
 export type DataVersionDictionary = Record<string, DataVersion>;
 
 export class DataVersion{

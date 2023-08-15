@@ -298,3 +298,4 @@ export function HeroEquipCostUpgradeLv(lv : number, lvRise : number, start : num
     }
     return result;
 }
+

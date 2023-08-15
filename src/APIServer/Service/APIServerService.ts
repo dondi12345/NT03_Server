@@ -1,18 +1,11 @@
-import { io } from "socket.io-client"
-import { portConfig, variable } from '../../Enviroment/Env';
+import { portConfig } from '../../Enviroment/Env';
 import express from 'express';
 import { Message } from "../../MessageServer/Model/Message";
-import { DataCenterRouter } from "../../DataCenter/Router/DataCenterRouter";
-import { InitDataVersion, dataCenterService } from "../../DataCenter/Service/DataCenterService";
 import { LogFromClient } from "../../LogServer/Controller/LogController";
 import { CurrencyModel } from "../../Currency/Model/Currency";
 import { TransferData } from "../../TransferData";
-import { messageRouter } from "../../MessageServer/Router/MessageRouter";
 import { DataModel } from "../../Utils/DataModel";
 import { apiServerRouter } from "../Router/APIServerRouter";
-import { DataVersionModel } from "../../DataCenter/Model/DataVersion";
-import { redisClient, redisControler } from "../../Service/Database/RedisConnect";
-import { dataMonster } from "../../DataCenter/Data/MonsterData";
 import { testPerform } from "../../TestPerform/TestPerform";
 
 export function InitAPIServer() {
@@ -24,9 +17,6 @@ export function InitAPIServer() {
         res.send("Hello world")
     })
 
-    app.post('/datacenter', (req, res) => {
-        DataCenterRouter(req.body, res)
-    })
     app.post('/logServer', (req, res) => {
         try {
             LogFromClient(req.body);
@@ -73,6 +63,4 @@ export function InitAPIServer() {
     app.listen(portConfig.portAPIServer, () => {
         console.log(`Dev 1686217637 APIServer listening on port ${portConfig.portAPIServer}`)
     })
-
-    InitDataVersion();
 }

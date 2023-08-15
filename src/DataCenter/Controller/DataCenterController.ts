@@ -1,68 +1,48 @@
 import { RedisKeyConfig } from "../../Enviroment/Env";
-import { DataHeroDictionary, HeroData } from "../../HeroServer/Model/Hero";
-import { HeroCode } from "../../HeroServer/Model/HeroCode";
 import { logController } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { redisControler } from "../../Service/Database/RedisConnect";
+import { TransferData } from "../../TransferData";
 import { DataModel } from "../../Utils/DataModel";
-import { enumUtils } from "../../Utils/EnumUtils";
-import { DataVersion, DataVersionModel } from "../Model/DataVersion";
-import { InitDataVersion, dataVersionDictionary } from "../Service/DataCenterService";
-
-export function Test(message: Message, res) {
-    res.send("Success")
-    console.log("Dev 1689074788 Test")
-}
-
-export function CheckVersion(message: Message, res) {
-    var dataVersion = DataVersion.Parse(message.Data);
-    if (dataVersionDictionary[dataVersion.Name].Version == dataVersion.Version) {
-        var messageCallback = new Message();
-        messageCallback.MessageCode = MessageCode.DataCenter_VersionUpToDate;
-        messageCallback.Data = JSON.stringify(dataVersion);
-        res.send(JSON.stringify(messageCallback));
-        console.log("Up to date")
-    } else {
-        var messageCallback = new Message();
-        messageCallback.MessageCode = MessageCode.DataCenter_VersionUpdate;
-        messageCallback.Data = JSON.stringify(dataVersionDictionary[dataVersion.Name]);
-        res.send(JSON.stringify(messageCallback));
-        console.log("Update")
-    }
-}
-
-export function ReloadDataVersion(message: Message, res){
-    InitDataVersion();
-}
-
-export const dataCenterName = {
-    DataHero: "DataHero"
-}
-
-// ["DataMonster","DataBullet","DataDamageEffect","DataHeroEquip", "DataHero"]
+import { DataVersion } from "../Model/DataVersion";
+import { dataCenterService } from "../Service/DataCenterService";
 
 class DataCenterController{
-    constructor(){
-        this.Init();
+    async CheckVersion(message: Message, transferData : TransferData) {
+        var dataVersion = DataModel.Parse<DataVersion>(message.Data);
+        var dataDetail = DataModel.Parse<DataVersion>(await redisControler.Get(RedisKeyConfig.KeyDataCenterDetail(dataVersion.Name)));
+        if(dataDetail == null || dataDetail == undefined){
+            logController.LogError(LogCode.DataCenter_NotFoundInCache, dataVersion.Name, "Server");
+            var messageCallback = new Message();
+            messageCallback.MessageCode = MessageCode.DataCenter_FailUpdate;
+            messageCallback.Data = JSON.stringify(dataVersion)
+            transferData.Send(JSON.stringify(messageCallback))
+            return;
+        }
+        if(dataDetail.Version == dataVersion.Version){
+            var messageCallback = new Message();
+            messageCallback.MessageCode = MessageCode.DataCenter_VersionUpToDate;
+            messageCallback.Data = JSON.stringify(dataVersion);
+            transferData.Send(JSON.stringify(messageCallback));
+            logController.LogDev("1692076265 Up to date")
+        } else {
+            var messageCallback = new Message();
+            messageCallback.MessageCode = MessageCode.DataCenter_VersionUpdate;
+            messageCallback.Data = JSON.stringify(dataDetail);
+            transferData.Send(JSON.stringify(messageCallback));
+            logController.LogDev("1692076266 Update")
+        }
     }
 
-    async Init(){
-        await DataVersionModel.findOne({
-            Name: dataCenterName.DataHero
-        }).then(res=>{
-            var dataVersion = DataModel.Parse<DataVersion>(res);
-            if(dataVersion == null || dataVersion == undefined) throw null;
-            redisControler.Set(RedisKeyConfig.KeyDataCenterDetail(dataCenterName.DataHero), JSON.stringify(dataVersion))
-            dataVersion.Data.forEach(element => {
-                var dataHero = DataModel.Parse<HeroData>(element);
-                redisControler.Set(RedisKeyConfig.KeyDataCenterElement(dataCenterName.DataHero, dataHero.Code.toString()), JSON.stringify(dataHero))
-            });
-            logController.LogMessage(LogCode.Server_InitDataCenterSuc,"DataHero", "Server" )
-        }).catch(err=>{
-            logController.LogError(LogCode.DataCenter_InitFail, "DataHero: "+err, "Server")
-        })
+    async ReloadData(message: Message, transferData : TransferData){
+        var dataVersion = DataModel.Parse<DataVersion>(message.Data);
+        var suc = await dataCenterService.InitData(dataVersion.Name);
+        var messageCallback = new Message();
+        if(suc) messageCallback.MessageCode = MessageCode.DataCenter_UpdateVersionSuc
+        else messageCallback.MessageCode = MessageCode.DataCenter_UpdateVersionFail
+        transferData.Send(JSON.stringify(messageCallback))
     }
 }
 

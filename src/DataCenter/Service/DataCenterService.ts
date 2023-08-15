@@ -1,50 +1,46 @@
-import { LogServer } from "../../LogServer/Controller/LogController";
+import { RedisKeyConfig } from "../../Enviroment/Env";
+import { HeroData } from "../../HeroServer/Model/Hero";
+import { logController } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
-import { LogType } from "../../LogServer/Model/LogModel";
-import { dataMonster } from "../Data/MonsterData";
-import { DataVersion, DataVersionDictionary, DataVersionModel, GetDataVersionByName } from "../Model/DataVersion";
-
-const dataNames = ["TestData", "DataMonster", "DataBullet", "DataDamageEffect", "DataHeroEquip"]
-
-export let dataVersionDictionary : DataVersionDictionary;
-
-export async function InitDataVersion(){
-    dataVersionDictionary ={}
-    for (let index = 0; index < dataNames.length; index++) {
-        const element = dataNames[index];
-        await GetDataVersionByName(element).then((res:DataVersion)=>{
-            if(res != null && res != undefined){
-                dataVersionDictionary[element] = res;
-            }else{
-                LogServer(LogCode.DataCenter_InitFail, "", LogType.Error);
-            }
-        }).catch(err=>{
-            LogServer(LogCode.DataCenter_InitFail, err, LogType.Error);
-        })
-    }
-    // GameData.forEach(element => {
-    //     dataVersionDictionary[element.Name] = DataVersion.Parse(element);
-    // });
-    console.log("Dev 1689075214 InitDataVersion "+Object.keys(dataVersionDictionary).length)
-}
+import { redisControler } from "../../Service/Database/RedisConnect";
+import { DataModel } from "../../Utils/DataModel";
+import { DataVersion, DataVersionModel, dataCenterName } from "../Model/DataVersion";
 
 class DataCenterService{
-    dataVersionDictionary : DataVersionDictionary
-    a = 0;
     constructor(){
-        this.Init()
+        this.Init();
     }
 
     async Init(){
-        this.dataVersionDictionary = {};
-        var data
-        await DataVersionModel.find({
-            Name: "DataMonster"
-        }).then(respone => {
-            data = respone
-        });
-        this.dataVersionDictionary["DataMonster"] = data
+        this.InitData(dataCenterName.DataHero);
+        this.InitData(dataCenterName.DataMonster);
+        this.InitData(dataCenterName.DataBullet);
+        this.InitData(dataCenterName.DataDamageEffect);
+        this.InitData(dataCenterName.DataHeroEquip);
     }
+
+    async InitData(dataName : string){
+        var suc
+        await DataVersionModel.findOne({
+            Name: dataName
+        }).then(res=>{
+            var dataVersion = DataModel.Parse<DataVersion>(res);
+            if(dataVersion == null || dataVersion == undefined) throw null;
+            redisControler.Set(RedisKeyConfig.KeyDataCenterDetail(dataName), JSON.stringify(dataVersion))
+            dataVersion.Data.forEach(element => {
+                redisControler.Set(RedisKeyConfig.KeyDataCenterElement(dataName, element.Code.toString()), JSON.stringify(element))
+            });
+            logController.LogMessage(LogCode.Server_InitDataCenterSuc,dataName, "Server" )
+            suc = true;
+            return suc;
+        }).catch(err=>{
+            logController.LogError(LogCode.DataCenter_InitFail, dataName+": "+err, "Server")
+            suc = false;
+            return suc;
+        })
+        return suc
+    }
+    
 }
 
 export const dataCenterService = new DataCenterService();

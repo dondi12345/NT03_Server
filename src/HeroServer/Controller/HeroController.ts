@@ -14,7 +14,7 @@ import { redisControler } from '../../Service/Database/RedisConnect';
 import { Currency } from '../../Currency/Model/Currency';
 import { currencyController } from '../../Currency/Controller/CurrencyController';
 import { dateUtils } from '../../Utils/DateUtils';
-import { dataCenterName } from '../../DataCenter/Controller/DataCenterController';
+import { dataCenterName } from '../../DataCenter/Model/DataVersion';
 
 class HeroController {
     async Login(message: Message, transferData: TransferData) {

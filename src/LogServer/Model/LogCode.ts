@@ -121,4 +121,5 @@ export enum LogCode {
     DataCenter_Test = 12000,
     DataCenter_InitFail = 12001,
     DataCenter_NotFoundInDB = 12002,
+    DataCenter_NotFoundInCache = 12003,
 }
