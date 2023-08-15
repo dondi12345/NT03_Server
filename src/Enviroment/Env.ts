@@ -73,5 +73,8 @@ class RedisKey{
     KeyHeroData(userID, heroID){
         return this.NameProject+":UserPlayer:"+userID+":Hero:"+heroID
     }
+    KeyHeroEquipData(userID, heroEquipID){
+        return this.NameProject+":UserPlayer:"+userID+":HeroEquip:"+heroEquipID
+    }
 }
 export const RedisKeyConfig = new RedisKey();

@@ -6,6 +6,7 @@ import { TransferData } from "../../TransferData";
 import { tdWaveController } from "../../TDWave/Controller/TDWaveController";
 import { accountController } from "../../AccountServer/Controller/AccountController";
 import { heroController } from "../../HeroServer/Controller/HeroController";
+import { heroEquipController } from "../../HeroEquip/Controller/HeroEquipController";
 
 class MessageRouter{
     Router(message : Message, transferData : TransferData){
@@ -39,6 +40,10 @@ class MessageRouter{
         }
         if(message.MessageCode == MessageCode.Hero_UpgradeLv){
             heroController.UpgradeLv(message, transferData);
+            return;
+        }
+        if(message.MessageCode == MessageCode.HeroEquip_Login){
+            heroEquipController.Login(message, transferData);
             return;
         }
         if(message.MessageCode == MessageCode.TDWave_ProtectedSuccess){

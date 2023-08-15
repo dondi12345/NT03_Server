@@ -56,6 +56,8 @@ export enum LogCode {
     Currency_AddFail = 4011,
     Currency__AuthenTokenFail = 4012,
     Currency_AddNotFound = 4013,
+    Currency_NotFoundInCache = 4014,
+    Currency_NotEnough = 4015,
 
     Hero_Test = 5000,
     Hero_ErrorLoadHeroData = 5001,
@@ -95,6 +97,9 @@ export enum LogCode {
     HeroEquip_InitFail = 6009,
     HeroEquip_UnequipFail = 6010,
     HeroEquip_EquipFail = 6011,
+    HeroEquip_NotFoundInDB = 6012,
+    HeroEquip_Empty = 6013,
+    HeroEquip_NotEnoughForCraft = 6014,
 
     Res_Test = 7000,
     Res_SaveFail = 7001,

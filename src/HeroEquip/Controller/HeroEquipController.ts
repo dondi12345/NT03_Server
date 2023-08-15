@@ -1,6 +1,6 @@
 
 import { Types } from "mongoose";
-import { FindHeroById, Gear, Hero, HeroModel, Heroes, IHero, UpdateHero } from "../../HeroServer/Model/Hero";
+import { FindHeroById, Gear, Hero, HeroData, HeroModel, Heroes, IHero, UpdateHero } from "../../HeroServer/Model/Hero";
 import { HeroCode } from "../../HeroServer/Model/HeroCode";
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
@@ -13,35 +13,18 @@ import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipById, FindHeroEquipByIdUs
 import { HeroEquipType } from "../Model/HeroEquipType";
 import { IndexHeroEquipCraft, RateCraft } from "../Model/HeroEquipConfig";
 import { heroEquipDataDictionary } from "../Service/HeroEquipService";
-import { LogUserSocket } from "../../LogServer/Controller/LogController";
+import { LogUserSocket, logController } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
 import { HeroEquipCode } from "../Model/HeroEquipCode";
+import { TransferData } from "../../TransferData";
+import { tokenController } from "../../Token/Controller/TockenController";
+import { NTArray } from "../../Utils/Other";
+import { DataModel } from "../../Utils/DataModel";
+import { redisControler } from "../../Service/Database/RedisConnect";
+import { RedisKeyConfig } from "../../Enviroment/Env";
+import { currencyController } from "../../Currency/Controller/CurrencyController";
 
-export async function HeroEquipLogin(message : Message, userSocket: IUserSocket){
-    await FindHeroEquipByIdUserPlayer(userSocket.IdUserPlayer).then(async (respone)=>{
-        var heroEquips : HeroEquips = new HeroEquips;
-        userSocket.HeroEquip = {};
-        for (const item of respone) {
-            var heroEquip = HeroEquip.Parse(item);
-            heroEquips.Elements.push(heroEquip);
-            userSocket.HeroEquip[heroEquip._id.toString()] = heroEquip;
-        }
-        console.log("Dev 1685514345 "+respone.length)
-        LogUserSocket(LogCode.HeroEquip_LoginSuccess, userSocket, "", LogType.Normal)
-        var message = new Message();
-        message.MessageCode = MessageCode.HeroEquip_LoginSuccess;
-        message.Data = JSON.stringify(heroEquips);
-        SendMessageToSocket(message, userSocket.Socket);
-    }).catch(e=>{
-        LogUserSocket(LogCode.HeroEquip_LoginFail, userSocket, e, LogType.Error)
-        var message = new Message();
-        message.MessageCode = MessageCode.HeroEquip_LoginFail;
-        message.Data = "HeroEquip login fail";
-        console.log("Dev 1685514350 "+ e);
-        SendMessageToSocket(message, userSocket.Socket);
-    })
-}
 
 // 10f;80f;800f;10000f;100000f;1000000f;1000000f;
 export async function CraftEquip(message : Message, userSocket: IUserSocket) {
@@ -299,3 +282,121 @@ export function HeroEquipCostUpgradeLv(lv : number, lvRise : number, start : num
     return result;
 }
 
+class HeroEquipController{
+    async Login(message : Message, transferData: TransferData){
+        var tokenUserPlayer = tokenController.AuthenTokenUserPlayer(transferData.Token);
+        if (tokenUserPlayer == null || tokenUserPlayer == undefined) {
+            logController.LogWarring(LogCode.HeroEquip_LoginFail, "Authen fail", transferData.Token);
+            return LoginFail(transferData);
+        }
+        var heroEquips = await FindHeroEquipsByIdUserPlayer(tokenUserPlayer.IdUserPlayer);
+        logController.LogDev("Dev 1692090211 Heroequip: " + heroEquips.Elements.length)
+        logController.LogMessage(LogCode.HeroEquip_LoginSuccess, "", transferData.Token)
+        var message = new Message();
+        message.MessageCode = MessageCode.HeroEquip_LoginSuccess;
+        message.Data = JSON.stringify(heroEquips);
+
+        transferData.Send(JSON.stringify(message))
+    }
+
+    async CraftEquip(message : Message, transferData: TransferData) {
+        var tokenUserPlayer = tokenController.AuthenTokenUserPlayer(transferData.Token);
+        if (tokenUserPlayer == null || tokenUserPlayer == undefined) {
+            logController.LogWarring(LogCode.HeroEquip_LoginFail, "Authen fail", transferData.Token);
+            return CraftFail(transferData)
+        }
+        var craftHeroEquip = DataModel.Parse<CraftHeroEquip>(message.Data);
+
+        var currency = await currencyController.GetCurrencyCached(tokenUserPlayer.IdUserPlayer);
+        if(currency == null || currency == undefined){
+            return CraftFail(transferData)
+        }
+        if(currency.BlueprintHeroEquip_White < 1){
+            logController.LogWarring(LogCode.HeroEquip_NotEnoughForCraft, "BlueprintHeroEquip_White", transferData.Token);
+            return CraftFail(transferData)
+        }
+
+        ChangeRes(craftHeroEquip.ResCode, -1, userSocket).then(respone=>{
+            console.log("Dev 1686209545 "+ respone);
+            if(respone){
+                RandomHeroEquip(craftHeroEquip, userSocket);
+            }else{
+                LogUserSocket(LogCode.HeroEquip_ChangeResFail, userSocket, "", LogType.Normal)
+                CraftHeroEquipFail(userSocket);
+            }
+        }).catch(err=>{
+            LogUserSocket(LogCode.HeroEquip_ChangeResError, userSocket, err, LogType.Error)
+        })
+    }
+}
+
+function LoginFail(transferData : TransferData){
+    var message = new Message();
+    message.MessageCode = MessageCode.HeroEquip_LoginFail;
+    transferData.Send(JSON.stringify(message));
+    return message;
+}
+
+async function FindHeroEquipsByIdUserPlayer(idUserPlayer: string) {
+    var data;
+    await HeroEquipModel.find({ IdUserPlayer: idUserPlayer }).then((res) => {
+        data = res;
+        logController.LogDev("1692085245 Dev ", res)
+    }).catch(async err => {
+        logController.LogError(LogCode.HeroEquip_NotFoundInDB, idUserPlayer + ":" + err, "Server");
+    })
+    if (data == null || data == undefined) {
+        logController.LogWarring(LogCode.HeroEquip_Empty, idUserPlayer, "Server");
+        data = []
+    }
+    var heroEquips = new NTArray<HeroEquip>();
+    for (let item of data) {
+        var heroEquip = DataModel.Parse<HeroEquip>(item);
+        heroEquips.Elements.push(heroEquip);
+        redisControler.Set(RedisKeyConfig.KeyHeroEquipData(idUserPlayer, heroEquip._id), JSON.stringify(heroEquip));
+    }
+    return heroEquips;
+}
+
+function CraftFail(transferData : TransferData){
+    var message = new Message();
+    message.MessageCode = MessageCode.HeroEquip_CraftFail;
+    transferData.Send(JSON.stringify(message));
+    return message;
+}
+
+function RandomHeroEquip_White(){
+    var maxRate = RateCraft["BlueprintHeroEquip_White"];
+    var totalRate = 0;
+    totalRate += DataResService[craftHeroEquip.ResCode].CraftHeroEquip;
+    var rand = Math.random()*maxRate;
+    console.log(rand +" - "+ totalRate+" - "+maxRate);
+    if(rand > totalRate){
+        LogUserSocket(LogCode.HeroEquip_ChangeResFail, userSocket, "", LogType.Normal)
+        CraftHeroEquipFail(userSocket);
+        return;
+    }
+    IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]]
+    var code = IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]][Math.floor(Math.random()*IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]].length)];
+    var heroEquip = new HeroEquip();
+    heroEquip = HeroEquip.HeroEquip(code, userSocket.IdUserPlayer)
+    CreateHeroEquip(heroEquip).then(respone=>{
+        if(respone == null || respone == undefined){
+            LogUserSocket(LogCode.HeroEquip_CraftEquipFail, userSocket, "", LogType.Normal)
+            CraftHeroEquipFail(userSocket);
+            return;
+        }
+        var newEquip = HeroEquip.Parse(respone);
+        var message = new Message();
+        message.MessageCode = MessageCode.HeroEquip_CraftSuccess;
+        message.Data = JSON.stringify(newEquip);
+        SendMessageToSocket(message, userSocket.Socket);
+    }).catch(e=>{
+        LogUserSocket(LogCode.HeroEquip_CreateNewFail, userSocket, e, LogType.Error)
+        console.log("Dev 1686210916 "+e);
+        CraftHeroEquipFail(userSocket);
+        return;
+    })
+}
+
+export const heroEquipController  = new HeroEquipController();

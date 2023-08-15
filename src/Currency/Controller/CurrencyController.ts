@@ -56,17 +56,12 @@ class CurrencyController {
         return currency;
     }
 
-    async GetCurrencyCached(token: string) {
-        var tokenUserPlayer = DataModel.Parse<TokenUserPlayer>(tokenController.AuthenVerify(token));
-        if (tokenUserPlayer == null || tokenUserPlayer == undefined) {
-            logController.LogDev("1684937365 wrong token");
-            logController.LogWarring(LogCode.UserPlayerServer_AuthenTokenFail, "Token authen fail", token);
-            return new Currency();
-        }
+    async GetCurrencyCached(userPlayerID: string) {
         var currencyJson = await new Promise(async (reslove, rejects) => {
-            reslove(await redisControler.Get(RedisKeyConfig.KeyCurrencyData(tokenUserPlayer.IdUserPlayer)))
+            reslove(await redisControler.Get(RedisKeyConfig.KeyCurrencyData(userPlayerID)))
         })
         if (currencyJson == null || currencyJson == undefined) {
+            logController.LogError(LogCode.Currency_NotFoundInCache, userPlayerID, "Server")
             return new Currency();;
         }
         return DataModel.Parse<Currency>(currencyJson)

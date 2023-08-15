@@ -42,7 +42,7 @@ class HeroController {
             transferData.Send(JSON.stringify(SummonFail(transferData.Token)));
             return;
         }
-        var currency = DataModel.Parse<Currency>(await currencyController.GetCurrencyCached(transferData.Token));
+        var currency = DataModel.Parse<Currency>(await currencyController.GetCurrencyCached(tokenUserPlayer.IdUserPlayer));
         if (currency == null || currency == undefined) {
             transferData.Send(JSON.stringify(SummonFail(transferData.Token)));
             return;
@@ -218,7 +218,7 @@ async function FindHeroesByIdUserPlayer(idUserPlayer: string) {
         data = res;
         logController.LogDev("1691833750 Dev ", res)
     }).catch(async err => {
-        logController.LogError(LogCode.Hero_CreateFail, idUserPlayer + ":" + err, "Server");
+        logController.LogError(LogCode.Hero_NotFoundInDB, idUserPlayer + ":" + err, "Server");
     })
     if (data == null || data == undefined) {
         logController.LogWarring(LogCode.Hero_Empty, idUserPlayer, "Server");
