@@ -1,6 +1,5 @@
 
 import { Types } from "mongoose";
-import { UpdateHeroToClient, UpdateHeroes } from "../../HeroServer/Controller/HeroController";
 import { FindHeroById, Gear, Hero, HeroModel, Heroes, IHero, UpdateHero } from "../../HeroServer/Model/Hero";
 import { HeroCode } from "../../HeroServer/Model/HeroCode";
 import { Message } from "../../MessageServer/Model/Message";
@@ -200,7 +199,7 @@ export async function RemoveHeroEquipFromHero(hero : Hero, userSocket : UserSock
             $set : {Gear : hero},
         }
     ).then(()=>{
-        UpdateHeroToClient(hero, userSocket);
+        // UpdateHeroToClient(hero, userSocket);
     }).catch((err)=>{
         LogUserSocket(LogCode.HeroEquip_EquipFail, userSocket, err, LogType.Error);
     })
@@ -230,7 +229,7 @@ export async function AddHeroEquipToHero(hero : Hero, userSocket : UserSocket){
             $set : {Gear : hero}
         }
     ).then(()=>{
-        UpdateHeroToClient(hero, userSocket);
+        // UpdateHeroToClient(hero, userSocket);
     }).catch((err)=>{
         LogUserSocket(LogCode.HeroEquip_EquipFail, userSocket, err, LogType.Error);
     })

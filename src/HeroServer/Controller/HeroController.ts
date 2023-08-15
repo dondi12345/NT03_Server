@@ -1,21 +1,12 @@
-import redis from 'redis';
 import { Message } from "../../MessageServer/Model/Message";
-import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
-import { CreateHero, Heroes, FindHeroByIdUserPlayer, Hero, HeroModel, IHero, UpdateHero, HeroUpgradeLv, FindHeroById, HeroData } from "../Model/Hero";
+import { Heroes, Hero, HeroModel, HeroUpgradeLv, HeroData } from "../Model/Hero";
 import { HeroCode } from "../Model/HeroCode";
 import { SummonHero, SummonHeroSlot } from "../Model/SummonHero";
 import { RateSummon } from "../Model/VariableHero";
-import { RedisConfig, RedisKeyConfig } from '../../Enviroment/Env';
+import { RedisKeyConfig } from '../../Enviroment/Env';
 import { MessageCode } from '../../MessageServer/Model/MessageCode';
-import { SendMessageToSocket } from '../../MessageServer/Service/MessageService';
-import { ChangeRes, ResLogin } from '../../Res/Controller/ResController';
-import { ResCode } from '../../Res/Model/ResCode';
-import { Res } from '../../Res/Model/Res';
-import { Types } from 'mongoose';
-import { dataHeroDictionary } from '../Service/HeroService';
-import { LogType } from '../../LogServer/Model/LogModel';
 import { LogCode } from '../../LogServer/Model/LogCode';
-import { LogUserSocket, logController } from '../../LogServer/Controller/LogController';
+import { logController } from '../../LogServer/Controller/LogController';
 import { TransferData } from '../../TransferData';
 import { tokenController } from '../../Token/Controller/TockenController';
 import { DataModel } from '../../Utils/DataModel';
@@ -23,107 +14,7 @@ import { redisControler } from '../../Service/Database/RedisConnect';
 import { Currency } from '../../Currency/Model/Currency';
 import { currencyController } from '../../Currency/Controller/CurrencyController';
 import { dateUtils } from '../../Utils/DateUtils';
-import { dataCenterController, dataCenterName } from '../../DataCenter/Controller/DataCenterController';
-
-const redisHero = redis.createClient({
-    host: RedisConfig.Host,
-    port: RedisConfig.Port,
-    password: RedisConfig.Password,
-});
-
-export function HireHero(message: Message, userSocket: IUserSocket) {
-    var summonHeroSlot: SummonHeroSlot = SummonHeroSlot.Parse(message.Data);
-    redisHero.get(RedisKeyConfig.KeyHeroSummon(userSocket.IdUserPlayer), (error, result) => {
-        if (error || result == null || result == undefined) {
-            SendMessageToSocket(HireFailMessage(), userSocket.Socket);
-            LogUserSocket(LogCode.Hero_HireFail, userSocket, error, LogType.Error)
-        } else {
-            try {
-                var summonHero = DataModel.Parse<SummonHero>(result);
-                var indexFindout = -1;
-                for (let index = 0; index < summonHero.Slots.length; index++) {
-                    const element = summonHero.Slots[index];
-                    console.log("Dev 1685507029 " + element._id.toString() + " - " + summonHeroSlot._id.toString());
-                    if (element._id.toString() === summonHeroSlot._id.toString()) {
-                        element.Hired = true;
-                        indexFindout = index;
-                        break;
-                    }
-                }
-                var hero = Hero.Parse(summonHero.Slots[indexFindout].Hero);
-                if (hero.Code == HeroCode.Unknown) throw "Don't found hero";
-                redisHero.set(RedisKeyConfig.KeyHeroSummon(userSocket.IdUserPlayer), JSON.stringify(summonHero));
-
-                LogUserSocket(LogCode.Hero_HireSuccess, userSocket, "", LogType.Normal)
-                HireHeroSuccess(hero, userSocket);
-            } catch (error) {
-                console.log("Dev 1685284455 " + error)
-                LogUserSocket(LogCode.Hero_HireFail, userSocket, error, LogType.Error)
-                SendMessageToSocket(HireFailMessage(), userSocket.Socket);
-            }
-        }
-    })
-}
-
-export function HireHeroSuccess(hero: IHero, userSocket: IUserSocket) {
-    CreateHero(hero).then((res: IHero) => {
-        console.log("Dev 1685974556 Adding Hero")
-        var message = new Message();
-        message.MessageCode = MessageCode.Hero_HireHeroSuccess;
-        message.Data = JSON.stringify(hero);
-        SendMessageToSocket(message, userSocket.Socket);
-    })
-}
-
-export function HireFailMessage() {
-    var message = new Message();
-    message.MessageCode = MessageCode.Hero_HireHeroFail;
-    return message
-}
-
-export function UpdateHeroes(heroes: Heroes, userSocket: IUserSocket) {
-    LogUserSocket(LogCode.Hero_UpdateHero, userSocket, "", LogType.Normal)
-    heroes.Elements.forEach(element => {
-        UpdateHero(element);
-    });
-
-    var message = new Message();
-    message.MessageCode = MessageCode.Hero_UpdateHeroes;
-    message.Data = JSON.stringify(heroes);
-    SendMessageToSocket(message, userSocket.Socket)
-}
-
-export function UpdateHeroToClient(hero: Hero, userSocket: UserSocket) {
-    var message = new Message();
-    message.MessageCode = MessageCode.Hero_UpdateHero;
-    message.Data = JSON.stringify(hero);
-    SendMessageToSocket(message, userSocket.Socket)
-}
-
-export function HeroUpgradeLvCtrl(message: Message, userSocket: IUserSocket) {
-    var heroUpgradeLv = HeroUpgradeLv.Parse(message.Data);
-    FindHeroById(heroUpgradeLv.IdHero).then((res: Hero) => {
-        var heroData = dataHeroDictionary[res.Code];
-        var cost = HeroCostUpgradeLv(res.Lv, heroUpgradeLv.NumberLv, heroData.CostUpgrade, heroData.CostUpgradeRise);
-        if (cost > userSocket.Currency.Food) {
-            HeroUpgradeLvFail(userSocket);
-        } else {
-            userSocket.Currency.Food -= cost;
-            res.Lv += heroUpgradeLv.NumberLv;
-            var heroes = new Heroes();
-            heroes.Elements.push(res);
-            UpdateHeroes(heroes, userSocket);
-            // UpdateCurrencyCtrl(userSocket);
-        }
-    })
-
-}
-
-export function HeroUpgradeLvFail(userSocket: IUserSocket) {
-    var message = new Message();
-    message.MessageCode = MessageCode.Hero_UpgradeLvFail;
-    SendMessageToSocket(message, userSocket.Socket);
-}
+import { dataCenterName } from '../../DataCenter/Controller/DataCenterController';
 
 class HeroController {
     async Login(message: Message, transferData: TransferData) {
@@ -367,7 +258,7 @@ function RandomeSummonHero(idUserPlayer, rank = 0) {
             rate -= rateSummon[property];
         }
     }
-    redisHero.set(RedisKeyConfig.KeyHeroSummon(idUserPlayer), JSON.stringify(summonHero));
+    redisControler.Set(RedisKeyConfig.KeyHeroSummon(idUserPlayer), JSON.stringify(summonHero))
     return summonHero;
 }
 
