@@ -44,6 +44,21 @@ class DataCenterController{
         else messageCallback.MessageCode = MessageCode.DataCenter_UpdateVersionFail
         transferData.Send(JSON.stringify(messageCallback))
     }
+
+    async GetDataElementCached(dataName: string, code : string) {
+        var dataJson = await new Promise(async (reslove, rejects) => {
+            reslove(await redisControler.Get(RedisKeyConfig.KeyDataCenterElement(dataName, code)))
+        })
+        if (dataJson == null || dataJson == undefined) {
+            logController.LogError(LogCode.DataCenter_NotFoundInCache, dataName, "Server")
+            return null;
+        }
+        return dataJson
+    }
+
+    async SetDataElementCached(dataName: string, code : string, data : any) {
+        redisControler.Set(RedisKeyConfig.KeyDataCenterElement(dataName, code), JSON.stringify(data));
+    }
 }
 
 export const dataCenterController = new DataCenterController();

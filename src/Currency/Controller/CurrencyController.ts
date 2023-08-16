@@ -40,7 +40,7 @@ class CurrencyController {
         ).then(async res => {
             logController.LogMessage(LogCode.Currency_AddSuccess, res, token);
             if (res.modifiedCount == 0) {
-                logController.LogWarring(LogCode.Currency_AddNotFound, "", token);
+                logController.LogError(LogCode.Currency_AddNotFound, "", token);
                 currency = null;
                 return currency;
             } else {
@@ -67,14 +67,8 @@ class CurrencyController {
         return DataModel.Parse<Currency>(currencyJson)
     }
 
-    async SetCurrencyCached(token: string, currency: Currency) {
-        var data = DataModel.Parse<TokenUserPlayer>(tokenController.AuthenVerify(token));
-        if (data == null || data == undefined) {
-            logController.LogDev("1684937366 wrong token");
-            logController.LogWarring(LogCode.UserPlayerServer_AuthenTokenFail, "Token authen fail", token);
-        } else {
-            redisControler.Set(RedisKeyConfig.KeyCurrencyData(data.IdUserPlayer), JSON.stringify(currency));
-        }
+    async SetCurrencyCached(currency: Currency) {
+        redisControler.Set(RedisKeyConfig.KeyCurrencyData(currency.IdUserPlayer), JSON.stringify(currency));
     }
 }
 
@@ -115,6 +109,6 @@ async function FindByIdUserPlayer(idUserPlayer: string) {
         })
     }
     var currency = DataModel.Parse<Currency>(data);
-    redisControler.Set(RedisKeyConfig.KeyCurrencyData(idUserPlayer), JSON.stringify(currency))
+    currencyController.SetCurrencyCached(currency)
     return currency;
 }

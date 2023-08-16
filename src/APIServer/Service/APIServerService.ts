@@ -7,13 +7,18 @@ import { TransferData } from "../../TransferData";
 import { DataModel } from "../../Utils/DataModel";
 import { apiServerRouter } from "../Router/APIServerRouter";
 import { testPerform } from "../../TestPerform/TestPerform";
+import { redisControler } from '../../Service/Database/RedisConnect';
+import { HeroEquipData } from '../../HeroEquip/Model/HeroEquip';
+import { HeroData } from '../../HeroServer/Model/Hero';
 
 export function InitAPIServer() {
     console.log("Dev 1686217639 InitAPIServer")
     const app = express()
     app.use(express.json())
 
-    app.post('/', (req, res) => {
+    app.post('/', async (req, res) => {
+        console.log("==>" ,DataModel.Parse<HeroEquipData>(await redisControler.Get("NT03:DataCenter:DataHeroEquip:Element:10201")).Index)
+        console.log("==>" , DataModel.Parse<HeroData>(await redisControler.Get("NT03:DataCenter:DataHero:Element:105")).Index)
         res.send("Hello world")
     })
 

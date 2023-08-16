@@ -85,6 +85,7 @@ export enum LogCode {
     Hero_UpgradeLvSuc = 5022,
     Hero_HeroLvUpSuc = 5023,
     Hero_HeroLvUpFail = 5024,
+    Hero_NotFoundInCache = 5025,
 
     HeroEquip_Test = 6000,
     HeroEquip_LoginFail = 6001,
@@ -101,6 +102,7 @@ export enum LogCode {
     HeroEquip_NotFoundInDB = 6012,
     HeroEquip_Empty = 6013,
     HeroEquip_NotEnoughForCraft = 6014,
+    HeroEquip_NotFoundInCache = 6015,
 
     Res_Test = 7000,
     Res_SaveFail = 7001,

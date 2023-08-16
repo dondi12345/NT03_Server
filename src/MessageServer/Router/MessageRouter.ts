@@ -50,6 +50,10 @@ class MessageRouter{
             heroEquipController.CraftEquip(message, transferData);
             return;
         }
+        if(message.MessageCode == MessageCode.HeroEquip_UpgradeLv){
+            heroEquipController.UpgradeLv(message, transferData);
+            return;
+        }
         if(message.MessageCode == MessageCode.TDWave_ProtectedSuccess){
             tdWaveController.ProtectedSuccessCtrl(message, transferData)
             return;

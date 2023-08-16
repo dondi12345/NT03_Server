@@ -1,13 +1,10 @@
 
 import { Types } from "mongoose";
-import { FindHeroById, Gear, Hero, HeroData, HeroModel, Heroes, IHero, UpdateHero } from "../../HeroServer/Model/Hero";
+import { Hero, HeroModel} from "../../HeroServer/Model/Hero";
 import { HeroCode } from "../../HeroServer/Model/HeroCode";
 import { Message } from "../../MessageServer/Model/Message";
 import { MessageCode } from "../../MessageServer/Model/MessageCode";
 import { SendMessageToSocket } from "../../MessageServer/Service/MessageService";
-import { ChangeRes } from "../../Res/Controller/ResController";
-import { ResCode } from "../../Res/Model/ResCode";
-import { DataResService } from "../../Res/Service/ResService";
 import { IUserSocket, UserSocket } from "../../UserSocket/Model/UserSocket";
 import { CraftHeroEquip, CreateHeroEquip, FindHeroEquipById, FindHeroEquipByIdUserPlayer, HeroEquip, HeroEquipData, HeroEquipModel, HeroEquipUpgradeLv, HeroEquips, HeroWearEquip, IHeroEquip, UpdateHeroEquip } from "../Model/HeroEquip";
 import { HeroEquipType } from "../Model/HeroEquipType";
@@ -27,103 +24,46 @@ import { currencyController } from "../../Currency/Controller/CurrencyController
 import { ItemData } from "../../Item/Model/ItemData";
 import { dataCenterName } from "../../DataCenter/Model/DataVersion";
 import { ItemCode } from "../../Item/Model/ItemCode";
+import { dataCenterController } from "../../DataCenter/Controller/DataCenterController";
 
-
-// 10f;80f;800f;10000f;100000f;1000000f;1000000f;
-export async function CraftEquip(message : Message, userSocket: IUserSocket) {
-    var craftHeroEquip = CraftHeroEquip.Parse(message.Data);
-    ChangeRes(craftHeroEquip.ResCode, -1, userSocket).then(respone=>{
-        console.log("Dev 1686209545 "+ respone);
-        if(respone){
-            RandomHeroEquip(craftHeroEquip, userSocket);
-        }else{
-            LogUserSocket(LogCode.HeroEquip_ChangeResFail, userSocket, "", LogType.Normal)
-            CraftHeroEquipFail(userSocket);
-        }
-    }).catch(err=>{
-        LogUserSocket(LogCode.HeroEquip_ChangeResError, userSocket, err, LogType.Error)
-    })
-}
-
-export function RandomHeroEquip(craftHeroEquip : CraftHeroEquip, userSocket: IUserSocket){
-    var maxRate = RateCraft[ResCode[craftHeroEquip.ResCode]];
-    var totalRate = 0;
-    totalRate += DataResService[craftHeroEquip.ResCode].CraftHeroEquip;
-    var rand = Math.random()*maxRate;
-    console.log(rand +" - "+ totalRate+" - "+maxRate);
-    if(rand > totalRate){
-        LogUserSocket(LogCode.HeroEquip_ChangeResFail, userSocket, "", LogType.Normal)
-        CraftHeroEquipFail(userSocket);
-        return;
-    }
-    IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]]
-    var code = IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]][Math.floor(Math.random()*IndexHeroEquipCraft[ResCode[craftHeroEquip.ResCode]].length)];
-    var heroEquip = new HeroEquip();
-    heroEquip = HeroEquip.New(code, userSocket.IdUserPlayer, 1)
-    CreateHeroEquip(heroEquip).then(respone=>{
-        if(respone == null || respone == undefined){
-            LogUserSocket(LogCode.HeroEquip_CraftEquipFail, userSocket, "", LogType.Normal)
-            CraftHeroEquipFail(userSocket);
-            return;
-        }
-        var newEquip = HeroEquip.Parse(respone);
-        var message = new Message();
-        message.MessageCode = MessageCode.HeroEquip_CraftSuccess;
-        message.Data = JSON.stringify(newEquip);
-        SendMessageToSocket(message, userSocket.Socket);
-    }).catch(e=>{
-        LogUserSocket(LogCode.HeroEquip_CreateNewFail, userSocket, e, LogType.Error)
-        console.log("Dev 1686210916 "+e);
-        CraftHeroEquipFail(userSocket);
-        return;
-    })
-}
-
-function CraftHeroEquipFail(userSocket: IUserSocket){
-    var message = new Message();
-    message.MessageCode = MessageCode.HeroEquip_CraftFail;
-    message.Data = "Craft Fail";
-    SendMessageToSocket(message, userSocket.Socket);
-}
-
-export async function WearingEquip(message : Message, userSocket : IUserSocket) {
+export async function WearingEquip(message: Message, userSocket: IUserSocket) {
     var heroWearEquip = HeroWearEquip.Parse(message.Data);
     var hero = userSocket.Hero[heroWearEquip.IdHero.toString()]
-    if(hero == null || hero == undefined || hero.Code == HeroCode.Unknown){
+    if (hero == null || hero == undefined || hero.Code == HeroCode.Unknown) {
         WearingEquipFail(userSocket);
         return;
     }
     var heroEquip = userSocket.HeroEquip[heroWearEquip.IdHeroEquip.toString()]
-    if(heroEquip == null || heroEquip == undefined || heroEquip.Code == HeroEquipCode.Unknown){
+    if (heroEquip == null || heroEquip == undefined || heroEquip.Code == HeroEquipCode.Unknown) {
         WearingEquipFail(userSocket);
         return;
     }
     var heroEquipData = heroEquipDataDictionary[heroEquip.Code];
     var heroEquip_Old;
-    console.log("Dev 1691055136 Type: "+heroEquipData.HeroEquipType)
-    if(heroEquipData.HeroEquipType === HeroEquipType.Weapon){
-        if(hero.IdWeapon != undefined && hero.IdWeapon != null)
+    console.log("Dev 1691055136 Type: " + heroEquipData.HeroEquipType)
+    if (heroEquipData.HeroEquipType === HeroEquipType.Weapon) {
+        if (hero.IdWeapon != undefined && hero.IdWeapon != null)
             heroEquip_Old = userSocket.HeroEquip[hero.IdWeapon.toString()];
         hero.IdWeapon = heroEquip._id;
         heroEquip.IdHero = hero._id;
         console.log("Dev 1691055136 IdWeapon")
     }
-    if(heroEquipData.HeroEquipType === HeroEquipType.Armor){
-        if(hero.IdArmor != undefined && hero.IdArmor != null)
+    if (heroEquipData.HeroEquipType === HeroEquipType.Armor) {
+        if (hero.IdArmor != undefined && hero.IdArmor != null)
             heroEquip_Old = userSocket.HeroEquip[hero.IdArmor.toString()];
         hero.IdArmor = heroEquip._id;
         heroEquip.IdHero = hero._id;
         console.log("Dev 1691055137 IdArmor")
     }
-    if(heroEquipData.HeroEquipType === HeroEquipType.Helmet){
-        if(hero.IdHelmet != undefined && hero.IdHelmet != null)
+    if (heroEquipData.HeroEquipType === HeroEquipType.Helmet) {
+        if (hero.IdHelmet != undefined && hero.IdHelmet != null)
             heroEquip_Old = userSocket.HeroEquip[hero.IdHelmet.toString()];
         hero.IdHelmet = heroEquip._id;
         heroEquip.IdHero = hero._id;
         console.log("Dev 1691055138 IdHelmet")
     }
 
-    if(heroEquip_Old != null && heroEquip_Old != undefined){
+    if (heroEquip_Old != null && heroEquip_Old != undefined) {
         delete heroEquip["IdHero"];
         RemoveHeroFromHeroEquip(heroEquip_Old, userSocket);
     }
@@ -135,93 +75,93 @@ export async function WearingEquip(message : Message, userSocket : IUserSocket) 
     AddHeroEquipToHero(hero, userSocket);
 }
 
-export async function UnwearingEquip(message : Message, userSocket : IUserSocket) {
+export async function UnwearingEquip(message: Message, userSocket: IUserSocket) {
     var heroWearEquip = HeroWearEquip.Parse(message.Data);
     var hero = userSocket.Hero[heroWearEquip.IdHero.toString()]
-    if(hero == null || hero == undefined || hero.Code == HeroCode.Unknown){
+    if (hero == null || hero == undefined || hero.Code == HeroCode.Unknown) {
         UnwearingEquipFail(userSocket);
-    }else{
-        if(hero.IdWeapon != undefined && hero.IdWeapon != null && hero.IdWeapon == heroWearEquip.IdHeroEquip){
+    } else {
+        if (hero.IdWeapon != undefined && hero.IdWeapon != null && hero.IdWeapon == heroWearEquip.IdHeroEquip) {
             delete hero.IdWeapon;
         }
-        if(hero.IdArmor != undefined && hero.IdArmor != null && hero.IdArmor == heroWearEquip.IdHeroEquip){
+        if (hero.IdArmor != undefined && hero.IdArmor != null && hero.IdArmor == heroWearEquip.IdHeroEquip) {
             delete hero.IdArmor;
         }
-        if(hero.IdHelmet != undefined && hero.IdHelmet != null && hero.IdHelmet == heroWearEquip.IdHeroEquip){
+        if (hero.IdHelmet != undefined && hero.IdHelmet != null && hero.IdHelmet == heroWearEquip.IdHeroEquip) {
             delete hero.IdHelmet;
         }
         RemoveHeroEquipFromHero(hero, userSocket);
     }
     var heroEquip = userSocket.HeroEquip[heroWearEquip.IdHeroEquip.toString()]
-    if(heroEquip == null || heroEquip == undefined || heroEquip.Code == HeroEquipCode.Unknown){
+    if (heroEquip == null || heroEquip == undefined || heroEquip.Code == HeroEquipCode.Unknown) {
         UnwearingEquipFail(userSocket);
-    }else{
+    } else {
         delete heroEquip.IdHero;
         RemoveHeroFromHeroEquip(heroEquip, userSocket);
     }
 }
 
-export async function RemoveHeroFromHeroEquip(heroEquip : HeroEquip, userSocket : UserSocket) {
+export async function RemoveHeroFromHeroEquip(heroEquip: HeroEquip, userSocket: UserSocket) {
     HeroEquipModel.updateOne(
         {
-            _id : heroEquip._id,
+            _id: heroEquip._id,
         },
         {
-            $unset :{IdHero: 1}
+            $unset: { IdHero: 1 }
         }
-    ).then(()=>{
+    ).then(() => {
         UpdateHeroEquipToClient(heroEquip, userSocket);
-    }).catch((err)=>{
+    }).catch((err) => {
         LogUserSocket(LogCode.HeroEquip_UnequipFail, userSocket, err, LogType.Error);
     })
 }
 
-export async function RemoveHeroEquipFromHero(hero : Hero, userSocket : UserSocket){
+export async function RemoveHeroEquipFromHero(hero: Hero, userSocket: UserSocket) {
     HeroModel.updateOne(
         {
-            _id : hero._id
+            _id: hero._id
         },
         {
-            $set : {Gear : hero},
+            $set: { Gear: hero },
         }
-    ).then(()=>{
+    ).then(() => {
         // UpdateHeroToClient(hero, userSocket);
-    }).catch((err)=>{
+    }).catch((err) => {
         LogUserSocket(LogCode.HeroEquip_EquipFail, userSocket, err, LogType.Error);
     })
 }
 
-export async function AddHeroToHeroEquip(heroEquip : HeroEquip, userSocket : UserSocket){
+export async function AddHeroToHeroEquip(heroEquip: HeroEquip, userSocket: UserSocket) {
     HeroEquipModel.updateOne(
         {
-            _id : heroEquip._id
+            _id: heroEquip._id
         },
         {
-            $set:{IdHero : heroEquip.IdHero}
+            $set: { IdHero: heroEquip.IdHero }
         }
-    ).then(()=>{
+    ).then(() => {
         UpdateHeroEquipToClient(heroEquip, userSocket);
-    }).catch((err)=>{
+    }).catch((err) => {
         LogUserSocket(LogCode.HeroEquip_EquipFail, userSocket, err, LogType.Error);
     })
 }
 
-export async function AddHeroEquipToHero(hero : Hero, userSocket : UserSocket){
+export async function AddHeroEquipToHero(hero: Hero, userSocket: UserSocket) {
     HeroModel.updateOne(
         {
-            _id : hero._id
+            _id: hero._id
         },
         {
-            $set : {Gear : hero}
+            $set: { Gear: hero }
         }
-    ).then(()=>{
+    ).then(() => {
         // UpdateHeroToClient(hero, userSocket);
-    }).catch((err)=>{
+    }).catch((err) => {
         LogUserSocket(LogCode.HeroEquip_EquipFail, userSocket, err, LogType.Error);
     })
 }
 
-export function UpdateHeroEquipToClient(heroEquip : HeroEquip, userSocket : UserSocket){
+export function UpdateHeroEquipToClient(heroEquip: HeroEquip, userSocket: UserSocket) {
     var message = new Message();
     message.MessageCode = MessageCode.HeroEquip_UpdateEquip;
     message.Data = JSON.stringify(heroEquip);
@@ -229,20 +169,20 @@ export function UpdateHeroEquipToClient(heroEquip : HeroEquip, userSocket : User
 }
 
 
-export function WearingEquipFail(userSocket : IUserSocket){
+export function WearingEquipFail(userSocket: IUserSocket) {
     var message = new Message();
     message.MessageCode = MessageCode.HeroEquip_WearingFail;
     SendMessageToSocket(message, userSocket.Socket);
 }
 
-export function UnwearingEquipFail(userSocket : IUserSocket){
+export function UnwearingEquipFail(userSocket: IUserSocket) {
     var message = new Message();
     message.MessageCode = MessageCode.HeroEquip_UnwearingFail;
     SendMessageToSocket(message, userSocket.Socket);
 }
 
-export function UpdateHeroEquips(heroEquips : HeroEquips, userSocket : IUserSocket){
-    heroEquips.Elements.forEach(element =>{
+export function UpdateHeroEquips(heroEquips: HeroEquips, userSocket: IUserSocket) {
+    heroEquips.Elements.forEach(element => {
         UpdateHeroEquip(element);
     })
 
@@ -252,14 +192,14 @@ export function UpdateHeroEquips(heroEquips : HeroEquips, userSocket : IUserSock
     SendMessageToSocket(message, userSocket.Socket)
 }
 
-export function HeroEquipUpgradeLvCtrl(message : Message, userSocket : IUserSocket){
+export function HeroEquipUpgradeLvCtrl(message: Message, userSocket: IUserSocket) {
     var heroEquipUpgradeLv = HeroEquipUpgradeLv.Parse(message.Data);
-    FindHeroEquipById(heroEquipUpgradeLv.IdEquip).then((res : HeroEquip)=>{
+    FindHeroEquipById(heroEquipUpgradeLv.IdEquip).then((res: HeroEquip) => {
         var heroEquipData = heroEquipDataDictionary[res.Code];
-        var cost = HeroEquipCostUpgradeLv(res.Lv, heroEquipUpgradeLv.NumberLv, heroEquipData.CostUpgrade, heroEquipData.CostUpgradeRise);
-        if(cost > userSocket.Currency.Money){
+        var cost = CostUpgradeLv(res.Lv, heroEquipUpgradeLv.NumberLv, heroEquipData.CostUpgrade, heroEquipData.CostUpgradeRise);
+        if (cost > userSocket.Currency.Money) {
             HeroEquipUpgradeLvFail(userSocket);
-        }else{
+        } else {
             userSocket.Currency.Money -= cost;
             res.Lv += heroEquipUpgradeLv.NumberLv;
             var heroeEquips = new HeroEquips();
@@ -271,22 +211,14 @@ export function HeroEquipUpgradeLvCtrl(message : Message, userSocket : IUserSock
 
 }
 
-export function HeroEquipUpgradeLvFail(userSocket : IUserSocket){
+export function HeroEquipUpgradeLvFail(userSocket: IUserSocket) {
     var message = new Message();
     message.MessageCode = MessageCode.HeroEquip_UpgradeLvFail;
     SendMessageToSocket(message, userSocket.Socket);
 }
 
-export function HeroEquipCostUpgradeLv(lv : number, lvRise : number, start : number, raise : number){
-    var result = 0;
-    for(let i = lv; i < lv + lvRise; i++){
-        result += start + raise*i*(i+1);
-    }
-    return result;
-}
-
-class HeroEquipController{
-    async Login(message : Message, transferData: TransferData){
+class HeroEquipController {
+    async Login(message: Message, transferData: TransferData) {
         var tokenUserPlayer = tokenController.AuthenTokenUserPlayer(transferData.Token);
         if (tokenUserPlayer == null || tokenUserPlayer == undefined) {
             logController.LogWarring(LogCode.HeroEquip_LoginFail, "Authen fail", transferData.Token);
@@ -302,7 +234,7 @@ class HeroEquipController{
         transferData.Send(JSON.stringify(message))
     }
 
-    async CraftEquip(message : Message, transferData: TransferData) {
+    async CraftEquip(message: Message, transferData: TransferData) {
         var tokenUserPlayer = tokenController.AuthenTokenUserPlayer(transferData.Token);
         if (tokenUserPlayer == null || tokenUserPlayer == undefined) {
             logController.LogWarring(LogCode.HeroEquip_LoginFail, "Authen fail", transferData.Token);
@@ -312,29 +244,29 @@ class HeroEquipController{
         var craftHeroEquip = DataModel.Parse<CraftHeroEquip>(message.Data);
 
         var currency = await currencyController.GetCurrencyCached(tokenUserPlayer.IdUserPlayer);
-        if(currency == null || currency == undefined){
+        if (currency == null || currency == undefined) {
             transferData.Send(JSON.stringify(CraftFail()));
             return CraftFail()
         }
-        if(currency.BlueprintHeroEquip_White < 1){
+        if (currency.BlueprintHeroEquip_White < 1) {
             logController.LogWarring(LogCode.HeroEquip_NotEnoughForCraft, "BlueprintHeroEquip_White", transferData.Token);
             transferData.Send(JSON.stringify(CraftFail()));
             return CraftFail()
         }
 
-        currency = await currencyController.AddCurrency({BlueprintHeroEquip_White : -1}, transferData.Token);
-        if(currency == null || currency == undefined){
+        currency = await currencyController.AddCurrency({ BlueprintHeroEquip_White: -1 }, transferData.Token);
+        if (currency == null || currency == undefined) {
             transferData.Send(JSON.stringify(CraftFail()));
             return CraftFail()
         }
-        
+
         var messageUdCurrency = new Message();
         messageUdCurrency.MessageCode = MessageCode.Currency_Update;
         messageUdCurrency.Data = JSON.stringify(currency);
 
         var heroEquip = await CreateRandomHeroEquip_White(tokenUserPlayer.IdUserPlayer);
-        if(heroEquip == null || heroEquip == undefined){
-            transferData.Send(JSON.stringify(messageUdCurrency) ,JSON.stringify(CraftFail()));
+        if (heroEquip == null || heroEquip == undefined) {
+            transferData.Send(JSON.stringify(messageUdCurrency), JSON.stringify(CraftFail()));
             return CraftFail()
         }
 
@@ -344,9 +276,81 @@ class HeroEquipController{
 
         transferData.Send(JSON.stringify(messageUdCurrency), JSON.stringify(messageCraftSuc))
     }
+
+    async UpgradeLv(message: Message, transferData: TransferData) {
+        var tokenUserPlayer = tokenController.AuthenTokenUserPlayer(transferData.Token);
+        if (tokenUserPlayer == null || tokenUserPlayer == undefined) {
+            logController.LogWarring(LogCode.HeroEquip_LoginFail, "Authen fail", transferData.Token);
+            transferData.Send(JSON.stringify(UpgradelvFail()));
+            return UpgradelvFail()
+        }
+        var heroEquipUpgradeLv = HeroEquipUpgradeLv.Parse(message.Data);
+
+        var heroEquip = await this.GetHeroEquipCached(tokenUserPlayer.IdUserPlayer, heroEquipUpgradeLv.IdEquip.toString());
+        logController.LogDev("1692160771 ", heroEquip);
+        if (heroEquip == null || heroEquip == undefined) {
+            transferData.Send(JSON.stringify(UpgradelvFail()));
+            return UpgradelvFail()
+        }
+        var currency = await currencyController.GetCurrencyCached(tokenUserPlayer.IdUserPlayer);
+        if (currency == null || currency == undefined) {
+            transferData.Send(JSON.stringify(UpgradelvFail()));
+            return UpgradelvFail()
+        }
+        var heroEquipData = DataModel.Parse<HeroEquipData>(await dataCenterController.GetDataElementCached(dataCenterName.DataHeroEquip, heroEquip.Code.toString()));
+        if (heroEquipData == null || heroEquipData == undefined) {
+            transferData.Send(JSON.stringify(UpgradelvFail()));
+            return UpgradelvFail()
+        }
+        logController.LogDev("1692172832 ", heroEquipData);
+        var cost = CostUpgradeLv(heroEquip.Lv, heroEquipUpgradeLv.NumberLv, heroEquipData.CostUpgrade, heroEquipData.CostUpgradeRise);
+        if (cost > currency.Money) {
+            transferData.Send(JSON.stringify(UpgradelvFail()));
+            return UpgradelvFail()
+        }
+        logController.LogDev("1692172830 "+cost)
+        currency = await currencyController.AddCurrency({ Money: -cost }, transferData.Token);
+        if (currency == null || currency == undefined) {
+            transferData.Send(JSON.stringify(UpgradelvFail()));
+            return UpgradelvFail()
+        }
+        heroEquip = await HeroEquipLvUp(heroEquipUpgradeLv.IdEquip, heroEquipUpgradeLv.NumberLv)
+        if(heroEquip == null || heroEquip ==undefined){
+            transferData.Send(JSON.stringify(UpgradelvFail()));
+            return UpgradelvFail()
+        }
+
+        var messageLvUp = new Message()
+        messageLvUp.MessageCode = MessageCode.HeroEquip_UpgradeLvSuc;
+        messageLvUp.Data = JSON.stringify(heroEquip);
+
+        var messageUdCurrency = new Message();
+        messageUdCurrency.MessageCode = MessageCode.Currency_Update;
+        messageUdCurrency.Data = JSON.stringify(currency);
+
+        transferData.Send(JSON.stringify(messageLvUp), JSON.stringify(messageUdCurrency));
+    }
+
+    async GetHeroEquipCached(userPlayerID: string, heroEquipID: string) {
+        var heroEquipJson = await new Promise(async (reslove, rejects) => {
+            reslove(await redisControler.Get(RedisKeyConfig.KeyHeroEquipData(userPlayerID, heroEquipID)))
+        })
+        if (heroEquipJson == null || heroEquipJson == undefined) {
+            logController.LogError(LogCode.HeroEquip_NotFoundInCache, userPlayerID, "Server")
+            return null;
+        }
+        return DataModel.Parse<HeroEquip>(heroEquipJson)
+    }
+
+    async SetHeroEquipCached(heroEquip: HeroEquip) {
+        logController.LogDev("1692095951", heroEquip)
+        redisControler.Set(RedisKeyConfig.KeyHeroEquipData(heroEquip.IdUserPlayer.toString(), heroEquip._id.toString()), JSON.stringify(heroEquip));
+    }
 }
 
-function LoginFail(transferData : TransferData){
+export const heroEquipController = new HeroEquipController();
+
+function LoginFail(transferData: TransferData) {
     var message = new Message();
     message.MessageCode = MessageCode.HeroEquip_LoginFail;
     transferData.Send(JSON.stringify(message));
@@ -369,46 +373,100 @@ async function FindHeroEquipsByIdUserPlayer(idUserPlayer: string) {
     for (let item of data) {
         var heroEquip = DataModel.Parse<HeroEquip>(item);
         heroEquips.Elements.push(heroEquip);
-        redisControler.Set(RedisKeyConfig.KeyHeroEquipData(idUserPlayer, heroEquip._id), JSON.stringify(heroEquip));
+        heroEquipController.SetHeroEquipCached(heroEquip)
     }
     return heroEquips;
 }
 
-function CraftFail(){
+function CraftFail() {
     var message = new Message();
     message.MessageCode = MessageCode.HeroEquip_CraftFail;
     return message;
 }
 
-async function CreateRandomHeroEquip_White(userPlayerID : string){
+async function CreateRandomHeroEquip_White(userPlayerID: string) {
     var maxRate = RateCraft["BlueprintHeroEquip_White"];
     var totalRate = 0;
-    var itemData = DataModel.Parse<ItemData>(await redisControler.Get(RedisKeyConfig.KeyDataCenterElement(dataCenterName.DataItem, ItemCode["BlueprintHeroEquip_White"].toString())));
-    if(itemData == null) return null;
+    var itemData = DataModel.Parse<ItemData>(await dataCenterController.GetDataElementCached(dataCenterName.DataItem, ItemCode["BlueprintHeroEquip_White"].toString()));
+    if (itemData == null) return null;
 
     totalRate += itemData.CraftHeroEquip;
-    var rand = Math.random()*maxRate;
-    logController.LogDev("1692095948 "+ rand +" - "+ totalRate+" - "+maxRate)
-    if(rand > totalRate) return null;
-    var code = IndexHeroEquipCraft["BlueprintHeroEquip_White"][Math.floor(Math.random()*IndexHeroEquipCraft["BlueprintHeroEquip_White"].length)];
-    logController.LogDev("1692095949 "+code)
-    var heroEquipData = DataModel.Parse<HeroEquipData>(await redisControler.Get(RedisKeyConfig.KeyDataCenterElement(dataCenterName.DataHeroEquip, code.toString())));
+    var rand = Math.random() * maxRate;
+    logController.LogDev("1692095948 " + rand + " - " + totalRate + " - " + maxRate)
+    if (rand > totalRate) return null;
+    var code = IndexHeroEquipCraft["BlueprintHeroEquip_White"][Math.floor(Math.random() * IndexHeroEquipCraft["BlueprintHeroEquip_White"].length)];
+    logController.LogDev("1692095949 " + code)
+    var heroEquipData = DataModel.Parse<HeroEquipData>(await dataCenterController.GetDataElementCached(dataCenterName.DataHeroEquip, code.toString()));
     var heroEquip = HeroEquip.New(code, new Types.ObjectId(userPlayerID), heroEquipData.HeroEquipType);
     var newHE = await AddHeroEquip(heroEquip);
-    if(newHE == null || newHE == undefined) return null;
+    if (newHE == null || newHE == undefined) return null;
     return heroEquip;
 }
 
-async function AddHeroEquip(heroEquip:HeroEquip) {
+async function AddHeroEquip(heroEquip: HeroEquip) {
     var data
-    await HeroEquipModel.create(heroEquip).then(res=>{
+    await HeroEquipModel.create(heroEquip).then(res => {
         data = res;
-        logController.LogDev("1692095950",res)
-    }).catch(err=>{
+        logController.LogDev("1692095950", res)
+        heroEquipController.SetHeroEquipCached(res)
+    }).catch(err => {
         logController.LogError(LogCode.HeroEquip_CreateNewFail, err, "Server")
         data = null;
     })
     return data;
 }
 
-export const heroEquipController  = new HeroEquipController();
+function UpgradelvFail() {
+    var message = new Message();
+    message.MessageCode = MessageCode.HeroEquip_UpgradeLvFail;
+    return message;
+}
+
+function CostUpgradeLv(lv: number, lvRise: number, start: number, raise: number) {
+    var result = 0;
+    logController.LogDev()
+    for (let i = lv; i < lv + lvRise; i++) {
+        result += start + raise * i * (i + 1);
+    }
+    return result;
+}
+
+async function HeroEquipLvUp(heroEquipID, lv) {
+    var heroEquip;
+    await HeroEquipModel.updateOne(
+        {
+            _id: heroEquipID
+        },
+        {
+            $inc: { Lv: lv }
+        }
+    ).then(async res=>{
+        if (res.modifiedCount == 0) {
+            logController.LogError(LogCode.HeroEquip_NotFoundInDB, heroEquipID, "Server");
+            heroEquip = null;
+            return heroEquip;
+        } else {
+            heroEquip = await FindById(heroEquipID);
+            return heroEquip;
+        }
+    })
+    return heroEquip;
+}
+
+async function FindById(idHeroEquip){
+    var heroEquip;
+    await HeroEquipModel.findOne({_id : idHeroEquip})
+    .then(res=>{
+        if(res == null || res == undefined) throw null; 
+        heroEquip = DataModel.Parse<HeroEquip>(res);
+        logController.LogDev("1692172948 ", res)
+        heroEquipController.SetHeroEquipCached(heroEquip);
+        return heroEquip;
+    })
+    .catch(err=>{
+        logController.LogError(LogCode.HeroEquip_NotFoundInDB,idHeroEquip, "Server");
+        heroEquip = null;
+        return heroEquip;
+    })
+    return heroEquip;
+}

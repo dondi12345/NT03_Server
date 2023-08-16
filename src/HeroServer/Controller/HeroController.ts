@@ -15,6 +15,7 @@ import { Currency } from '../../Currency/Model/Currency';
 import { currencyController } from '../../Currency/Controller/CurrencyController';
 import { dateUtils } from '../../Utils/DateUtils';
 import { dataCenterName } from '../../DataCenter/Model/DataVersion';
+import { dataCenterController } from "../../DataCenter/Controller/DataCenterController";
 
 class HeroController {
     async Login(message: Message, transferData: TransferData) {
@@ -149,13 +150,13 @@ class HeroController {
             return;
         }
         var heroUpgradeLv = DataModel.Parse<HeroUpgradeLv>(message.Data);
-        var hero = DataModel.Parse<Hero>(await redisControler.Get(RedisKeyConfig.KeyHeroData(tokenUserPlayer.IdUserPlayer, heroUpgradeLv.IdHero)));
+        var hero = DataModel.Parse<Hero>(await heroController.GetHeroCached(tokenUserPlayer.IdUserPlayer, heroUpgradeLv.IdHero.toString()));
         if(hero == null || hero == undefined){
             logController.LogError(LogCode.Hero_UpgradeLvFail, "Not found hero in cache", transferData.Token);
             transferData.Send(JSON.stringify(UpgradeFail()));
             return;
         }
-        var heroData = DataModel.Parse<HeroData>(await redisControler.Get(RedisKeyConfig.KeyDataCenterElement(dataCenterName.DataHero, hero.Code.toString())));
+        var heroData = DataModel.Parse<HeroData>(await dataCenterController.GetDataElementCached(dataCenterName.DataHero, hero.Code.toString()));
         if(heroData == null || heroData == undefined){
             logController.LogError(LogCode.Hero_UpgradeLvFail, "Not found heroData in cache", transferData.Token);
             transferData.Send(JSON.stringify(UpgradeFail()));
@@ -201,6 +202,21 @@ class HeroController {
 
         transferData.Send(JSON.stringify(messageUdHero), JSON.stringify(messageUdCurrency))
     }
+
+    async GetHeroCached(userPlayerID: string, heroID: string) {
+        var heroJson = await new Promise(async (reslove, rejects) => {
+            reslove(await redisControler.Get(RedisKeyConfig.KeyHeroData(userPlayerID, heroID)))
+        })
+        if (heroJson == null || heroJson == undefined) {
+            logController.LogError(LogCode.Hero_NotFoundInCache, userPlayerID, "Server")
+            return null;
+        }
+        return DataModel.Parse<Hero>(heroJson)
+    }
+
+    async SetHeroCached(hero: Hero) {
+        redisControler.Set(RedisKeyConfig.KeyHeroData(hero.IdUserPlayer, hero._id), JSON.stringify(hero));
+    }
 }
 
 export const heroController = new HeroController();
@@ -228,7 +244,7 @@ async function FindHeroesByIdUserPlayer(idUserPlayer: string) {
     for (let item of data) {
         var hero = DataModel.Parse<Hero>(item);
         dataHeroes.Elements.push(hero);
-        redisControler.Set(RedisKeyConfig.KeyHeroData(idUserPlayer, hero._id), JSON.stringify(hero));
+        heroController.SetHeroCached(hero);
     }
     return dataHeroes;
 }
@@ -325,6 +341,7 @@ async function FindById(idHero){
     await HeroModel.find({_id : idHero})
     .then(res=>{
         hero = res
+        heroController.SetHeroCached(hero);
         return hero;
     })
     .catch(err=>{

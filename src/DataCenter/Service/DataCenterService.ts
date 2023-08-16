@@ -4,6 +4,7 @@ import { logController } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { redisControler } from "../../Service/Database/RedisConnect";
 import { DataModel } from "../../Utils/DataModel";
+import { dataCenterController } from "../Controller/DataCenterController";
 import { DataVersion, DataVersionModel, dataCenterName } from "../Model/DataVersion";
 
 class DataCenterService{
@@ -29,7 +30,7 @@ class DataCenterService{
             if(dataVersion == null || dataVersion == undefined) throw null;
             redisControler.Set(RedisKeyConfig.KeyDataCenterDetail(dataName), JSON.stringify(dataVersion))
             dataVersion.Data.forEach(element => {
-                redisControler.Set(RedisKeyConfig.KeyDataCenterElement(dataName, element.Code.toString()), JSON.stringify(element))
+                dataCenterController.SetDataElementCached(dataName, element.Code.toString(), JSON.stringify(element));
             });
             logController.LogMessage(LogCode.Server_InitDataCenterSuc,dataName, "Server" )
             suc = true;
