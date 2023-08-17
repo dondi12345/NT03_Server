@@ -39,7 +39,7 @@ class CurrencyController {
             }
         ).then(async res => {
             logController.LogMessage(LogCode.Currency_AddSuccess, res, token);
-            if (res.modifiedCount == 0) {
+            if (res.modifiedCount == 0 && res.matchedCount == 0) {
                 logController.LogError(LogCode.Currency_AddNotFound, "", token);
                 currency = null;
                 return currency;

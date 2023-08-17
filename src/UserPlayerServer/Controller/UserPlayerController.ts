@@ -149,7 +149,7 @@ class UserPlayerController {
             }
         ).then(async res => {
             logController.LogMessage(LogCode.UserPlayerServer_ChangeAddSuc, res, token);
-            if (res.modifiedCount == 0) {
+            if (res.modifiedCount == 0 && res.matchedCount == 0) {
                 logController.LogWarring(LogCode.UserPlayerServer_ChangeAddNotFound, "", token);
                 userPlayer = null;
                 return userPlayer;

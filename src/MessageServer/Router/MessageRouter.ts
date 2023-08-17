@@ -54,6 +54,14 @@ class MessageRouter{
             heroEquipController.UpgradeLv(message, transferData);
             return;
         }
+        if(message.MessageCode == MessageCode.HeroEquip_Wearing){
+            heroEquipController.WearingEquip(message, transferData);
+            return;
+        }
+        if(message.MessageCode == MessageCode.HeroEquip_Unwearing){
+            heroEquipController.UnWearingEquip(message, transferData);
+            return;
+        }
         if(message.MessageCode == MessageCode.TDWave_ProtectedSuccess){
             tdWaveController.ProtectedSuccessCtrl(message, transferData)
             return;

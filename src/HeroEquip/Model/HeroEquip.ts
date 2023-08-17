@@ -1,4 +1,4 @@
-import mongoose, { Schema, Types } from "mongoose";
+import mongoose, { Schema, Types, Document } from "mongoose";
 import { HeroEquipType } from "./HeroEquipType";
 import { ResCode } from "../../Res/Model/ResCode";
 import { HeroEquipCode } from "./HeroEquipCode";
@@ -86,107 +86,38 @@ export class HeroEquipData{
     }
 }
 
-export class HeroEquips{
-    Elements : HeroEquip[] = [];
-}
+export type HeroEquipDictionary = Record<string, HeroEquip>;
 
-export interface IHeroEquip{
-    _id : Types.ObjectId,
-    Code : HeroEquipCode,
-    IdUserPlayer: Types.ObjectId,
-    IdHero ?: Types.ObjectId,
-    Type : HeroEquipType,
-    Lv : number,
-}
-
-export type HeroEquipDictionary = Record<string, IHeroEquip>;
-
-export class HeroEquip implements IHeroEquip{
-    _id : Types.ObjectId;
+export class HeroEquip extends Document{
     Code : HeroEquipCode;
     IdUserPlayer: Types.ObjectId;
-    IdHero ?: Types.ObjectId;
+    IdHero : string;
     Type : HeroEquipType;
-    Lv : number;
-
-    constructor(){
-        this._id = new Types.ObjectId();
-        this.Lv = 1;
-    }
+    Lv : number = 1;
 
     static New(code : HeroEquipCode, idUserPlayer : Types.ObjectId, type: HeroEquipType) {
         var heroEquip = new HeroEquip();
-        heroEquip.Code = code;
-        heroEquip.IdUserPlayer = idUserPlayer;
-        heroEquip.Type = type;
+        heroEquip.InitData(code,idUserPlayer,type);
         heroEquip.Lv = 1;
         return heroEquip;
     }
 
-    static Parse(data) : IHeroEquip{
-        try{
-            return JSON.parse(data);
-        }catch{
-            return data;
-        }
+    InitData(code : HeroEquipCode, idUserPlayer : Types.ObjectId, type: HeroEquipType){
+        this.Code = code;
+        this.IdUserPlayer = idUserPlayer;
+        this.Type = type;
     }
-
-    static ParseToType(index : string){
-        var type = index[0] + index[1];
-        if(type === "WP") return HeroEquipType.Weapon;
-        if(type === "AR") return HeroEquipType.Armor;
-        if(type === "HM") return HeroEquipType.Helmet;
-        return HeroEquipType.Unknow;
-    }
+    
 }
 
-const HeroEquipSchema = new Schema<IHeroEquip>(
+const HeroEquipSchema = new Schema<HeroEquip>(
     {
         Code : { type : Number, enum : HeroEquipCode},
         IdUserPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'UserPlayer' },
-        IdHero: { type: mongoose.Schema.Types.ObjectId, ref: 'Hero'},
+        IdHero: { type: String, default : ""},
         Type : { type : Number, enum : HeroEquipType},
         Lv : { type : Number, default : 1},
     }
 );
 
-export const HeroEquipModel = mongoose.model<IHeroEquip>('HeroEquip', HeroEquipSchema);
-
-export async function FindHeroEquipByIdUserPlayer(idUserPlayer: Types.ObjectId){
-    var heroeEquips;
-    await HeroEquipModel.find({IdUserPlayer : idUserPlayer}).then((res)=>{
-        heroeEquips = res;
-    })
-    return heroeEquips;
-}
-
-export async function CreateHeroEquip(heroEquip : IHeroEquip){
-    var data;
-    await HeroEquipModel.create(heroEquip).then((res)=>{
-        console.log("Dev 1685517259 "+ res)
-        data = HeroEquip.Parse(res);
-    }).catch((e)=>{
-        LogServer(LogCode.HeroEquip_CreateNewFail, e, LogType.Error)
-        console.log("Dev 1685517262 "+ e)
-        data = null;
-    })
-    return data;
-}
-
-export async function UpdateHeroEquip(heroEquip:IHeroEquip) {
-    console.log("Dev 1687173995 ", heroEquip);
-    HeroEquipModel.updateOne({_id : heroEquip._id}, {IdHero : heroEquip.IdHero, Lv : heroEquip.Lv}).then((res)=>{
-        console.log("Dev 1685723716 ", res);
-    }).catch(err=>{
-        LogServer(LogCode.HeroEquip_SaveFail, err, LogType.Error)
-
-    })
-}
-
-export async function FindHeroEquipById(id : Types.ObjectId){
-    var heroEquip;
-    await HeroEquipModel.findById(id).then((res)=>{
-        heroEquip = HeroEquip.Parse(res);
-    })
-    return heroEquip;
-}
+export const HeroEquipModel = mongoose.model<HeroEquip>('HeroEquip', HeroEquipSchema);

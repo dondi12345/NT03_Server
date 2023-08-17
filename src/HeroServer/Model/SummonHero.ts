@@ -1,16 +1,16 @@
 import { Types } from "mongoose";
 import { HeroCode } from "./HeroCode";
-import { Hero, IHero } from "./Hero";
+import { Hero } from "./Hero";
 
 export interface ISummonHeroSlot{
     _id : Types.ObjectId;
-    Hero : IHero,
+    Hero : Hero,
     Hired : Boolean,
 }
 
 export class SummonHeroSlot implements ISummonHeroSlot{
     _id : Types.ObjectId = new Types.ObjectId();
-    Hero : IHero;
+    Hero : Hero;
     Hired : Boolean = false;
 
     static Parse(data) : ISummonHeroSlot{

@@ -1,5 +1,5 @@
 import { Message } from "../../MessageServer/Model/Message";
-import { Heroes, Hero, HeroModel, HeroUpgradeLv, HeroData } from "../Model/Hero";
+import {Hero, HeroModel, HeroUpgradeLv, HeroData, HeroGear } from "../Model/Hero";
 import { HeroCode } from "../Model/HeroCode";
 import { SummonHero, SummonHeroSlot } from "../Model/SummonHero";
 import { RateSummon } from "../Model/VariableHero";
@@ -16,6 +16,7 @@ import { currencyController } from '../../Currency/Controller/CurrencyController
 import { dateUtils } from '../../Utils/DateUtils';
 import { dataCenterName } from '../../DataCenter/Model/DataVersion';
 import { dataCenterController } from "../../DataCenter/Controller/DataCenterController";
+import { NTArray } from "../../Utils/Other";
 
 class HeroController {
     async Login(message: Message, transferData: TransferData) {
@@ -203,6 +204,30 @@ class HeroController {
         transferData.Send(JSON.stringify(messageUdHero), JSON.stringify(messageUdCurrency))
     }
 
+    async UpdateGear(heroID, heroGear : HeroGear){
+        var hero;
+        await HeroModel.updateOne(
+            {
+                _id : heroID,
+            },
+            {
+                HeroGear : heroGear
+            }
+        ).then(async res=>{
+            logController.LogDev("1691055269: ", res)
+            if (res.modifiedCount == 0 && res.matchedCount == 0) {
+                logController.LogError(LogCode.Hero_NotFoundInDB, heroID, "Server");
+                hero = null;
+                return hero;
+            } else {
+                hero = FindById(heroID);
+                heroController.SetHeroCached(hero);
+                return hero;
+            }
+        })
+        return hero;
+    }
+
     async GetHeroCached(userPlayerID: string, heroID: string) {
         var heroJson = await new Promise(async (reslove, rejects) => {
             reslove(await redisControler.Get(RedisKeyConfig.KeyHeroData(userPlayerID, heroID)))
@@ -240,13 +265,13 @@ async function FindHeroesByIdUserPlayer(idUserPlayer: string) {
         logController.LogWarring(LogCode.Hero_Empty, idUserPlayer, "Server");
         data = []
     }
-    var dataHeroes = new Heroes();
+    var heroes = new NTArray<Hero>();
     for (let item of data) {
         var hero = DataModel.Parse<Hero>(item);
-        dataHeroes.Elements.push(hero);
+        heroes.Elements.push(hero);
         heroController.SetHeroCached(hero);
     }
-    return dataHeroes;
+    return heroes;
 }
 
 function RandomeSummonHero(idUserPlayer, rank = 0) {
@@ -312,21 +337,22 @@ function HeroCostUpgradeLv(lv: number, lvRise: number, start: number, raise: num
 
 async function HeroLvUp(idHero, lv){
     var hero;
-        await HeroModel.updateOne(
+    await HeroModel.updateOne(
         {
-            _id : idHero
+            _id : idHero,
         },
         {
             $inc :{ Lv : lv}
         }
     ).then(async res => {
-        logController.LogMessage(LogCode.Hero_HeroLvUpSuc, res, idHero);
-        if (res.modifiedCount == 0) {
-            logController.LogError(LogCode.Hero_HeroLvUpFail,idHero, "Server");
+        logController.LogDev("1691055270: ", res)
+        if (res.modifiedCount == 0 && res.matchedCount == 0) {
+            logController.LogError(LogCode.Hero_NotFoundInDB, idHero, "Server");
             hero = null;
             return hero;
         } else {
-            hero = await FindById(idHero);
+            hero = FindById(idHero);
+            heroController.SetHeroCached(hero);
             return hero;
         }
     }).catch(err => {
@@ -338,7 +364,7 @@ async function HeroLvUp(idHero, lv){
 
 async function FindById(idHero){
     var hero;
-    await HeroModel.find({_id : idHero})
+    await HeroModel.findById(idHero)
     .then(res=>{
         hero = res
         heroController.SetHeroCached(hero);
