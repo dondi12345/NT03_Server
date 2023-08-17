@@ -119,6 +119,9 @@ export enum LogCode {
     HeroTeam_UpdateFail = 9002,
     HeroTeam_SaveFail = 9003,
     HeroTeam_RemoveSlotFail = 9004,
+    HeroTeam_NotFoundInDB = 9005,
+    HeroTeam_CreateNewFail = 9006,
+    HeroTeam_NotFoundInCache = 9007,
     
     TDWave_Test = 10000,
     TDWave_ProtectedSuccess = 10001,

@@ -70,6 +70,9 @@ class RedisKey{
     KeyCurrencyData(userID){
         return this.NameProject+":UserPlayer:"+userID+":Currency"
     }
+    KeyHeroTeamData(userID){
+        return this.NameProject+":UserPlayer:"+userID+":HeroTeam"
+    }
     KeyHeroData(userID, heroID){
         return this.NameProject+":UserPlayer:"+userID+":Hero:"+heroID
     }

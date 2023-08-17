@@ -8,7 +8,6 @@ import {Currency, CurrencyModel } from "../Model/Currency";
 import { DataModel } from "../../Utils/DataModel";
 import { redisControler } from "../../Service/Database/RedisConnect";
 import { RedisKeyConfig } from "../../Enviroment/Env";
-import { TokenUserPlayer } from "../../Token/Model/TokenUserPlayer";
 import { tokenController } from "../../Token/Controller/TockenController";
 
 class CurrencyController {
@@ -22,7 +21,6 @@ class CurrencyController {
             logController.LogDev("1685077925 Dev Not found currency")
             return LoginFail_New(transferData);
         }
-        redisControler.Set(RedisKeyConfig.KeyCurrencyData(tokenUserPlayer.IdUserPlayer), JSON.stringify(currency));
         return LoginSuccess(currency, transferData);
     }
 
