@@ -8,81 +8,17 @@ import { accountController } from "../../AccountServer/Controller/AccountControl
 import { heroController } from "../../HeroServer/Controller/HeroController";
 import { heroEquipController } from "../../HeroEquip/Controller/HeroEquipController";
 import { heroTeamCtrl } from "../../HeroTeam/Controller/HeroTeamCtrl";
+import { currencyRouter } from "../../Currency/Router/CurrencyRouter";
+import { userPlayerRouter } from "../../UserPlayerServer/Router/UserPlayerRouter";
+import { heroRouter } from "../../HeroServer/Router/HeroRouter";
+import { tdWaveRouter } from "../../TDWave/Router/TDWaveRouter";
 
 class MessageRouter{
     Router(message : Message, transferData : TransferData){
-        if(message.MessageCode == MessageCode.UserPlayerServer_Login){
-            userPlayerController.UserPlayerLogin(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.UserPlayerServer_Logout){
-            userPlayerController.UserPlayerLogout(message);
-            return;
-        }
-        if(message.MessageCode == MessageCode.Currency_Login){
-            currencyController.CurrencyLogin(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.Hero_Login){
-            heroController.Login(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.Hero_Summon){
-            heroController.Summon(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.Hero_GetSummonResult){
-            heroController.GetSummonResult(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.Hero_HireHero){
-            heroController.HireHero(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.Hero_UpgradeLv){
-            heroController.UpgradeLv(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.HeroEquip_Login){
-            heroEquipController.Login(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.HeroEquip_Craft){
-            heroEquipController.CraftEquip(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.HeroEquip_UpgradeLv){
-            heroEquipController.UpgradeLv(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.HeroEquip_Wearing){
-            heroEquipController.WearingEquip(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.HeroEquip_Unwearing){
-            heroEquipController.UnWearingEquip(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.HeroTeam_Login){
-            heroTeamCtrl.Login(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.HeroTeam_SelectHero){
-            heroTeamCtrl.SelectHero(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.HeroTeam_DeselectHero){
-            heroTeamCtrl.DeselectHero(message, transferData);
-            return;
-        }
-        if(message.MessageCode == MessageCode.TDWave_ProtectedSuccess){
-            tdWaveController.ProtectedSuccessCtrl(message, transferData)
-            return;
-        }
-        if(message.MessageCode == MessageCode.TDWave_ProtectedFail){
-            tdWaveController.ProtectedFailCtrl(message, transferData);
-            return;
-        }
+        userPlayerRouter.Router(message, transferData);
+        currencyRouter.Router(message, transferData);
+        heroRouter.Router(message, transferData);
+        tdWaveRouter.Router(message, transferData);
     }
 }
 
