@@ -7,6 +7,7 @@ import { tdWaveController } from "../../TDWave/Controller/TDWaveController";
 import { accountController } from "../../AccountServer/Controller/AccountController";
 import { heroController } from "../../HeroServer/Controller/HeroController";
 import { heroEquipController } from "../../HeroEquip/Controller/HeroEquipController";
+import { heroTeamCtrl } from "../../HeroTeam/Controller/HeroTeamCtrl";
 
 class MessageRouter{
     Router(message : Message, transferData : TransferData){
@@ -60,6 +61,18 @@ class MessageRouter{
         }
         if(message.MessageCode == MessageCode.HeroEquip_Unwearing){
             heroEquipController.UnWearingEquip(message, transferData);
+            return;
+        }
+        if(message.MessageCode == MessageCode.HeroTeam_Login){
+            heroTeamCtrl.Login(message, transferData);
+            return;
+        }
+        if(message.MessageCode == MessageCode.HeroTeam_SelectHero){
+            heroTeamCtrl.SelectHero(message, transferData);
+            return;
+        }
+        if(message.MessageCode == MessageCode.HeroTeam_DeselectHero){
+            heroTeamCtrl.DeselectHero(message, transferData);
             return;
         }
         if(message.MessageCode == MessageCode.TDWave_ProtectedSuccess){

@@ -1,4 +1,4 @@
-import mongoose, { Query, Schema, Types } from "mongoose";
+import mongoose, { Query, Schema, Types , Document} from "mongoose";
 import { LogIdUserPlayer } from "../../LogServer/Controller/LogController";
 import { LogCode } from "../../LogServer/Model/LogCode";
 import { LogType } from "../../LogServer/Model/LogModel";
@@ -16,7 +16,7 @@ export class SelectHero{
     }
 }
 
-export class HeroTeam{
+export class HeroTeam extends Document{
     IdUserPlayer : Types.ObjectId;
     Power : number
     Slot1 : string = "";

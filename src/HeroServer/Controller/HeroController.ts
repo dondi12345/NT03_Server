@@ -351,7 +351,7 @@ async function HeroLvUp(idHero, lv){
             hero = null;
             return hero;
         } else {
-            hero = FindById(idHero);
+            hero = await FindById(idHero);
             heroController.SetHeroCached(hero);
             return hero;
         }
