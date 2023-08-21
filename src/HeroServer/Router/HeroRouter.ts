@@ -7,24 +7,25 @@ class HeroRouter{
     Router(message : Message, transferData : TransferData){
         if(message.MessageCode == MessageCode.Hero_Login){
             heroController.Login(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.Hero_Summon){
             heroController.Summon(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.Hero_GetSummonResult){
             heroController.GetSummonResult(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.Hero_HireHero){
             heroController.HireHero(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.Hero_UpgradeLv){
             heroController.UpgradeLv(message, transferData);
-            return;
+            return true;
         }
+        return false;
     }
 }
 

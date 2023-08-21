@@ -7,8 +7,9 @@ class CurrencyRouter{
     Router(message : Message, transferData : TransferData){
         if(message.MessageCode == MessageCode.Currency_Login){
             currencyController.CurrencyLogin(message, transferData);
-            return;
+            return true;
         }
+        return false;
     }
 }
 

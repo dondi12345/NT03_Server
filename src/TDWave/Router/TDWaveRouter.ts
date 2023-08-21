@@ -7,12 +7,13 @@ class TDWaveRouter{
     Router(message : Message, transferData : TransferData){
         if(message.MessageCode == MessageCode.TDWave_ProtectedSuccess){
             tdWaveController.ProtectedSuccessCtrl(message, transferData)
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.TDWave_ProtectedFail){
             tdWaveController.ProtectedFailCtrl(message, transferData);
-            return;
+            return true;
         }
+        return false;
     }
 }
 

@@ -8,12 +8,13 @@ class UserPlayerRouter{
     Router(message : Message, transferData : TransferData){
         if(message.MessageCode == MessageCode.UserPlayerServer_Login){
             userPlayerController.UserPlayerLogin(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.UserPlayerServer_Logout){
             userPlayerController.UserPlayerLogout(message);
-            return;
+            return true;
         }
+        return false;
     }
 }
 
