@@ -6,17 +6,5 @@ import Init from "./Service/Init";
 import { tokenController } from "./Token/Controller/TockenController";
 
 export function AppTest(){
-    Init.InitDatabase().then(()=>{
-        var idHero = new Types.ObjectId("647e13fb171e729eb469d17a")
-        HeroModel.updateOne(
-            {
-                _id : idHero,
-            },
-            {
-                $inc :{ Lv : 1}
-            }
-        ).then(res=>{
-            console.log("=>>>", res)
-        })
-    })
+    
 }
