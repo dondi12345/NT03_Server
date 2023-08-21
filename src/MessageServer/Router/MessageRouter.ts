@@ -15,10 +15,10 @@ import { tdWaveRouter } from "../../TDWave/Router/TDWaveRouter";
 
 class MessageRouter{
     Router(message : Message, transferData : TransferData){
-        userPlayerRouter.Router(message, transferData);
-        currencyRouter.Router(message, transferData);
-        heroRouter.Router(message, transferData);
-        tdWaveRouter.Router(message, transferData);
+        if(userPlayerRouter.Router(message, transferData)) return;
+        if(currencyRouter.Router(message, transferData)) return;
+        if(heroRouter.Router(message, transferData)) return;
+        if(tdWaveRouter.Router(message, transferData)) return;
     }
 }
 
