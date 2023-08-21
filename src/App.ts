@@ -17,6 +17,7 @@ import { LogCode } from './LogServer/Model/LogCode';
 import { LogType } from './LogServer/Model/LogModel';
 import { InitWebServer } from './WebServer';
 import { dataCenterController } from './DataCenter/Controller/DataCenterController';
+import GuessNumberService from './MiniGame/GuessNumber/GuessNumberService';
 
 
 // Define number of worker processes
@@ -24,7 +25,9 @@ const numCPUs = 1;
 const version = "0.0.13"
 // const numCPUs = require('os').cpus().length;
 // AppTest();
-InitApp();
+// InitApp();
+
+// GuessNumberService
 
 // Check if current process is master or worker
 function InitApp(){

@@ -6,6 +6,7 @@ export const portConfig = {
     portAccountServer : 3004,
     portDailyLoginReward : 3005,
     portWebServer : 3006,
+    portGuessNumber : 3007,
 }
 
 export const Mongo = {

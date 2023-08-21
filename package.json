@@ -20,12 +20,16 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@colyseus/monitor": "^0.15.1",
+    "@colyseus/playground": "^0.15.4",
+    "@colyseus/tools": "^0.15.18",
     "@types/bcrypt": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/redis": "^4.0.11",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "cluster": "^0.7.7",
+    "colyseus": "^0.15.7",
     "express": "^4.18.2",
     "express-handlebars": "^7.0.7",
     "get-root-path": "^2.0.2",
