@@ -9,7 +9,9 @@ const app = express()
 export function API() {
   app.use(express.json())
 
-  
+  app.post("/", async (req, res) => {
+    
+  })
 
   app.listen(portConfig.portAPI, () => {
     console.log(`Dev 1684475518 Example app listening on port ${portConfig.portAPI}`)

@@ -17,7 +17,9 @@ import { LogCode } from './LogServer/Model/LogCode';
 import { LogType } from './LogServer/Model/LogModel';
 import { InitWebServer } from './WebServer';
 import { dataCenterController } from './DataCenter/Controller/DataCenterController';
-import GuessNumberService from './MiniGame/GuessNumber/GuessNumberService';
+import { portConfig } from './Enviroment/Env';
+import { listen } from '@colyseus/tools';
+import { guessNumberService } from './MiniGame/GuessNumber/GuessNumberService';
 
 
 // Define number of worker processes
@@ -27,20 +29,20 @@ const version = "0.0.13"
 // AppTest();
 // InitApp();
 
-GuessNumberService
+guessNumberService
 
 // Check if current process is master or worker
 // function InitApp(){
 //   if (cluster.isMaster) {
 //     console.log(`Dev 1684475565 Master ${process.pid} is running`);
 //     console.log("Dev 1684475553 "+ numCPUs);
-    
+
 //     // Fork worker processes
 //     for (let i = 0; i < numCPUs; i++) {
 //       cluster.fork();
 //     }
 //     console.log("Dev 1684475633 create cluster");
-    
+
 //     // Handle exit of worker processes
 //     cluster.on('1684475534 exit', (worker, code, signal) => {
 //       console.log(`Dev 1684475542 worker ${worker.process.pid} died`);
@@ -58,7 +60,7 @@ GuessNumberService
 //       InitDailyLoginReward();
 //       dataCenterController;
 //     }).catch((err) => {
-      
+
 //     });
 //   } else {
 //     AppChild();

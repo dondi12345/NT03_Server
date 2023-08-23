@@ -4,48 +4,64 @@ import { Schema, type, MapSchema } from "@colyseus/schema";
 const legthPass = 4;
 const maxAnswers = 5;
 
-export class Player extends Schema{
-    answers : number[][];
+export class PlayerGuessNumber extends Schema{
+    @type("string")
+    answers : string = "";
+    @type("number")
+    numb : number = 0;
 }
 
-export class State extends Schema{
-    players = new MapSchema<Player>();
-    pass : number[]
+export class StateGuessNumber extends Schema{
+    @type({ map: PlayerGuessNumber })
+    players = new MapSchema<PlayerGuessNumber>();
+    @type("string")
+    pass : string
+
+    something = "This attribute won't be sent to the client-side";
 
     inti(){
-        this.pass = [];
+        this.pass = ""
         for (let index = 0; index < 4; index++) {
-            this.pass.push(Math.floor(Math.random()*10));
+            this.pass += (Math.floor(Math.random()*10));
         }
         console.log("Pass: ", this.pass);
     }
 
     createPlayer(sessionId: string) {
-        this.players.set(sessionId, new Player());
+        this.players.set(sessionId, new PlayerGuessNumber());
     }
 
     removePlayer(sessionId: string) {
         this.players.delete(sessionId);
     }
 
-    playerAnswer (sessionId: string, answer : number[]) {
-        var answers = this.players.get(sessionId)?.answers;
-        if(answers == null || answers == undefined){
-            answers = [];
+    playerAnswer (sessionId: string, answer : string = "") {
+        var player = this.players.get(sessionId);
+        if(player == null || player == undefined){
+            console.log("Not found: "+sessionId)
+        }else{
+            player.answers = answer;
+            this.players.get(sessionId)!.numb ++;
+            console.log(sessionId, this.players.get(sessionId)?.answers);
+            this.Log();
+            this.players.set(sessionId, player!);
         }
-        answers.push(answer);
-        console.log(sessionId, answers);
+    }
+
+    Log(){
+        this.players.forEach(element => {
+            console.log(element.numb);
+        });
     }
 }
 
-export class StateHandlerRoom extends Room<State> {
-    maxClients = 4;
-
+export class StateGuessNumberRoom extends Room<StateGuessNumber> {
+    maxClients = 2;
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
-
-        this.setState(new State());
-
+        var state = new StateGuessNumber();
+        state.inti()
+        this.setState(state);
         this.onMessage("answer", (client, data) => {
             console.log("StateHandlerRoom received message from", client.sessionId, ":", data);
             this.state.playerAnswer(client.sessionId, data);
