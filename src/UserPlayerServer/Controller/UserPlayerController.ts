@@ -48,6 +48,7 @@ export function UpdateUserPlayerCtrl(userSocket: UserSocket) {
 
 class UserPlayerController {
     UserPlayerLogin(message: Message, transferData: TransferData) {
+        logController.LogDev("1684937285 UserPlayerLogining")
         var data = tokenController.AuthenVerify(transferData.Token);
         if (data == null || data == undefined) {
             logController.LogDev("1684937265 wrong token");
