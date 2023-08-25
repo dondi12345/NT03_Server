@@ -1,1 +1,0 @@
-{"version":3,"file":"MSGChat.js","sourceRoot":"","sources":["../../../../src/ChatServer/Model/MSGChat.ts"],"names":[],"mappings":";;;AAWA,MAAa,OAAO;IAMhB;IAEA,CAAC;IAED,MAAM,CAAC,KAAK,CAAC,IAAI;QACb,IAAG;YACC,OAAO,IAAI,CAAC,KAAK,CAAC,IAAI,CAAC,CAAC;SAC3B;QAAA,WAAK;YACF,OAAO,IAAI,CAAC;SACf;IACL,CAAC;CACJ;AAjBD,0BAiBC"}

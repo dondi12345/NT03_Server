@@ -1,1 +1,0 @@
-{"version":3,"file":"AccountData.js","sourceRoot":"","sources":["../../../../src/AccountServer/Model/AccountData.ts"],"names":[],"mappings":";;;AAOA,MAAa,WAAW;IAIpB;IAEA,CAAC;IAED,MAAM,CAAC,KAAK,CAAC,IAAI;QACb,IAAG;YACC,IAAI,GAAG,IAAI,CAAC,KAAK,CAAC,IAAI,CAAC,CAAC;SAC3B;QAAA,OAAM,GAAG,EAAC,GAAE;QACb,OAAO,IAAI,CAAC;IAChB,CAAC;CACJ;AAdD,kCAcC"}

@@ -1,1 +1,0 @@
-{"version":3,"file":"AccountTocken.js","sourceRoot":"","sources":["../../../../src/AccountServer/Model/AccountTocken.ts"],"names":[],"mappings":";;;AAKA,MAAa,aAAa;IAItB;IAEA,CAAC;IAED,MAAM,CAAC,KAAK,CAAC,IAAI;QACb,IAAG;YACC,IAAI,GAAG,IAAI,CAAC,KAAK,CAAC,IAAI,CAAC,CAAC;SAC3B;QAAA,OAAM,GAAG,EAAC,GAAE;QACb,OAAO,IAAI,CAAC;IAChB,CAAC;CACJ;AAdD,sCAcC"}
