@@ -9,7 +9,7 @@ import { DataVersion, DataVersionModel, dataCenterName } from "../Model/DataVers
 
 class DataCenterService{
     constructor(){
-        this.Init();
+        // this.Init();
     }
 
     async Init(){
