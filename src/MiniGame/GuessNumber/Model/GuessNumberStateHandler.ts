@@ -48,12 +48,11 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
         this.roomData.legthPass = 4;
         this.roomData.maxAnswers = 5;
         this.roomData.pass = "";
-        this.roomData.pass = "zoom";
-        // switch (this.roomData.legthPass) {
-        //     default:
-        //         this.roomData.pass = guessNumberService.fourWord[Math.floor(Math.random()*guessNumberService.fourWord.length)];
-        //         break;
-        // }
+        switch (this.roomData.legthPass) {
+            default:
+                this.roomData.pass = guessNumberService.fourWord[Math.floor(Math.random()*guessNumberService.fourWord.length)];
+                break;
+        }
         console.log("Pass: ", this.roomData.pass);
     }
     
