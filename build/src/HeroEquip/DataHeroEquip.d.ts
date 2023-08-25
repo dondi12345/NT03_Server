@@ -1,0 +1,30 @@
+export declare const dataHeroEquip: {
+    Name: string;
+    Version: number;
+    Data: {
+        Index: string;
+        Code: number;
+        HeroEquipType: number;
+        TDGunCode: number;
+        ModelName: string;
+        QualityItemCode: number;
+        IconName: string;
+        IconBorderName: string;
+        Power: number;
+        Atk: number;
+        Def: number;
+        Agi: number;
+        Dex: number;
+        Hp: number;
+        CrtRate: number;
+        PowerRise: number;
+        AtkRise: number;
+        DefRise: number;
+        AgiRise: number;
+        DexRise: number;
+        HpRise: number;
+        CrtRateRise: number;
+        CostUpgrade: number;
+        CostUpgradeRise: number;
+    }[];
+};

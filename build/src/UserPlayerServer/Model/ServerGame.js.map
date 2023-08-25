@@ -1,0 +1,1 @@
+{"version":3,"file":"ServerGame.js","sourceRoot":"","sources":["../../../../src/UserPlayerServer/Model/ServerGame.ts"],"names":[],"mappings":";;;AAMA,MAAa,UAAU;IAGnB,MAAM,CAAC,KAAK,CAAC,IAAI;QACb,IAAG;YACC,IAAI,GAAG,IAAI,CAAC,KAAK,CAAC,IAAI,CAAC,CAAC;SAC3B;QAAA,OAAM,GAAG,EAAC,GAAE;QACb,OAAO,IAAI,CAAC;IAChB,CAAC;CACJ;AATD,gCASC"}
