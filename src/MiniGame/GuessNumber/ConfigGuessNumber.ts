@@ -8,7 +8,7 @@ import express from 'express';
 // import { uWebSocketsTransport} from "@colyseus/uwebsockets-transport";
 
 // Import demo room handlers
-import { StateGuessNumberRoom } from "./StateHandler";
+import { StateGuessNumberRoom } from "./Model/GuessNumberStateHandler";
 
 export const configGuessNumber = config({
     options: {
