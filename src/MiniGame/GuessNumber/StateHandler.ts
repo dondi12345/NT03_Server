@@ -1,75 +1,54 @@
-import { Room, Client } from "colyseus";
-import { Schema, type, MapSchema } from "@colyseus/schema";
+import { Room, Client, ClientArray } from "colyseus";
+import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
+import { StateGuessNumber } from "./StateGuessNumber";
+import { guessNumberService } from "./GuessNumberService";
 
-const legthPass = 4;
-const maxAnswers = 5;
-
-export class PlayerGuessNumber extends Schema{
-    @type("string")
-    answers : string = "";
-    @type("number")
-    numb : number = 0;
+class ClientData{
+    client : Client;
+    data : string;
 }
 
-export class StateGuessNumber extends Schema{
-    @type({ map: PlayerGuessNumber })
-    players = new MapSchema<PlayerGuessNumber>();
-    @type("string")
-    pass : string
-
-    something = "This attribute won't be sent to the client-side";
-
-    inti(){
-        this.pass = ""
-        for (let index = 0; index < 4; index++) {
-            this.pass += (Math.floor(Math.random()*10));
-        }
-        console.log("Pass: ", this.pass);
-    }
-
-    createPlayer(sessionId: string) {
-        this.players.set(sessionId, new PlayerGuessNumber());
-    }
-
-    removePlayer(sessionId: string) {
-        this.players.delete(sessionId);
-    }
-
-    playerAnswer (sessionId: string, answer : string = "") {
-        var player = this.players.get(sessionId);
-        if(player == null || player == undefined){
-            console.log("Not found: "+sessionId)
-        }else{
-            player.answers = answer;
-            this.players.get(sessionId)!.numb ++;
-            console.log(sessionId, this.players.get(sessionId)?.answers);
-            this.Log();
-            this.players.set(sessionId, player!);
-        }
-    }
-
-    Log(){
-        this.players.forEach(element => {
-            console.log(element.numb);
-        });
-    }
+export class RoomGuessNumberData{
+    pass : string;
+    legthPass : number;
+    maxAnswers : number;
 }
 
 export class StateGuessNumberRoom extends Room<StateGuessNumber> {
     maxClients = 2;
+    clientDatas : ClientData[]
+    roomGuessNumberData : RoomGuessNumberData;
+
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
+        this.inti();
         var state = new StateGuessNumber();
-        state.inti()
         this.setState(state);
         this.onMessage("answer", (client, data) => {
             console.log("StateHandlerRoom received message from", client.sessionId, ":", data);
-            this.state.playerAnswer(client.sessionId, data);
+            this.state.playerAnswer(client.sessionId, data, this.roomGuessNumberData)
         });
     }
+
+    inti(){
+        this.roomGuessNumberData = new RoomGuessNumberData();
+        this.roomGuessNumberData.legthPass = 4;
+        this.roomGuessNumberData.maxAnswers = 5;
+        this.roomGuessNumberData.pass = "";
+        switch (this.roomGuessNumberData.legthPass) {
+            default:
+                this.roomGuessNumberData.pass = guessNumberService.fourWord[Math.floor(Math.random()*guessNumberService.fourWord.length)];
+                break;
+        }
+        console.log("Pass: ", this.roomGuessNumberData.pass);
+    }
     
-    onJoin (client: Client) {
+    onJoin (client: Client, options) {
         // client.send("hello", "world");
+        // var clientData = new ClientData();
+        // clientData.client = client;
+        // clientData.data = client.sessionId;
+        // this.clientDatas.push(clientData);
         console.log(client.sessionId, "joined!");
         this.state.createPlayer(client.sessionId);
     }

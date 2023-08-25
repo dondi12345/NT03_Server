@@ -23,27 +23,11 @@ import { TokenUserPlayer } from '../../Token/Model/TokenUserPlayer';
 import { TokenModel } from '../../Token/Model/TokenModel';
 import { dateUtils } from '../../Utils/DateUtils';
 
-const redisUserPlayerSession = redis.createClient({
-    host: RedisConfig.Host,
-    port: RedisConfig.Port,
-    password: RedisConfig.Password,
-});
-
-
 function LoginFailMessage(error) {
     var message = new Message();
     message.MessageCode = MessageCode.UserPlayerServer_LoginFail;
     message.Data = error;
     return message;
-}
-
-export function UpdateUserPlayerCtrl(userSocket: UserSocket) {
-    LogUserSocket(LogCode.UserPlayerServer_UpdateUserPlayer, userSocket, "", LogType.Normal);
-    var message = new Message();
-    message.MessageCode = MessageCode.UserPlayerServer_Update;
-    message.Data = JSON.stringify(userSocket.UserPlayer);
-    UpdateUserPlayer(userSocket.UserPlayer);
-    SendMessageToSocket(message, userSocket.Socket);
 }
 
 class UserPlayerController {
