@@ -10,5 +10,12 @@ export class PlayerGuessNumber extends Schema{
     score : number = 0;
     @type("number")
     status : number = 0;
+
+    resetData(){
+        this.correct = "";
+        this.numb = 0;
+        this.score = 0;
+        this.status = 0;
+    }
 }
  

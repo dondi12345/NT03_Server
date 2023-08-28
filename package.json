@@ -7,7 +7,7 @@
     "start-dev": "yarn ts-node ./src/App.ts",
     "start-debug": "yarn ts-node/register/transpile-only ./src/App.ts",
     "start": "node  ./build/src/App.js",
-    "start_1": "tsx src/App.ts",
+    "start_1": "tsx src/MiniGame/GuessNumber/GuessNumberService.ts",
     "build": "tsc",
     "build-scss": "yarn node-sass src/WebServer/resources/scss/ --output public/css/"
   },

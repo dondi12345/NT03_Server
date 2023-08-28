@@ -2,6 +2,7 @@ import { Room, Client, ClientArray } from "colyseus";
 import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
 import { PlayerGuessNumber } from "./PlayerGuessNumber";
 import { ClientData, RoomGuessNumberData } from "./GuessNumberStateHandler";
+import { RoomGuessNumber } from "./RoomGuessNumber";
 
 const Ans = {
     correct : "2",
@@ -19,6 +20,8 @@ export const StatusPlayer = {
 export class StateGuessNumber extends Schema{
     @type({ map: PlayerGuessNumber })
     players = new MapSchema<PlayerGuessNumber>();
+    @type(RoomGuessNumber)
+    room : RoomGuessNumber = new RoomGuessNumber();
 
     something = "This attribute won't be sent to the client-side";
 
