@@ -27,6 +27,8 @@ class DataCenterService{
             Name: dataName
         }).then(res=>{
             var dataVersion = DataModel.Parse<DataVersion>(res);
+            var dataVersionCache = new DataVersion();
+            dataVersionCache.Name = dataVersion.Name;
             if(dataVersion == null || dataVersion == undefined) throw null;
             redisControler.Set(RedisKeyConfig.KeyDataCenterDetail(dataName), JSON.stringify(dataVersion))
             dataVersion.Data.forEach(element => {

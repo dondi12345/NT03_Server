@@ -6,4 +6,5 @@ export class ResultAnswerPlayer{
     answer : string;
     result : string;
     pos : number;
+    status : number;
 }

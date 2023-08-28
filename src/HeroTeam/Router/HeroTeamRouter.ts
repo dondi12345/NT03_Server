@@ -7,16 +7,17 @@ class HeroTeamRouter{
     Router(message : Message, transferData : TransferData){
         if(message.MessageCode == MessageCode.HeroTeam_Login){
             heroTeamCtrl.Login(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.HeroTeam_SelectHero){
             heroTeamCtrl.SelectHero(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.HeroTeam_DeselectHero){
             heroTeamCtrl.DeselectHero(message, transferData);
-            return;
+            return true;
         }
+        return false;
     }
 }
 

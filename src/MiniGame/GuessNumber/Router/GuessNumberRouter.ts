@@ -1,10 +1,11 @@
+import { Message } from "../../../MessageServer/Model/Message";
 import { guessNumberController } from "../Controller/GuessNumberController";
 import { StateGuessNumberRoom } from "../Model/GuessNumberStateHandler";
-import { Message, MessageCode } from "../Model/Message";
+import { MessageGuessNumber } from "../Model/MessageGuessNumber";
 
 class GuessNumberRouter{
     Router(room : StateGuessNumberRoom, message : Message, sessionId : string){
-        if(message.MessageCode == MessageCode.player_answer){
+        if(message.MessageCode == MessageGuessNumber.player_answer){
             guessNumberController.PlayerAnswer(room, message, sessionId);
         }
     }

@@ -7,24 +7,25 @@ class HeroEquipRouter{
     Router(message : Message, transferData : TransferData){
         if(message.MessageCode == MessageCode.HeroEquip_Login){
             heroEquipController.Login(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.HeroEquip_Craft){
             heroEquipController.CraftEquip(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.HeroEquip_UpgradeLv){
             heroEquipController.UpgradeLv(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.HeroEquip_Wearing){
             heroEquipController.WearingEquip(message, transferData);
-            return;
+            return true;
         }
         if(message.MessageCode == MessageCode.HeroEquip_Unwearing){
             heroEquipController.UnWearingEquip(message, transferData);
-            return;
+            return true;
         }
+        return false;
     }
 }
 

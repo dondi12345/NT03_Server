@@ -12,7 +12,7 @@ import { StateGuessNumberRoom } from "./Model/GuessNumberStateHandler";
 
 export const configGuessNumber = config({
     options: {
-        devMode: true,
+        devMode: false,
     },
 
     initializeGameServer: (gameServer) => {

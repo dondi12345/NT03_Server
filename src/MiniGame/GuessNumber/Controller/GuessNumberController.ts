@@ -1,9 +1,11 @@
+import { Message, MessageData } from "../../../MessageServer/Model/Message";
+import { TransferData } from "../../../TransferData";
 import { DataModel } from "../../../Utils/DataModel";
 import { stringUtils } from "../../../Utils/StringUtils";
 import { guessNumberService } from "../GuessNumberService";
 import { AnswerPlayer, ResultAnswerPlayer } from "../Model/AnswerPlayer";
 import { StateGuessNumberRoom } from "../Model/GuessNumberStateHandler";
-import { Message, MessageCode } from "../Model/Message";
+import { MessageGuessNumber } from "../Model/MessageGuessNumber";
 import { StatusPlayer } from "../Model/StateGuessNumber";
 
 const Ans = {
@@ -15,7 +17,7 @@ const Ans = {
 class GuessNumberController{
     PlayerAnswer(room : StateGuessNumberRoom, message : Message, sessionId : string){
         var answerPlayer = DataModel.Parse<AnswerPlayer>(message.Data)
-        if(answerPlayer.answer.length != room.roomData.legthPass){
+        if(answerPlayer.answer.length != room.roomConfig.legthPass){
             return;
         }
 
@@ -24,12 +26,16 @@ class GuessNumberController{
         if(player == null || player == undefined){
             return;
         }
-        
-        if(player.numb >= room.roomData.maxAnswers){
+
+        if(player.status == StatusPlayer.Win){
             return;
         }
         
-        if(!CheckWord(answerPlayer.answer, room.roomData.legthPass)){
+        if(player.numb >= room.roomConfig.maxAnswers){
+            return;
+        }
+        
+        if(!CheckWord(answerPlayer.answer, room.roomConfig.legthPass)){
             return;
         }
 
@@ -40,7 +46,7 @@ class GuessNumberController{
             resultAnswerPlayer.answer = clientData.hisAnswer[resultAnswerPlayer.pos]
             resultAnswerPlayer.result = clientData.hisResult[resultAnswerPlayer.pos]
         }else{
-            var result = CheckResult(answerPlayer.answer, room.roomData.pass);
+            var result = CheckResult(answerPlayer.answer, room.roomConfig.pass);
             if(player.correct.length == 0){
                 player.correct = result;
             }else{
@@ -67,26 +73,23 @@ class GuessNumberController{
             clientData.hisResult.push(result);
 
             var correctAns = "";
-            for (let index = 0; index < room.roomData.legthPass; index++) {
+            for (let index = 0; index < room.roomConfig.legthPass; index++) {
                 correctAns += Ans.correct;
             }
             if(result == correctAns){
                 player.status = StatusPlayer.Win;
-                var messageWin = new Message();
-                messageWin.MessageCode = MessageCode.player_win;
-                clientData.client.send("message", JSON.stringify(messageWin));
+                resultAnswerPlayer.status =  StatusPlayer.Win;
+                player.score += room.roomData.timeCount;
             }
+            var message = new Message();
+            message.MessageCode = MessageGuessNumber.result_answer;
+            message.Data = JSON.stringify(resultAnswerPlayer);
+            var messageData = new MessageData([JSON.stringify(message)]);
+            room.sendToClient(JSON.stringify(messageData), clientData.client);
         }
-        var messageCallBack = new Message();
-        messageCallBack.MessageCode = MessageCode.result_answer;
-        messageCallBack.Data = JSON.stringify(resultAnswerPlayer);
-        clientData.client.send("message", JSON.stringify(messageCallBack));
-        console.log(player.numb +"-"+ room.roomData.maxAnswers)
-        if(player.numb >= room.roomData.maxAnswers){
+        console.log(player.numb +"-"+ room.roomConfig.maxAnswers)
+        if(player.numb >= room.roomConfig.maxAnswers){
             player.status = StatusPlayer.Lose;
-            var messageLose = new Message();
-            messageLose.MessageCode = MessageCode.player_lose;
-            clientData.client.send("message", JSON.stringify(messageLose));
         }
     }
 }

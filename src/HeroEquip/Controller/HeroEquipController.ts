@@ -24,6 +24,7 @@ import { heroController } from "../../HeroServer/Controller/HeroController";
 
 class HeroEquipController {
     async Login(message: Message, transferData: TransferData) {
+        logController.LogDev("Dev 1692090212 Heroequip login ")
         var tokenUserPlayer = tokenController.AuthenTokenUserPlayer(transferData.Token);
         if (tokenUserPlayer == null || tokenUserPlayer == undefined) {
             logController.LogWarring(LogCode.HeroEquip_LoginFail, "Authen fail", transferData.Token);

@@ -4,8 +4,10 @@ import { StateGuessNumber } from "./StateGuessNumber";
 import { guessNumberService } from "../GuessNumberService";
 import { guessNumberRouter } from "../Router/GuessNumberRouter";
 import { DataModel } from "../../../Utils/DataModel";
-import { Message, MessageCode } from "./Message";
 import { PlayerGuessNumber } from "./PlayerGuessNumber";
+import { Message, MessageData } from "../../../MessageServer/Model/Message";
+import { MessageGuessNumber } from "./MessageGuessNumber";
+import { TransferData } from "../../../TransferData";
 
 export class ClientData{
     client : Client;
@@ -18,14 +20,14 @@ export class ClientData{
     }
 }
 export type DataHeroDictionary = Record<string, ClientData>;
-export class RoomGuessNumberData{
+export class RoomGuessNumberConfig{
     pass : string;
     legthPass : number;
     maxAnswers : number;
 }
 
 const timeVar = {
-    delayStart : 10,
+    delayStart : 15,
     durationGame : 60,
     delay_time_over : 10,
 }
@@ -36,11 +38,17 @@ const game_status = {
     time_over : 2,
 }
 
+export class RoomData{
+    timeCount : number = 0;
+    gameStatus : number = 0;
+}
+
 export class StateGuessNumberRoom extends Room<StateGuessNumber> {
-    maxClients = 2;
+    maxClients = 10;
 
     clientDatas : DataHeroDictionary
-    roomData : RoomGuessNumberData;
+    roomConfig : RoomGuessNumberConfig = new RoomGuessNumberConfig();
+    roomData : RoomData = new RoomData();
     delayedInterval!: Delayed;
 
     onCreate (options) {
@@ -55,40 +63,52 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
             guessNumberRouter.Router(this, message, client.sessionId);
         })
         this.delayedInterval = this.clock.setInterval(() => {
-            this.state.room.timeCount++;
+            this.roomData.timeCount--;
             this.checkTime();
         }, 1000);
     }
 
-    sendClientDataToClient(sessionId){
-        var clientData = this.clientDatas[sessionId];
-        console.log(clientData);
-        clientData.client.send("getData", JSON.stringify(clientData));
-    }
-
     inti(){
-        this.roomData = new RoomGuessNumberData();
-        this.roomData.legthPass = 4;
-        this.roomData.maxAnswers = 5;
+        this.roomConfig = new RoomGuessNumberConfig();
+        this.roomConfig.legthPass = 4;
+        this.roomConfig.maxAnswers = 5;
+        this.roomData = new RoomData();
+        this.roomData.timeCount = timeVar.delayStart;
         this.resetData();
     }
 
     resetData(){
-        this.roomData.pass = "";
-        switch (this.roomData.legthPass) {
+        this.roomConfig.pass = "";
+        switch (this.roomConfig.legthPass) {
             default:
-                this.roomData.pass = guessNumberService.fourWord[Math.floor(Math.random()*guessNumberService.fourWord.length)];
+                this.roomConfig.pass = guessNumberService.fourWord[Math.floor(Math.random()*guessNumberService.fourWord.length)];
                 break;
         }
-        console.log("Pass: ", this.roomData.pass);
+        console.log("Pass: ", this.roomConfig.pass);
     }
     
     onJoin (client: Client, options) {
+        console.log(options);
         var clientData = new ClientData();
         clientData.client = client;
         this.clientDatas[client.sessionId] = clientData;
         console.log(client.sessionId, "joined!");
         this.state.createPlayer(client.sessionId);
+
+        var message = new Message();
+        message.MessageCode = MessageGuessNumber.game_end;
+        if(this.roomData.gameStatus == game_status.game_start) message.MessageCode = MessageGuessNumber.game_start;
+        if(this.roomData.gameStatus == game_status.time_over) message.MessageCode = MessageGuessNumber.time_over;
+        var messageUdRoom = new Message();
+        messageUdRoom.MessageCode = MessageGuessNumber.update_room;
+        messageUdRoom.Data = JSON.stringify(this.roomData)
+        var messageData = new MessageData([JSON.stringify(messageUdRoom), JSON.stringify(message)]);
+        console.log(JSON.stringify(messageData));
+        this.sendToClient(JSON.stringify(messageData), client);
+
+        if(Object.keys(this.clientDatas).length >= this.maxClients){
+            this.roomData.timeCount = 0;
+        }
     }
 
     onLeave (client) {
@@ -99,6 +119,9 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
             console.log("error: ", error);
         }
         this.state.removePlayer(client.sessionId);
+        if(Object.keys(this.clientDatas).length == 0){
+            this.roomData.timeCount = 0;
+        }
     }
 
     onDispose () {
@@ -106,42 +129,65 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
     }
 
     checkTime(){
-        if(this.state.room.timeCount >= timeVar.delayStart && this.state.room.gameStatus == game_status.game_end){
+        if(this.roomData.timeCount <= 0 && this.roomData.gameStatus == game_status.game_end){
             console.log("Game Start")
             var message = new Message();
-            message.MessageCode = MessageCode.game_start;
-            this.state.room.timeCount = 0;
-            this.state.room.gameStatus = game_status.game_start;
-            this.sendToAllClient(message);
+            message.MessageCode = MessageGuessNumber.game_start;
+            this.roomData.timeCount = timeVar.durationGame;
+            this.roomData.gameStatus = game_status.game_start;
+            var messageUdRoom = new Message();
+            messageUdRoom.MessageCode = MessageGuessNumber.update_room;
+            messageUdRoom.Data = JSON.stringify(this.roomData);
+            this.sendToAllClient(JSON.stringify(message), JSON.stringify(messageUdRoom));
         }
-        if(this.state.room.timeCount>= timeVar.durationGame && this.state.room.gameStatus == game_status.game_start){
+        if(this.roomData.timeCount <= 0 && this.roomData.gameStatus == game_status.game_start){
             console.log("Time over")
-            this.state.room.timeCount = 0;
-            this.state.room.gameStatus = game_status.time_over;
+            this.roomData.timeCount = timeVar.delay_time_over;
+            this.roomData.gameStatus = game_status.time_over;
             var message = new Message();
-            message.MessageCode = MessageCode.time_over;
-            this.sendToAllClient(message);
+            message.MessageCode = MessageGuessNumber.time_over;
+            var messageUdRoom = new Message();
+            messageUdRoom.MessageCode = MessageGuessNumber.update_room;
+            messageUdRoom.Data = JSON.stringify(this.roomData);
+            this.sendToAllClient(JSON.stringify(message), JSON.stringify(messageUdRoom));
         }
-        if(this.state.room.timeCount >= timeVar.delay_time_over && this.state.room.gameStatus == game_status.time_over){
+        if(this.roomData.timeCount <= 0 && this.roomData.gameStatus == game_status.time_over){
             var message = new Message();
-            message.MessageCode = MessageCode.game_end;
-            this.sendToAllClient(message);
-            this.state.room.timeCount = 0;
-            this.state.room.gameStatus = game_status.game_end;
-            this.resetPlayer();
+            message.MessageCode = MessageGuessNumber.out_room;
+            this.sendToAllClient(JSON.stringify(message));
+            for(let key in this.clientDatas){
+                let value = this.clientDatas[key];
+                value.client.leave();
+            }
+            return;
+            // this.roomData.timeCount = timeVar.delayStart;
+            // this.roomData.gameStatus = game_status.game_end;
+            // var message = new Message();
+            // message.MessageCode = MessageGuessNumber.game_end;
+            // var messageUdRoom = new Message();
+            // messageUdRoom.MessageCode = MessageGuessNumber.update_room;
+            // messageUdRoom.Data = JSON.stringify(this.roomData);
+            // this.sendToAllClient(JSON.stringify(message), JSON.stringify(messageUdRoom));
+            // this.resetPlayer();
         }
         
     }
 
-    sendToAllClient(message : Message){
+    sendToAllClient(...message: string[]){
         for(let key in this.clientDatas){
             try {
                 let value = this.clientDatas[key];
-                value.client.send("message", JSON.stringify(message));
+                var messageData = new MessageData(message);
+                console.log(JSON.stringify(messageData))
+                this.sendToClient(JSON.stringify(messageData), value.client);
             } catch (error) {
                 console.log("error:", error)
             }
         }
+    }
+
+    sendToClient(data:string, client : Client){
+        client.send("message", data);
     }
 
     resetPlayer(){
