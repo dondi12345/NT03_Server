@@ -1,13 +1,14 @@
 import { Room, Client, ClientArray, Delayed } from "colyseus";
 import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
 import { StateGuessNumber } from "./StateGuessNumber";
-import { guessNumberService } from "../GuessNumberService";
+import { guessNumberService } from "../Service/GuessNumberService";
 import { guessNumberRouter } from "../Router/GuessNumberRouter";
 import { DataModel } from "../../../Utils/DataModel";
 import { PlayerGuessNumber } from "./PlayerGuessNumber";
 import { Message, MessageData } from "../../../MessageServer/Model/Message";
 import { MessageGuessNumber } from "./MessageGuessNumber";
 import { TransferData } from "../../../TransferData";
+import { wordService } from "../Service/WordService";
 
 export class ClientData{
     client : Client;
@@ -81,7 +82,7 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
         this.roomConfig.pass = "";
         switch (this.roomConfig.legthPass) {
             default:
-                this.roomConfig.pass = guessNumberService.fourWord[Math.floor(Math.random()*guessNumberService.fourWord.length)];
+                this.roomConfig.pass = wordService.fourWord[Math.floor(Math.random()*wordService.fourWord.length)];
                 break;
         }
         console.log("Pass: ", this.roomConfig.pass);
@@ -96,7 +97,7 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
         this.state.createPlayer(client.sessionId);
 
         var message = new Message();
-        message.MessageCode = MessageGuessNumber.game_end;
+        message.MessageCode = MessageGuessNumber.wait_other;
         if(this.roomData.gameStatus == game_status.game_start) message.MessageCode = MessageGuessNumber.game_start;
         if(this.roomData.gameStatus == game_status.time_over) message.MessageCode = MessageGuessNumber.time_over;
         var messageUdRoom = new Message();

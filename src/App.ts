@@ -19,7 +19,8 @@ import { InitWebServer } from './WebServer';
 import { dataCenterController } from './DataCenter/Controller/DataCenterController';
 import { portConfig } from './Enviroment/Env';
 import { listen } from '@colyseus/tools';
-import { guessNumberService } from './MiniGame/GuessNumber/GuessNumberService';
+import { guessNumberService } from './MiniGame/GuessNumber/Service/GuessNumberService';
+import { dataCenterService } from './DataCenter/Service/DataCenterService';
 
 
 // Define number of worker processes
@@ -56,7 +57,7 @@ function InitApp(){
       InitAPIServer();
       InitAccountServer();
       InitDailyLoginReward();
-      dataCenterController;
+      dataCenterService;
     }).catch((err) => {
 
     });

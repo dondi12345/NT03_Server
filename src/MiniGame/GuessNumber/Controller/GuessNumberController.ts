@@ -2,11 +2,12 @@ import { Message, MessageData } from "../../../MessageServer/Model/Message";
 import { TransferData } from "../../../TransferData";
 import { DataModel } from "../../../Utils/DataModel";
 import { stringUtils } from "../../../Utils/StringUtils";
-import { guessNumberService } from "../GuessNumberService";
+import { guessNumberService } from "../Service/GuessNumberService";
 import { AnswerPlayer, ResultAnswerPlayer } from "../Model/AnswerPlayer";
 import { StateGuessNumberRoom } from "../Model/GuessNumberStateHandler";
 import { MessageGuessNumber } from "../Model/MessageGuessNumber";
 import { StatusPlayer } from "../Model/StateGuessNumber";
+import { wordService } from "../Service/WordService";
 
 const Ans = {
     correct : "2",
@@ -97,7 +98,7 @@ class GuessNumberController{
 function CheckWord(word: string, length : number){
     var str;
     if(length == 4){
-        str = guessNumberService.fourWord.find((data)=>(data == word))
+        str = wordService.fourWord.find((data)=>(data == word))
     }
     if(str == null || str == undefined || str.length == 0){
         return false;

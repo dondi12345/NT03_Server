@@ -9,7 +9,7 @@ import { DataVersion, DataVersionModel, dataCenterName } from "../Model/DataVers
 
 class DataCenterService{
     constructor(){
-        // this.Init();
+        this.Init();
     }
 
     async Init(){
@@ -29,11 +29,15 @@ class DataCenterService{
             var dataVersion = DataModel.Parse<DataVersion>(res);
             var dataVersionCache = new DataVersion();
             dataVersionCache.Name = dataVersion.Name;
+            dataVersionCache.Version = dataVersion.Version;
+            dataVersionCache._id = dataVersion._id;
+            dataVersionCache.Data = [];
             if(dataVersion == null || dataVersion == undefined) throw null;
-            redisControler.Set(RedisKeyConfig.KeyDataCenterDetail(dataName), JSON.stringify(dataVersion))
             dataVersion.Data.forEach(element => {
+                dataVersionCache.Data.push(JSON.stringify(element));
                 dataCenterController.SetDataElementCached(dataName, element.Code.toString(), JSON.stringify(element));
             });
+            redisControler.Set(RedisKeyConfig.KeyDataCenterDetail(dataName), JSON.stringify(dataVersionCache))
             logController.LogMessage(LogCode.Server_InitDataCenterSuc,dataName, "Server" )
             suc = true;
             return suc;

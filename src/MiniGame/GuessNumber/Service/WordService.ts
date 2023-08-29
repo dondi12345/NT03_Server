@@ -1,30 +1,22 @@
-import { listen } from "@colyseus/tools";
-import { portConfig } from "../../Enviroment/Env";
-import { configGuessNumber } from "./ConfigGuessNumber";
 import { join } from 'path';
 import { readFileSync, writeFileSync } from 'fs';
 
-export type WordDictionary = Record<string, string>;
-
 const LINE_EXPRESSION: RegExp = /\r\n|\n\r|\n|\r/g;
-class GuessNumberService{
+
+class WordService{
     fourWord : string[]
     fiveWord : string[]
     sixWord : string[]
 
-    Init(){
-        this.fourWord = [];
-        this.fiveWord = [];
-        this.sixWord = [];
-        InitWord(this.fourWord, this.fiveWord, this.sixWord);
-        listen(configGuessNumber,  portConfig.portGuessNumber)
-    }
     constructor(){
-        this.Init();
+        this.fourWord=[];
+        this.fiveWord=[];
+        this.sixWord=[];
+        InitWord(this.fourWord, this.fiveWord, this.sixWord);
     }
 }
 
-export const guessNumberService = new GuessNumberService();
+export const wordService = new WordService();
 
 function InitWord(fourWord, fiveWord, sixWord){
     let result = readFileSync(join(__dirname, './en4words.txt'), 'utf-8');

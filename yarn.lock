@@ -1128,6 +1128,16 @@ columnify@^1.6.0:
     strip-ansi "^6.0.1"
     wcwidth "^1.0.0"
 
+colyseus.js@^0.15.13:
+  version "0.15.13"
+  resolved "https://registry.npmjs.org/colyseus.js/-/colyseus.js-0.15.13.tgz"
+  integrity sha512-MG6S3Zt0SZtALRKoeF/wfvkobMvHrNldJsbtrz+QQ4GSGzE+IdAx/RxkzzT5+GIqAq2W1dYyAjex/OS49bTV8g==
+  dependencies:
+    "@colyseus/schema" "^2.0.4"
+    httpie "^2.0.0-next.13"
+    tslib "^2.1.0"
+    ws "^8.13.0"
+
 colyseus@^0.15.7:
   version "0.15.7"
   resolved "https://registry.npmjs.org/colyseus/-/colyseus-0.15.7.tgz"
@@ -2179,6 +2189,11 @@ http-status-codes@^2.1.4:
   version "2.2.0"
   resolved "https://registry.npmjs.org/http-status-codes/-/http-status-codes-2.2.0.tgz"
   integrity sha512-feERVo9iWxvnejp3SEfm/+oNG517npqL2/PIA8ORjyOZjGC7TwCRQsZylciLS64i6pJ0wRYz3rkXLRwbtFa8Ng==
+
+httpie@^2.0.0-next.13:
+  version "2.0.0-next.13"
+  resolved "https://registry.npmjs.org/httpie/-/httpie-2.0.0-next.13.tgz"
+  integrity sha512-KbKOnq8wt0hVEfteYCSnEsPgzaWxcVc4qZ4OaDU9mVOYLRo3XChjWs3MiuRgFu5y+4JDo7sDKdKzkAn1ljQYFA==
 
 https-proxy-agent@^5.0.0:
   version "5.0.1"
@@ -4679,6 +4694,11 @@ tsconfig-paths@^4.2.0:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
+tslib@^2.1.0:
+  version "2.6.2"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
+  integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
+
 tsx@^3.12.7:
   version "3.12.7"
   resolved "https://registry.npmjs.org/tsx/-/tsx-3.12.7.tgz"
@@ -5030,6 +5050,11 @@ ws@^7.4.5:
   version "7.5.9"
   resolved "https://registry.npmjs.org/ws/-/ws-7.5.9.tgz"
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
+
+ws@^8.13.0:
+  version "8.13.0"
+  resolved "https://registry.npmjs.org/ws/-/ws-8.13.0.tgz"
+  integrity sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==
 
 ws@~8.11.0:
   version "8.11.0"
