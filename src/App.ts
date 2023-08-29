@@ -58,6 +58,7 @@ function InitApp(){
       InitAccountServer();
       InitDailyLoginReward();
       dataCenterService;
+      guessNumberService;
     }).catch((err) => {
 
     });
