@@ -49,6 +49,7 @@ function InitApp(){
     API();
     InitWebServer();
     AppTest();
+    guessNumberService;
     var date = new Date();
     var dateFormat = date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear()
     console.log("Dev 1688975930 Server", version," on: ", dateFormat);
@@ -58,7 +59,6 @@ function InitApp(){
       InitAccountServer();
       InitDailyLoginReward();
       dataCenterService;
-      guessNumberService;
     }).catch((err) => {
 
     });

@@ -1,5 +1,7 @@
 import { join } from 'path';
 import { readFileSync, writeFileSync } from 'fs';
+import { rootDir } from '../../../..';
+import path from 'path'; 
 
 const LINE_EXPRESSION: RegExp = /\r\n|\n\r|\n|\r/g;
 
@@ -17,9 +19,8 @@ class WordService{
 }
 
 export const wordService = new WordService();
-
 function InitWord(fourWord, fiveWord, sixWord){
-    let result = readFileSync(join(__dirname, './en4words.txt'), 'utf-8');
+    let result = readFileSync(path.join(rootDir+'/public/resources/guess_word/en4words.txt'), 'utf-8');
     var words = result.split(`\n`);
     words.forEach(element => {
         element = element.toLowerCase( )
@@ -28,7 +29,7 @@ function InitWord(fourWord, fiveWord, sixWord){
             fourWord.push(element);
         }
     });
-    result = readFileSync(join(__dirname, './en5words.txt'), 'utf-8');
+    result = readFileSync(path.join(rootDir+ '/public/resources/guess_word/en5words.txt'), 'utf-8');
     words = result.split(`\n`);
     words.forEach(element => {
         element = element.toLowerCase( )
@@ -37,7 +38,7 @@ function InitWord(fourWord, fiveWord, sixWord){
             fiveWord.push(element);
         }
     });
-    result = readFileSync(join(__dirname, './en6words.txt'), 'utf-8');
+    result = readFileSync( path.join(rootDir+'/public/resources/guess_word/en6words.txt'), 'utf-8');
     words = result.split(`\n`);
     words.forEach(element => {
         element = element.toLowerCase( )
@@ -52,7 +53,7 @@ function InitWord(fourWord, fiveWord, sixWord){
 }
 
 function WriteWord() {
-    const result = readFileSync(join(__dirname, './enwords.txt'), 'utf-8');
+    const result = readFileSync(path.join(rootDir+ '/public/resources/guess_word/enwords.txt'), 'utf-8');
     var words = result.split(`\n`);
     words.forEach(element => {
         element = element.toLowerCase( )
