@@ -17,7 +17,8 @@ export const AnsCheck = {
 
 const Score = {
     correctNumber : 30,
-    correct : 70
+    correct : 70,
+    win : 100,
 }
 
 class GuessNumberController{
@@ -105,10 +106,12 @@ class GuessNumberController{
             if(player.numb >= room.roomConfig.maxAnswers){
                 player.status = StatusPlayer.Lose;
                 resultAnswerPlayer.status = StatusPlayer.Lose;
+                player.score += room.roomData.timeCount;
             }
             if(result == correctAns){
                 player.status = StatusPlayer.Win;
                 resultAnswerPlayer.status =  StatusPlayer.Win;
+                player.score += Score.win;
                 player.score += room.roomData.timeCount;
             }
             var message = new Message();
@@ -117,7 +120,6 @@ class GuessNumberController{
             var messageData = new MessageData([JSON.stringify(message)]);
             room.sendToClient(JSON.stringify(messageData), clientData.client);
         }
-        console.log(player.numb +"-"+ room.roomConfig.maxAnswers)
     }
 }
 

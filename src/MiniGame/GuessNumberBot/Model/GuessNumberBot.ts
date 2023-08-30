@@ -45,6 +45,7 @@ export class GuessNumberBot{
         var rand = Math.floor(Math.random()*900+100);
         this.namePlayer = "Bot"+rand;
         this.Step();
+        this.delayStep = Math.floor(Math.random()*15+4);
     }
 
     Step(){
@@ -148,7 +149,7 @@ export class GuessNumberBot{
     }
 
     ReciveAnswer(data : string){
-        this.delayStep = this.delayStep = Math.floor(Math.random()*10+6)
+        this.delayStep = this.delayStep = Math.floor(Math.random()*30+10)
         var resultAnswerPlayer = DataModel.Parse<ResultAnswerPlayer>(data);
         this.clientData.hisAnswer.push(resultAnswerPlayer.answer);
         this.clientData.hisResult.push(resultAnswerPlayer.result);

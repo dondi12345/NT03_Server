@@ -21,6 +21,7 @@ import { portConfig } from './Enviroment/Env';
 import { listen } from '@colyseus/tools';
 import { guessNumberService } from './MiniGame/GuessNumber/Service/GuessNumberService';
 import { dataCenterService } from './DataCenter/Service/DataCenterService';
+import { guessNumberBotService } from './MiniGame/GuessNumberBot/Service/GuessNumberBotService';
 
 
 // Define number of worker processes
@@ -59,6 +60,7 @@ function InitApp(){
       InitAccountServer();
       InitDailyLoginReward();
       dataCenterService;
+      guessNumberBotService;
     }).catch((err) => {
 
     });

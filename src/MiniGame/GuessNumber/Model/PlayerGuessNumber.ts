@@ -3,6 +3,8 @@ import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
 
 export class PlayerGuessNumber extends Schema{
     @type("string")
+    playerName : string = "";
+    @type("string")
     correct : string = "";
     @type("number")
     numb : number = 0;

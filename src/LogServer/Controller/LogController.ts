@@ -56,7 +56,7 @@ function WriteLog(data : any){
 
 class LogController{
     LogDev(...str){
-        console.log(str);
+        // console.log(str);
     }
 
     LogMessage(logCode : LogCode, data, token : string){

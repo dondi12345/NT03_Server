@@ -9,6 +9,7 @@ import { Message, MessageData } from "../../../MessageServer/Model/Message";
 import { MessageGuessNumber } from "./MessageGuessNumber";
 import { TransferData } from "../../../TransferData";
 import { wordService } from "../Service/WordService";
+import { logController } from "../../../LogServer/Controller/LogController";
 
 export class ClientData{
     client : Client;
@@ -29,7 +30,7 @@ export class RoomGuessNumberConfig{
 
 const timeVar = {
     delayStart : 15,
-    durationGame : 60,
+    durationGame : 180,
     delay_time_over : 10,
 }
 
@@ -45,7 +46,7 @@ export class RoomData{
 }
 
 export class StateGuessNumberRoom extends Room<StateGuessNumber> {
-    maxClients = 10;
+    maxClients = 5;
 
     clientDatas : DataHeroDictionary
     roomConfig : RoomGuessNumberConfig = new RoomGuessNumberConfig();
@@ -59,7 +60,7 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
         this.clientDatas = {}
         this.setState(state);
         this.onMessage("message", (client, data)=>{
-            console.log("Recive: ", data);
+            logController.LogDev("Dev Recive: ", data);
             var message = DataModel.Parse<Message>(data);
             guessNumberRouter.Router(this, message, client.sessionId);
         })
@@ -89,12 +90,12 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
     }
     
     onJoin (client: Client, options) {
-        console.log(options);
+        logController.LogDev("Dev", options);
         var clientData = new ClientData();
         clientData.client = client;
         this.clientDatas[client.sessionId] = clientData;
-        console.log(client.sessionId, "joined!");
-        this.state.createPlayer(client.sessionId);
+        logController.LogDev("Dev", client.sessionId, "joined!");
+        this.state.createPlayer(client.sessionId, options.Name);
 
         var message = new Message();
         message.MessageCode = MessageGuessNumber.wait_other;
@@ -104,7 +105,7 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
         messageUdRoom.MessageCode = MessageGuessNumber.update_room;
         messageUdRoom.Data = JSON.stringify(this.roomData)
         var messageData = new MessageData([JSON.stringify(messageUdRoom), JSON.stringify(message)]);
-        console.log(JSON.stringify(messageData));
+        logController.LogDev("Dev", JSON.stringify(messageData));
         this.sendToClient(JSON.stringify(messageData), client);
 
         if(Object.keys(this.clientDatas).length >= this.maxClients){
@@ -113,25 +114,27 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
     }
 
     onLeave (client) {
-        console.log(client.sessionId, "left!");
+        logController.LogDev("Dev", client.sessionId, "left!");
         try {
             delete this.clientDatas[client.sessionId]
         } catch (error) {
-            console.log("error: ", error);
+            logController.LogDev("Dev error: ", error);
         }
         this.state.removePlayer(client.sessionId);
         if(Object.keys(this.clientDatas).length == 0){
             this.roomData.timeCount = 0;
+            // this.unlock();
         }
     }
 
     onDispose () {
-        console.log("Dispose StateHandlerRoom");
+        logController.LogDev("Dev Dispose StateHandlerRoom");
     }
 
     checkTime(){
         if(this.roomData.timeCount <= 0 && this.roomData.gameStatus == game_status.game_end){
-            console.log("Game Start")
+            logController.LogDev("Dev Game Start")
+            // this.lock();
             var message = new Message();
             message.MessageCode = MessageGuessNumber.game_start;
             this.roomData.timeCount = timeVar.durationGame;
@@ -142,7 +145,7 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
             this.sendToAllClient(JSON.stringify(message), JSON.stringify(messageUdRoom));
         }
         if(this.roomData.timeCount <= 0 && this.roomData.gameStatus == game_status.game_start){
-            console.log("Time over")
+            logController.LogDev("Dev Time over")
             this.roomData.timeCount = timeVar.delay_time_over;
             this.roomData.gameStatus = game_status.time_over;
             var message = new Message();
@@ -179,10 +182,10 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
             try {
                 let value = this.clientDatas[key];
                 var messageData = new MessageData(message);
-                console.log(JSON.stringify(messageData))
+                logController.LogDev("Dev", JSON.stringify(messageData))
                 this.sendToClient(JSON.stringify(messageData), value.client);
             } catch (error) {
-                console.log("error:", error)
+                logController.LogDev("Dev error:", error)
             }
         }
     }
@@ -197,7 +200,7 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
                 let value = this.clientDatas[key];
                 value.resetData();
             } catch (error) {
-                console.log("error:", error)
+                logController.LogDev("Dev error:", error)
             }
         }
         this.state.players.forEach(element => {

@@ -22,8 +22,10 @@ export class StateGuessNumber extends Schema{
 
     something = "This attribute won't be sent to the client-side";
 
-    createPlayer(sessionId: string) {
-        this.players.set(sessionId, new PlayerGuessNumber());
+    createPlayer(sessionId: string, playerName : string) {
+        var playerGuessNumber = new PlayerGuessNumber(); 
+        playerGuessNumber.playerName = playerName;
+        this.players.set(sessionId, playerGuessNumber);
     }
 
     removePlayer(sessionId: string) {
