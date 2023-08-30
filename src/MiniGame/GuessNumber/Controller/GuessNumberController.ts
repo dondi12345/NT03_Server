@@ -119,6 +119,11 @@ class GuessNumberController{
             message.Data = JSON.stringify(resultAnswerPlayer);
             var messageData = new MessageData([JSON.stringify(message)]);
             room.sendToClient(JSON.stringify(messageData), clientData.client);
+            CheckEndGame(room,(bool)=>{
+                if(bool){
+                    room.roomData.timeCount = 0;
+                }
+            })
         }
     }
 }
@@ -152,6 +157,18 @@ function CheckResult(answer : string, pass : string){
         result+=check;
     }
     return result;
+}
+
+async function CheckEndGame(room : StateGuessNumberRoom, callback){
+    var isDone = true;
+    await room.state.players.forEach((data)=>{
+        if(data.status == StatusPlayer.Do){
+            isDone = false;
+            callback(false);
+            return false;
+        }
+    })
+    callback(isDone)
 }
 
 export const guessNumberController = new GuessNumberController();

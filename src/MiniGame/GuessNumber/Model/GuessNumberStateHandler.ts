@@ -21,7 +21,7 @@ export class ClientData{
         this.hisResult = [];
     }
 }
-export type DataHeroDictionary = Record<string, ClientData>;
+export type ClientDataDictionary = Record<string, ClientData>;
 export class RoomGuessNumberConfig{
     pass : string;
     legthPass : number;
@@ -48,7 +48,7 @@ export class RoomData{
 export class StateGuessNumberRoom extends Room<StateGuessNumber> {
     maxClients = 5;
 
-    clientDatas : DataHeroDictionary
+    clientDatas : ClientDataDictionary
     roomConfig : RoomGuessNumberConfig = new RoomGuessNumberConfig();
     roomData : RoomData = new RoomData();
     delayedInterval!: Delayed;
