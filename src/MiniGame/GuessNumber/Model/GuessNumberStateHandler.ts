@@ -150,6 +150,7 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
             this.roomData.gameStatus = game_status.time_over;
             var message = new Message();
             message.MessageCode = MessageGuessNumber.time_over;
+            message.Data = this.roomConfig.pass;
             var messageUdRoom = new Message();
             messageUdRoom.MessageCode = MessageGuessNumber.update_room;
             messageUdRoom.Data = JSON.stringify(this.roomData);
