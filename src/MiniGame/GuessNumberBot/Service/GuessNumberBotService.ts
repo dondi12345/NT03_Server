@@ -23,7 +23,7 @@ class GuessNumberBotService{
         var client9 = new GuessNumberBot();
         client9.Start();
         var client10 = new GuessNumberBot();
-        client10.Start();;
+        client10.Start();
     }
 }
 

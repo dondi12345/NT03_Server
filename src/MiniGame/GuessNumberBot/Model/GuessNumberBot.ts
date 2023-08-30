@@ -33,6 +33,8 @@ export class GuessNumberBot{
     clientData : ClientData
 
     behaviour : GuessNumberBotBehaviour = GuessNumberBotBehaviour.None;
+    oldBehaviour : GuessNumberBotBehaviour = GuessNumberBotBehaviour.None;
+    countSame : number = 0;
     delayStep : number = 1;
 
     wordAvailables : string[]
@@ -47,6 +49,15 @@ export class GuessNumberBot{
 
     Step(){
         logController.LogDev("Dev New Step", this.namePlayer,enumUtils.ToString(GuessNumberBotBehaviour, this.behaviour))
+        if(this.behaviour == this.oldBehaviour){
+            this.countSame ++;
+            if(this.countSame >= 10){
+                this.behaviour = GuessNumberBotBehaviour.None;
+            }
+        }else{
+            this.countSame = 0;
+            this.oldBehaviour = this.behaviour;
+        }
         switch (this.behaviour) {
             case GuessNumberBotBehaviour.None:
                 this.behaviour = GuessNumberBotBehaviour.FindingRoom;
