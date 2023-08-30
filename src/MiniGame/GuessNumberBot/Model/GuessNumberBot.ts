@@ -7,6 +7,7 @@ import { wordService } from "../../GuessNumber/Service/WordService";
 import { AnswerPlayer, ResultAnswerPlayer } from "../../GuessNumber/Model/AnswerPlayer";
 import { StatusPlayer } from "../../GuessNumber/Model/StateGuessNumber";
 import { AnsCheck } from "../../GuessNumber/Controller/GuessNumberController";
+import { logController } from "../../../LogServer/Controller/LogController";
 
 enum GuessNumberBotBehaviour{
     None,
@@ -45,7 +46,7 @@ export class GuessNumberBot{
     }
 
     Step(){
-        console.log("New Step", this.namePlayer,enumUtils.ToString(GuessNumberBotBehaviour, this.behaviour))
+        logController.LogDev("Dev New Step", this.namePlayer,enumUtils.ToString(GuessNumberBotBehaviour, this.behaviour))
         switch (this.behaviour) {
             case GuessNumberBotBehaviour.None:
                 this.behaviour = GuessNumberBotBehaviour.FindingRoom;
@@ -69,7 +70,7 @@ export class GuessNumberBot{
     }
 
     async JoinRoom(){
-        console.log("Join room", this.namePlayer)
+        logController.LogDev("Dev Join room", this.namePlayer)
         this.clientData = new ClientData();
         this.client = new Client("ws://localhost:3007");
         this.OutRoom();
@@ -78,7 +79,7 @@ export class GuessNumberBot{
             this.room.onMessage<string>("message", (data)=>{
                 this.RecieveMessage(data)
             });
-            console.log("joined successfully", this.room.sessionId);
+            logController.LogDev("Dev joined successfully", this.room.sessionId);
             this.behaviour = GuessNumberBotBehaviour.RoomJoined;
         } catch (e) {
             console.error("join error", e);
@@ -101,7 +102,7 @@ export class GuessNumberBot{
 
     RecieveMessage(data : string){
         var messageData = DataModel.Parse<MessageData>(data);
-        console.log("Recive: ",this.namePlayer,messageData.Data);
+        logController.LogDev("Dev Recive: ",this.namePlayer,messageData.Data);
         for (let index = 0; index < messageData.Data.length; index++) {
             var message = DataModel.Parse<Message>(messageData.Data[index]);
             if(message.MessageCode == MessageGuessNumber.wait_other){
@@ -123,7 +124,7 @@ export class GuessNumberBot{
     }
 
     GuessWorld(){
-        console.log("GuessWorld")
+        logController.LogDev("Dev GuessWorld")
         var word = this.wordAvailables[Math.floor(Math.random()*this.wordAvailables.length)]
         var message = new Message();
         message.MessageCode = MessageGuessNumber.player_answer;
@@ -179,7 +180,6 @@ export class GuessNumberBot{
                 continue;
             }
         }
-        console.log(this.wordAvailables.length)
         this.clientData.status = resultAnswerPlayer.status;
         if(this.clientData.status == StatusPlayer.Win || this.clientData.status == StatusPlayer.Lose){
             this.behaviour = GuessNumberBotBehaviour.WaitEndGame;

@@ -15,6 +15,11 @@ export const AnsCheck = {
     wrong :  "0"
 }
 
+const Score = {
+    correctNumber : 30,
+    correct : 70
+}
+
 class GuessNumberController{
     PlayerAnswer(room : StateGuessNumberRoom, message : Message, sessionId : string){
         var answerPlayer = DataModel.Parse<AnswerPlayer>(message.Data)
@@ -79,9 +84,9 @@ class GuessNumberController{
                         player.correct = stringUtils.StringRepalce(player.correct, index, result[index]);
                     }
                     if(player.correct[index] == AnsCheck.correctNumber){
-                        score += 10;
+                        score += Score.correctNumber;
                     }else if(player.correct[index] == AnsCheck.correct){
-                        score += 20;
+                        score += Score.correct;
                     }
                 }
                 player.score = score;
