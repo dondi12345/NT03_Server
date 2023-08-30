@@ -9,7 +9,7 @@ import { MessageGuessNumber } from "../Model/MessageGuessNumber";
 import { StatusPlayer } from "../Model/StateGuessNumber";
 import { wordService } from "../Service/WordService";
 
-const Ans = {
+export const AnsCheck = {
     correct : "2",
     correctNumber : "1",
     wrong :  "0"
@@ -25,18 +25,38 @@ class GuessNumberController{
         var clientData = room.clientDatas[sessionId];
         var player = room.state.players.get(sessionId);
         if(player == null || player == undefined){
+            var message = new Message();
+            message.MessageCode = MessageGuessNumber.answer_inval;
+            message.Data = "Not found player";
+            var messageData = new MessageData([JSON.stringify(message)]);
+            room.sendToClient(JSON.stringify(messageData), clientData.client);
             return;
         }
 
         if(player.status == StatusPlayer.Win){
+            var message = new Message();
+            message.MessageCode = MessageGuessNumber.answer_inval;
+            message.Data = "You win";
+            var messageData = new MessageData([JSON.stringify(message)]);
+            room.sendToClient(JSON.stringify(messageData), clientData.client);
             return;
         }
         
         if(player.numb >= room.roomConfig.maxAnswers){
+            var message = new Message();
+            message.MessageCode = MessageGuessNumber.answer_inval;
+            message.Data = "Wrong fomat answer";
+            var messageData = new MessageData([JSON.stringify(message)]);
+            room.sendToClient(JSON.stringify(messageData), clientData.client);
             return;
         }
         
         if(!CheckWord(answerPlayer.answer, room.roomConfig.legthPass)){
+            var message = new Message();
+            message.MessageCode = MessageGuessNumber.answer_inval;
+            message.Data = "Inval word";
+            var messageData = new MessageData([JSON.stringify(message)]);
+            room.sendToClient(JSON.stringify(messageData), clientData.client);
             return;
         }
 
@@ -58,9 +78,9 @@ class GuessNumberController{
                     if(newR > oldR){
                         player.correct = stringUtils.StringRepalce(player.correct, index, result[index]);
                     }
-                    if(player.correct[index] == Ans.correctNumber){
+                    if(player.correct[index] == AnsCheck.correctNumber){
                         score += 10;
-                    }else if(player.correct[index] == Ans.correct){
+                    }else if(player.correct[index] == AnsCheck.correct){
                         score += 20;
                     }
                 }
@@ -75,7 +95,11 @@ class GuessNumberController{
 
             var correctAns = "";
             for (let index = 0; index < room.roomConfig.legthPass; index++) {
-                correctAns += Ans.correct;
+                correctAns += AnsCheck.correct;
+            }
+            if(player.numb >= room.roomConfig.maxAnswers){
+                player.status = StatusPlayer.Lose;
+                resultAnswerPlayer.status = StatusPlayer.Lose;
             }
             if(result == correctAns){
                 player.status = StatusPlayer.Win;
@@ -89,9 +113,6 @@ class GuessNumberController{
             room.sendToClient(JSON.stringify(messageData), clientData.client);
         }
         console.log(player.numb +"-"+ room.roomConfig.maxAnswers)
-        if(player.numb >= room.roomConfig.maxAnswers){
-            player.status = StatusPlayer.Lose;
-        }
     }
 }
 
@@ -110,14 +131,14 @@ function CheckWord(word: string, length : number){
 function CheckResult(answer : string, pass : string){
     var result = "";
     for (let i = 0; i < answer.length; i++) {
-        var check = Ans.wrong;
+        var check = AnsCheck.wrong;
         for (let j = 0; j < pass.length; j++) {
             if(answer[i] == pass[j]){
                 if(i==j){
-                    check=Ans.correct;
+                    check=AnsCheck.correct;
                 }else{
-                    if(check == Ans.wrong)
-                    check=Ans.correctNumber;
+                    if(check == AnsCheck.wrong)
+                    check=AnsCheck.correctNumber;
                 }
             }
         }

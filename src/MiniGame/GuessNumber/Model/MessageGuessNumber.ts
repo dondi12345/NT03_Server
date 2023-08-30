@@ -8,4 +8,5 @@ export const MessageGuessNumber = {
     time_over : 16007,
     update_room : 16008,
     out_room : 16009,
+    answer_inval : 16010,
 }
