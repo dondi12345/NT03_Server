@@ -62,11 +62,11 @@ export class GuessNumberBot{
         switch (this.behaviour) {
             case GuessNumberBotBehaviour.None:
                 this.behaviour = GuessNumberBotBehaviour.FindingRoom;
-                this.delayStep = Math.floor(Math.random()*3+3);
+                this.delayStep = Math.floor(Math.random()*10+10);
                 break;
             case GuessNumberBotBehaviour.FindingRoom:
                 this.JoinRoom()
-                this.delayStep = Math.floor(Math.random()*5+3);
+                this.delayStep = Math.floor(Math.random()*10+5);
                 break;
             case GuessNumberBotBehaviour.Guessing:
                 this.GuessWorld();
@@ -87,15 +87,16 @@ export class GuessNumberBot{
         this.client = new Client("ws://localhost:3007");
         this.OutRoom();
         try {
-            this.room = await this.client.joinOrCreate("state_guess_number", {Name : this.namePlayer});
+            this.room = await this.client.join("state_guess_number", {Name : this.namePlayer});
             this.room.onMessage<string>("message", (data)=>{
                 this.RecieveMessage(data)
             });
             logController.LogDev("Dev joined successfully", this.room.sessionId);
             this.behaviour = GuessNumberBotBehaviour.RoomJoined;
         } catch (e) {
-            console.error("join error", e);
+            // logController.LogDev("Dev join error", e);
         }
+        this.behaviour = GuessNumberBotBehaviour.None;
         this.wordAvailables =[]
         this.keyBroadAvailable =[]
         this.keyBroadUnavailable =[]

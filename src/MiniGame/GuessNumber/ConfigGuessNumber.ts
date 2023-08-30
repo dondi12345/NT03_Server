@@ -33,7 +33,7 @@ export const configGuessNumber = config({
         app.use('/', express.static(path.join(__dirname, "static")));
 
         // (optional) client playground
-        app.use('/playground', playground);
+        // app.use('/playground', playground);
 
         // (optional) web monitoring panel
         app.use('/colyseus', monitor());
