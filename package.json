@@ -10,6 +10,7 @@
     "start_0": "tsx src/App.ts",
     "start_1": "tsx src/MiniGame/GuessNumber/Service/GuessNumberService.ts",
     "start_2": "tsx src/MiniGame/GuessNumberBot/Service/GuessNumberBotService.ts",
+    "start_3": "tsx src/index.ts",
     "build": "tsc",
     "build-scss": "yarn node-sass src/WebServer/resources/scss/ --output public/css/"
   },

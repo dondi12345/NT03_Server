@@ -19,8 +19,7 @@ import { InitWebServer } from './WebServer';
 import { dataCenterController } from './DataCenter/Controller/DataCenterController';
 import { portConfig } from './Enviroment/Env';
 import { dataCenterService } from './DataCenter/Service/DataCenterService';
-import { guessWord } from './MiniGameGuessWord/GuessWord';
-import { guessWordService } from './MiniGameGuessWord/GuessWord/Service/GuessWordService';
+import { miniGameWord } from './MiniGameGuessWord/GuessWord';
 
 
 // Define number of worker processes
@@ -49,7 +48,7 @@ function InitApp(){
     API();
     InitWebServer();
     AppTest();
-    guessWord
+    miniGameWord
     // guessWordService
     var date = new Date();
     var dateFormat = date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear()

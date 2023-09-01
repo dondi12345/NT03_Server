@@ -7,7 +7,8 @@ import express from 'express';
 // import { uWebSocketsTransport} from "@colyseus/uwebsockets-transport";
 
 // Import demo room handlers
-import { StateGuessWordRoom } from "./Model/GuessWordStateHandler";
+import { StateGuessWordRoom } from "./GuessWord/Model/GuessWordStateHandler";
+import { StateSpellingBeeRoom } from "./SpellingBee/Model/SpellingBeeStateHandler";
 
 export const configGuessWord = config({
     options: {
@@ -19,6 +20,8 @@ export const configGuessWord = config({
         // Define "state_handler" room
         gameServer.define("state_guess_number", StateGuessWordRoom)
             .enableRealtimeListing();
+
+        gameServer.define("state_spelling_bee", StateSpellingBeeRoom)
 
         gameServer.onShutdown(function(){
             console.log(`game server is going down.`);
