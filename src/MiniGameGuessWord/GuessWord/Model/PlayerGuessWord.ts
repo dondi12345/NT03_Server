@@ -1,7 +1,6 @@
-import { Room, Client, ClientArray } from "colyseus";
-import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
-
-export class PlayerGuessNumber extends Schema{
+import { Schema, Context } from "@colyseus/schema";
+const type = Context.create(); // this is your @type() decorator bound to a context
+export class PlayerGuessWord extends Schema{
     @type("string")
     playerName : string = "";
     @type("string")
@@ -20,4 +19,3 @@ export class PlayerGuessNumber extends Schema{
         this.status = 0;
     }
 }
- 

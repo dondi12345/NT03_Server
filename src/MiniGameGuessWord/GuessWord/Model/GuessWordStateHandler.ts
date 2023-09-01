@@ -1,13 +1,11 @@
-import { Room, Client, ClientArray, Delayed } from "colyseus";
+import { Room, Client, Delayed } from "colyseus";
 import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
-import { StateGuessNumber } from "./StateGuessNumber";
-import { guessNumberService } from "../Service/GuessNumberService";
-import { guessNumberRouter } from "../Router/GuessNumberRouter";
+import { StateGuessWord } from "./StateGuessWord";
+import { guessWordRouter } from "../Router/GuessWordRouter";
 import { DataModel } from "../../../Utils/DataModel";
-import { PlayerGuessNumber } from "./PlayerGuessNumber";
+import { PlayerGuessWord } from "./PlayerGuessWord";
 import { Message, MessageData } from "../../../MessageServer/Model/Message";
-import { MessageGuessNumber } from "./MessageGuessNumber";
-import { TransferData } from "../../../TransferData";
+import { MessageGuessWord } from "./MessageGuessWord";
 import { wordService } from "../Service/WordService";
 import { logController } from "../../../LogServer/Controller/LogController";
 
@@ -22,7 +20,7 @@ export class ClientData{
     }
 }
 export type ClientDataDictionary = Record<string, ClientData>;
-export class RoomGuessNumberConfig{
+export class RoomGuessWordConfig{
     pass : string;
     legthPass : number;
     maxAnswers : number;
@@ -45,24 +43,24 @@ export class RoomData{
     gameStatus : number = 0;
 }
 
-export class StateGuessNumberRoom extends Room<StateGuessNumber> {
+export class StateGuessWordRoom extends Room<StateGuessWord> {
     maxClients = 5;
 
     clientDatas : ClientDataDictionary
-    roomConfig : RoomGuessNumberConfig = new RoomGuessNumberConfig();
+    roomConfig : RoomGuessWordConfig = new RoomGuessWordConfig();
     roomData : RoomData = new RoomData();
     delayedInterval!: Delayed;
 
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
         this.inti();
-        var state = new StateGuessNumber();
+        var state = new StateGuessWord();
         this.clientDatas = {}
         this.setState(state);
         this.onMessage("message", (client, data)=>{
             logController.LogDev("Dev Recive: ", data);
             var message = DataModel.Parse<Message>(data);
-            guessNumberRouter.Router(this, message, client.sessionId);
+            guessWordRouter.Router(this, message, client.sessionId);
         })
         this.delayedInterval = this.clock.setInterval(() => {
             this.roomData.timeCount--;
@@ -71,7 +69,7 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
     }
 
     inti(){
-        this.roomConfig = new RoomGuessNumberConfig();
+        this.roomConfig = new RoomGuessWordConfig();
         this.roomConfig.legthPass = 4;
         this.roomConfig.maxAnswers = 5;
         this.roomData = new RoomData();
@@ -88,21 +86,21 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
         }
         console.log("Pass: ", this.roomConfig.pass);
     }
-    
+
     onJoin (client: Client, options) {
         logController.LogDev("Dev", options);
         var clientData = new ClientData();
         clientData.client = client;
         this.clientDatas[client.sessionId] = clientData;
-        logController.LogDev("Dev", client.sessionId, "joined!");
+        logController.LogDev("Dev", options.Name, client.sessionId, "joined!");
         this.state.createPlayer(client.sessionId, options.Name);
 
         var message = new Message();
-        message.MessageCode = MessageGuessNumber.wait_other;
-        if(this.roomData.gameStatus == game_status.game_start) message.MessageCode = MessageGuessNumber.game_start;
-        if(this.roomData.gameStatus == game_status.time_over) message.MessageCode = MessageGuessNumber.time_over;
+        message.MessageCode = MessageGuessWord.wait_other;
+        if(this.roomData.gameStatus == game_status.game_start) message.MessageCode = MessageGuessWord.game_start;
+        if(this.roomData.gameStatus == game_status.time_over) message.MessageCode = MessageGuessWord.time_over;
         var messageUdRoom = new Message();
-        messageUdRoom.MessageCode = MessageGuessNumber.update_room;
+        messageUdRoom.MessageCode = MessageGuessWord.update_room;
         messageUdRoom.Data = JSON.stringify(this.roomData)
         var messageData = new MessageData([JSON.stringify(messageUdRoom), JSON.stringify(message)]);
         logController.LogDev("Dev", JSON.stringify(messageData));
@@ -132,33 +130,36 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
     }
 
     checkTime(){
-        if(this.roomData.timeCount <= 0 && this.roomData.gameStatus == game_status.game_end){
+        if(this.roomData.timeCount > 0) return;
+        if(this.roomData.gameStatus == game_status.game_end){
             logController.LogDev("Dev Game Start")
-            // this.lock();
+            this.lock();
             var message = new Message();
-            message.MessageCode = MessageGuessNumber.game_start;
+            message.MessageCode = MessageGuessWord.game_start;
             this.roomData.timeCount = timeVar.durationGame;
             this.roomData.gameStatus = game_status.game_start;
             var messageUdRoom = new Message();
-            messageUdRoom.MessageCode = MessageGuessNumber.update_room;
+            messageUdRoom.MessageCode = MessageGuessWord.update_room;
             messageUdRoom.Data = JSON.stringify(this.roomData);
             this.sendToAllClient(JSON.stringify(message), JSON.stringify(messageUdRoom));
+            return;
         }
-        if(this.roomData.timeCount <= 0 && this.roomData.gameStatus == game_status.game_start){
+        if(this.roomData.gameStatus == game_status.game_start){
             logController.LogDev("Dev Time over")
             this.roomData.timeCount = timeVar.delay_time_over;
             this.roomData.gameStatus = game_status.time_over;
             var message = new Message();
-            message.MessageCode = MessageGuessNumber.time_over;
+            message.MessageCode = MessageGuessWord.time_over;
             message.Data = this.roomConfig.pass;
             var messageUdRoom = new Message();
-            messageUdRoom.MessageCode = MessageGuessNumber.update_room;
+            messageUdRoom.MessageCode = MessageGuessWord.update_room;
             messageUdRoom.Data = JSON.stringify(this.roomData);
             this.sendToAllClient(JSON.stringify(message), JSON.stringify(messageUdRoom));
+            return;
         }
-        if(this.roomData.timeCount <= 0 && this.roomData.gameStatus == game_status.time_over){
+        if(this.roomData.gameStatus == game_status.time_over){
             var message = new Message();
-            message.MessageCode = MessageGuessNumber.out_room;
+            message.MessageCode = MessageGuessWord.out_room;
             this.sendToAllClient(JSON.stringify(message));
             for(let key in this.clientDatas){
                 let value = this.clientDatas[key];
@@ -168,14 +169,14 @@ export class StateGuessNumberRoom extends Room<StateGuessNumber> {
             // this.roomData.timeCount = timeVar.delayStart;
             // this.roomData.gameStatus = game_status.game_end;
             // var message = new Message();
-            // message.MessageCode = MessageGuessNumber.game_end;
+            // message.MessageCode = MessageGuessWord.game_end;
             // var messageUdRoom = new Message();
-            // messageUdRoom.MessageCode = MessageGuessNumber.update_room;
+            // messageUdRoom.MessageCode = MessageGuessWord.update_room;
             // messageUdRoom.Data = JSON.stringify(this.roomData);
             // this.sendToAllClient(JSON.stringify(message), JSON.stringify(messageUdRoom));
             // this.resetPlayer();
         }
-        
+
     }
 
     sendToAllClient(...message: string[]){

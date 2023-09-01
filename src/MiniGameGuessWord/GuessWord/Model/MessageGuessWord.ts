@@ -1,4 +1,4 @@
-export const MessageGuessNumber = {
+export const MessageGuessWord = {
     player_answer : 16001,
     result_answer : 16002,
     player_lose : 16003,

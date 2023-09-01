@@ -1,6 +1,5 @@
-import config from "@colyseus/tools";
+import config from "@colyseus/arena";
 import { monitor } from "@colyseus/monitor";
-import { playground } from "@colyseus/playground";
 import path from 'path';
 import serveIndex from 'serve-index';
 import express from 'express';
@@ -8,17 +7,17 @@ import express from 'express';
 // import { uWebSocketsTransport} from "@colyseus/uwebsockets-transport";
 
 // Import demo room handlers
-import { StateGuessNumberRoom } from "./Model/GuessNumberStateHandler";
+import { StateGuessWordRoom } from "./Model/GuessWordStateHandler";
 
-export const configGuessNumber = config({
+export const configGuessWord = config({
     options: {
-        devMode: false,
+
     },
 
     initializeGameServer: (gameServer) => {
         // Define "lobby" room
         // Define "state_handler" room
-        gameServer.define("state_guess_number", StateGuessNumberRoom)
+        gameServer.define("state_guess_number", StateGuessWordRoom)
             .enableRealtimeListing();
 
         gameServer.onShutdown(function(){

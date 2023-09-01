@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { readFileSync, writeFileSync } from 'fs';
-import { rootDir } from '../../../..';
-import path from 'path'; 
+import { rootDir } from '../../../../';
+import path from 'path';
 
 const LINE_EXPRESSION: RegExp = /\r\n|\n\r|\n|\r/g;
 
@@ -68,7 +68,7 @@ function WriteWord() {
             syncWriteFile("en6words.txt", element+"\n");
         }
     });
-  
+
     return result;
   }
 
@@ -81,7 +81,7 @@ function WriteWord() {
     writeFileSync(join(__dirname, filename), data, {
       flag: 'a',
     });
-  
+
     const contents = readFileSync(join(__dirname, filename), 'utf-8');
     return contents;
   }

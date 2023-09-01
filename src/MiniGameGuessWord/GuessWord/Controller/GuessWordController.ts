@@ -1,13 +1,11 @@
-import { Message, MessageData } from "../../../MessageServer/Model/Message";
-import { TransferData } from "../../../TransferData";
 import { DataModel } from "../../../Utils/DataModel";
 import { stringUtils } from "../../../Utils/StringUtils";
-import { guessNumberService } from "../Service/GuessNumberService";
 import { AnswerPlayer, ResultAnswerPlayer } from "../Model/AnswerPlayer";
-import { StateGuessNumberRoom } from "../Model/GuessNumberStateHandler";
-import { MessageGuessNumber } from "../Model/MessageGuessNumber";
-import { StatusPlayer } from "../Model/StateGuessNumber";
+import { StateGuessWordRoom } from "../Model/GuessWordStateHandler";
+import { MessageGuessWord as MessageGuessWord } from "../Model/MessageGuessWord";
+import { StatusPlayer } from "../Model/StateGuessWord";
 import { wordService } from "../Service/WordService";
+import { Message, MessageData } from "../../../MessageServer/Model/Message";
 
 export const AnsCheck = {
     correct : "2",
@@ -21,8 +19,8 @@ const Score = {
     win : 100,
 }
 
-class GuessNumberController{
-    PlayerAnswer(room : StateGuessNumberRoom, message : Message, sessionId : string){
+class GuessWordController{
+    PlayerAnswer(room : StateGuessWordRoom, message : Message, sessionId : string){
         var answerPlayer = DataModel.Parse<AnswerPlayer>(message.Data)
         if(answerPlayer.answer.length != room.roomConfig.legthPass){
             return;
@@ -32,7 +30,7 @@ class GuessNumberController{
         var player = room.state.players.get(sessionId);
         if(player == null || player == undefined){
             var message = new Message();
-            message.MessageCode = MessageGuessNumber.answer_inval;
+            message.MessageCode = MessageGuessWord.answer_inval;
             message.Data = "Not found player";
             var messageData = new MessageData([JSON.stringify(message)]);
             room.sendToClient(JSON.stringify(messageData), clientData.client);
@@ -41,25 +39,25 @@ class GuessNumberController{
 
         if(player.status == StatusPlayer.Win){
             var message = new Message();
-            message.MessageCode = MessageGuessNumber.answer_inval;
+            message.MessageCode = MessageGuessWord.answer_inval;
             message.Data = "You win";
             var messageData = new MessageData([JSON.stringify(message)]);
             room.sendToClient(JSON.stringify(messageData), clientData.client);
             return;
         }
-        
+
         if(player.numb >= room.roomConfig.maxAnswers){
             var message = new Message();
-            message.MessageCode = MessageGuessNumber.answer_inval;
+            message.MessageCode = MessageGuessWord.answer_inval;
             message.Data = "Wrong fomat answer";
             var messageData = new MessageData([JSON.stringify(message)]);
             room.sendToClient(JSON.stringify(messageData), clientData.client);
             return;
         }
-        
+
         if(!CheckWord(answerPlayer.answer, room.roomConfig.legthPass)){
             var message = new Message();
-            message.MessageCode = MessageGuessNumber.answer_inval;
+            message.MessageCode = MessageGuessWord.answer_inval;
             message.Data = "Inval word";
             var messageData = new MessageData([JSON.stringify(message)]);
             room.sendToClient(JSON.stringify(messageData), clientData.client);
@@ -77,21 +75,24 @@ class GuessNumberController{
             if(player.correct.length == 0){
                 player.correct = result;
             }else{
-                var score = 0;
                 for (let index = 0; index < player.correct.length; index++) {
                     var oldR : number =+ player.correct[index]
                     var newR : number =+ result[index]
                     if(newR > oldR){
                         player.correct = stringUtils.StringRepalce(player.correct, index, result[index]);
                     }
-                    if(player.correct[index] == AnsCheck.correctNumber){
-                        score += Score.correctNumber;
-                    }else if(player.correct[index] == AnsCheck.correct){
-                        score += Score.correct;
-                    }
                 }
-                player.score = score;
             }
+            var score = 0;
+            for (let index = 0; index < player.correct.length; index++) {
+                if(player.correct[index].toString() == AnsCheck.correct){
+                    score += Score.correct;
+                }else if(player.correct[index].toString() == AnsCheck.correctNumber){
+                    score += Score.correctNumber;
+                }
+            }
+            player.score = score;
+            player
             player.numb++;
             resultAnswerPlayer.pos = answerPlayer.pos;
             resultAnswerPlayer.answer = answerPlayer.answer;
@@ -115,7 +116,7 @@ class GuessNumberController{
                 player.score += room.roomData.timeCount;
             }
             var message = new Message();
-            message.MessageCode = MessageGuessNumber.result_answer;
+            message.MessageCode = MessageGuessWord.result_answer;
             message.Data = JSON.stringify(resultAnswerPlayer);
             var messageData = new MessageData([JSON.stringify(message)]);
             room.sendToClient(JSON.stringify(messageData), clientData.client);
@@ -159,7 +160,7 @@ function CheckResult(answer : string, pass : string){
     return result;
 }
 
-async function CheckEndGame(room : StateGuessNumberRoom, callback){
+async function CheckEndGame(room : StateGuessWordRoom, callback){
     var isDone = true;
     await room.state.players.forEach((data)=>{
         if(data.status == StatusPlayer.Do){
@@ -171,4 +172,4 @@ async function CheckEndGame(room : StateGuessNumberRoom, callback){
     callback(isDone)
 }
 
-export const guessNumberController = new GuessNumberController();
+export const guessWordController = new GuessWordController();

@@ -8,10 +8,5 @@
  *
  * See: https://docs.colyseus.io/server/api/#constructor-options
  */
-import { listen } from "@colyseus/tools";
-import { guessNumberService } from "./MiniGame/GuessNumber/Service/GuessNumberService";
 
 // Import arena config
-
-// Create and listen on 2567 (or PORT environment variable.)
-guessNumberService

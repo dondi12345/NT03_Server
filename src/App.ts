@@ -18,10 +18,9 @@ import { LogType } from './LogServer/Model/LogModel';
 import { InitWebServer } from './WebServer';
 import { dataCenterController } from './DataCenter/Controller/DataCenterController';
 import { portConfig } from './Enviroment/Env';
-import { listen } from '@colyseus/tools';
-import { guessNumberService } from './MiniGame/GuessNumber/Service/GuessNumberService';
 import { dataCenterService } from './DataCenter/Service/DataCenterService';
-import { guessNumberBotService } from './MiniGame/GuessNumberBot/Service/GuessNumberBotService';
+import { guessWord } from './MiniGameGuessWord/GuessWord';
+import { guessWordService } from './MiniGameGuessWord/GuessWord/Service/GuessWordService';
 
 
 // Define number of worker processes
@@ -50,7 +49,8 @@ function InitApp(){
     API();
     InitWebServer();
     AppTest();
-    guessNumberService;
+    guessWord
+    // guessWordService
     var date = new Date();
     var dateFormat = date.getUTCHours()+"/"+date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear()
     console.log("Dev 1688975930 Server", version," on: ", dateFormat);
@@ -60,7 +60,6 @@ function InitApp(){
       InitAccountServer();
       InitDailyLoginReward();
       dataCenterService;
-      guessNumberBotService;
     }).catch((err) => {
 
     });

@@ -1,15 +1,15 @@
 import Colyseus,{Client, Room} from "colyseus.js";
+import { MessageGuessWord } from "../../GuessWord/Model/MessageGuessWord";
+import { wordService } from "../../GuessWord/Service/WordService";
+import { AnswerPlayer, ResultAnswerPlayer } from "../../GuessWord/Model/AnswerPlayer";
+import { StatusPlayer } from "../../GuessWord/Model/StateGuessWord";
+import { AnsCheck } from "../../GuessWord/Controller/GuessWordController";
 import { enumUtils } from "../../../Utils/EnumUtils";
-import { Message, MessageData } from "../../../MessageServer/Model/Message";
-import { DataModel } from "../../../Utils/DataModel";
-import { MessageGuessNumber } from "../../GuessNumber/Model/MessageGuessNumber";
-import { wordService } from "../../GuessNumber/Service/WordService";
-import { AnswerPlayer, ResultAnswerPlayer } from "../../GuessNumber/Model/AnswerPlayer";
-import { StatusPlayer } from "../../GuessNumber/Model/StateGuessNumber";
-import { AnsCheck } from "../../GuessNumber/Controller/GuessNumberController";
 import { logController } from "../../../LogServer/Controller/LogController";
+import { DataModel } from "../../../Utils/DataModel";
+import { Message, MessageData } from "../../../MessageServer/Model/Message";
 
-enum GuessNumberBotBehaviour{
+enum GuessWordBotBehaviour{
     None,
     FindingRoom,
     JoiningRoom,
@@ -26,14 +26,14 @@ class ClientData{
     status : number = 0;
 }
 
-export class GuessNumberBot{
+export class GuessWordBot{
     client : Client
     room : Room
     namePlayer : string
     clientData : ClientData
 
-    behaviour : GuessNumberBotBehaviour = GuessNumberBotBehaviour.None;
-    oldBehaviour : GuessNumberBotBehaviour = GuessNumberBotBehaviour.None;
+    behaviour : GuessWordBotBehaviour = GuessWordBotBehaviour.None;
+    oldBehaviour : GuessWordBotBehaviour = GuessWordBotBehaviour.None;
     countSame : number = 0;
     delayStep : number = 1;
 
@@ -49,33 +49,33 @@ export class GuessNumberBot{
     }
 
     Step(){
-        logController.LogDev("Dev New Step", this.namePlayer,enumUtils.ToString(GuessNumberBotBehaviour, this.behaviour))
+        logController.LogDev("Dev New Step", this.namePlayer,enumUtils.ToString(GuessWordBotBehaviour, this.behaviour))
         if(this.behaviour == this.oldBehaviour){
             this.countSame ++;
             if(this.countSame >= 10){
-                this.behaviour = GuessNumberBotBehaviour.None;
+                this.behaviour = GuessWordBotBehaviour.None;
             }
         }else{
             this.countSame = 0;
             this.oldBehaviour = this.behaviour;
         }
         switch (this.behaviour) {
-            case GuessNumberBotBehaviour.None:
-                this.behaviour = GuessNumberBotBehaviour.FindingRoom;
+            case GuessWordBotBehaviour.None:
+                this.behaviour = GuessWordBotBehaviour.FindingRoom;
                 this.delayStep = Math.floor(Math.random()*10+10);
                 break;
-            case GuessNumberBotBehaviour.FindingRoom:
+            case GuessWordBotBehaviour.FindingRoom:
                 this.JoinRoom()
                 this.delayStep = Math.floor(Math.random()*10+5);
                 break;
-            case GuessNumberBotBehaviour.Guessing:
+            case GuessWordBotBehaviour.Guessing:
                 this.GuessWorld();
                 break;
             default:
                 this.delayStep = 3;
                 break;
         }
-        
+
         setTimeout(() => {
             this.Step();
         }, this.delayStep * 1000)
@@ -92,16 +92,16 @@ export class GuessNumberBot{
                 this.RecieveMessage(data)
             });
             logController.LogDev("Dev joined successfully", this.room.sessionId);
-            this.behaviour = GuessNumberBotBehaviour.RoomJoined;
+            this.behaviour = GuessWordBotBehaviour.RoomJoined;
         } catch (e) {
             // logController.LogDev("Dev join error", e);
         }
-        this.behaviour = GuessNumberBotBehaviour.None;
+        this.behaviour = GuessWordBotBehaviour.None;
         this.wordAvailables =[]
         this.keyBroadAvailable =[]
         this.keyBroadUnavailable =[]
         for (let index = 0; index < wordService.fourWord.length; index++) {
-            this.wordAvailables.push(wordService.fourWord[index]);   
+            this.wordAvailables.push(wordService.fourWord[index]);
         }
     }
 
@@ -109,7 +109,7 @@ export class GuessNumberBot{
         try {
             this.room.leave();
         } catch (error) {
-            
+
         }
     }
 
@@ -118,19 +118,19 @@ export class GuessNumberBot{
         logController.LogDev("Dev Recive: ",this.namePlayer,messageData.Data);
         for (let index = 0; index < messageData.Data.length; index++) {
             var message = DataModel.Parse<Message>(messageData.Data[index]);
-            if(message.MessageCode == MessageGuessNumber.wait_other){
+            if(message.MessageCode == MessageGuessWord.wait_other){
                 this.delayStep = 5;
-                this.behaviour = GuessNumberBotBehaviour.InGame;
+                this.behaviour = GuessWordBotBehaviour.InGame;
             }
-            if(message.MessageCode == MessageGuessNumber.out_room || message.MessageCode == MessageGuessNumber.time_over){
-                this.behaviour = GuessNumberBotBehaviour.None;
+            if(message.MessageCode == MessageGuessWord.out_room || message.MessageCode == MessageGuessWord.time_over){
+                this.behaviour = GuessWordBotBehaviour.None;
                 this.OutRoom();
                 this.delayStep = Math.floor(Math.random()*10+5)
             }
-            if(message.MessageCode == MessageGuessNumber.game_start){
-                this.behaviour = GuessNumberBotBehaviour.Guessing;
+            if(message.MessageCode == MessageGuessWord.game_start){
+                this.behaviour = GuessWordBotBehaviour.Guessing;
             }
-            if(message.MessageCode == MessageGuessNumber.result_answer){
+            if(message.MessageCode == MessageGuessWord.result_answer){
                 this.ReciveAnswer(message.Data);
             }
         }
@@ -140,13 +140,13 @@ export class GuessNumberBot{
         logController.LogDev("Dev GuessWorld")
         var word = this.wordAvailables[Math.floor(Math.random()*this.wordAvailables.length)]
         var message = new Message();
-        message.MessageCode = MessageGuessNumber.player_answer;
+        message.MessageCode = MessageGuessWord.player_answer;
         var answerPlayer = new AnswerPlayer();
         answerPlayer.answer = word;
         answerPlayer.pos = this.clientData.hisAnswer.length;
         message.Data = JSON.stringify(answerPlayer);
         this.room.send("message", JSON.stringify(message));
-        this.behaviour = GuessNumberBotBehaviour.WaitAnswer;
+        this.behaviour = GuessWordBotBehaviour.WaitAnswer;
     }
 
     ReciveAnswer(data : string){
@@ -186,7 +186,7 @@ export class GuessNumberBot{
                     remove = true;
                     break;
                 }
-                
+
             }
             if(remove == true){
                 this.wordAvailables.splice(index,1);
@@ -195,10 +195,10 @@ export class GuessNumberBot{
         }
         this.clientData.status = resultAnswerPlayer.status;
         if(this.clientData.status == StatusPlayer.Win || this.clientData.status == StatusPlayer.Lose){
-            this.behaviour = GuessNumberBotBehaviour.WaitEndGame;
+            this.behaviour = GuessWordBotBehaviour.WaitEndGame;
             return;
         }else{
-            this.behaviour = GuessNumberBotBehaviour.Guessing;
+            this.behaviour = GuessWordBotBehaviour.Guessing;
         }
     }
 }
