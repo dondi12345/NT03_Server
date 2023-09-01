@@ -8,6 +8,7 @@ import { enumUtils } from "../../../Utils/EnumUtils";
 import { logController } from "../../../LogServer/Controller/LogController";
 import { DataModel } from "../../../Utils/DataModel";
 import { Message, MessageData } from "../../../MessageServer/Model/Message";
+import { portConfig } from "../../../Enviroment/Env";
 
 enum GuessWordBotBehaviour{
     None,
@@ -84,7 +85,7 @@ export class GuessWordBot{
     async JoinRoom(){
         logController.LogDev("Dev Join room", this.namePlayer)
         this.clientData = new ClientData();
-        this.client = new Client("ws://localhost:3007");
+        this.client = new Client("ws://localhost:"+portConfig.portGuessNumber);
         this.OutRoom();
         try {
             this.room = await this.client.join("state_guess_number", {Name : this.namePlayer});
