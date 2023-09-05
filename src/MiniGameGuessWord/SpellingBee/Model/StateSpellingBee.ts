@@ -2,7 +2,7 @@ import { Schema, Context, MapSchema } from "@colyseus/schema";
 import { PlayerSpellingBee } from "./PlayerSpellingBee";
 const type = Context.create(); // this is your @type() decorator bound to a context
 
-export class StateGuessWord extends Schema{
+export class StateSpellingBee extends Schema{
     @type({ map: PlayerSpellingBee })
     players = new MapSchema<PlayerSpellingBee>();
 

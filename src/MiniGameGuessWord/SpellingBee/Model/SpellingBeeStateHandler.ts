@@ -1,6 +1,6 @@
 import { Room, Client, Delayed } from "colyseus";
 import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
-import { StateGuessWord as StateSpellingBee } from "./StateGuessWord";
+import {  StateSpellingBee } from "./StateSpellingBee";
 import { DataModel } from "../../../Utils/DataModel";
 import { Message, MessageData } from "../../../MessageServer/Model/Message";
 import { logController } from "../../../LogServer/Controller/LogController";
@@ -75,12 +75,11 @@ export class StateSpellingBeeRoom extends Room<StateSpellingBee> {
     }
     
     resetData(){
-        this.roomConfig.words = [];
-        this.roomData.sub = [];
-        
         const result = readFileSync(path.join(rootDir+ '/public/resources/guess_word/enwords.txt'), 'utf-8');
         var words = result.split(`\n`);
-        for(let round = 0; round < 1000; round++){
+        for(let round = 0; round < 10000; round++){
+            this.roomConfig.words = [];
+            this.roomData.sub = [];
             var index = 0;
             var index_1 = 0;
             var keys ="qwrtypsdfghjklzxcvbnm";
@@ -129,7 +128,7 @@ export class StateSpellingBeeRoom extends Room<StateSpellingBee> {
                     }
                 }
             });
-            if(index_1 >=50){
+            if(index_1 >=75){
                 break;
             }
         }

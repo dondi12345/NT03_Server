@@ -3,7 +3,7 @@ const type = Context.create(); // this is your @type() decorator bound to a cont
 export class PlayerSpellingBee extends Schema{
     @type("string")
     playerName : string = "";
-    @type("string")
+    @type("number")
     score : number = 0;
 
     resetData(){
