@@ -9,6 +9,7 @@ import express from 'express';
 // Import demo room handlers
 import { StateGuessWordRoom } from "./GuessWord/Model/GuessWordStateHandler";
 import { StateSpellingBeeRoom } from "./SpellingBee/Model/SpellingBeeStateHandler";
+import { Room_GPDefender as StateGamePlayDefender} from "../GamePlayDefender/Model/Room_GPDefender";
 
 export const configGuessWord = config({
     options: {
@@ -22,6 +23,7 @@ export const configGuessWord = config({
             .enableRealtimeListing();
 
         gameServer.define("state_spelling_bee", StateSpellingBeeRoom)
+        gameServer.define("state_gameplay_defender", StateGamePlayDefender)
 
         gameServer.onShutdown(function(){
             console.log(`game server is going down.`);

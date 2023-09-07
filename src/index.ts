@@ -1,3 +1,5 @@
+import { miniGameWord } from "./MiniGameGuessWord/GuessWord";
+
 /**
  * IMPORTANT:
  * ---------
@@ -8,8 +10,4 @@
  *
  * See: https://docs.colyseus.io/server/api/#constructor-options
  */
-
-import { TestWord } from "./MiniGameGuessWord/GuessWord/Service/WordService";
-
-// Import arena config
-TestWord()
+miniGameWord

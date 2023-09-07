@@ -28,7 +28,7 @@ const version = "0.0.13"
 // const numCPUs = require('os').cpus().length;
 // AppTest();
 InitApp();
-
+// miniGameWord
 // Check if current process is master or worker
 function InitApp(){
   if (cluster.isMaster) {
