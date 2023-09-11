@@ -19,10 +19,9 @@ export const configGuessWord = config({
     initializeGameServer: (gameServer) => {
         // Define "lobby" room
         // Define "state_handler" room
-        gameServer.define("state_guess_number", StateGuessWordRoom)
-            .enableRealtimeListing();
+        // gameServer.define("state_guess_number", StateGuessWordRoom).enableRealtimeListing();
 
-        gameServer.define("state_spelling_bee", StateSpellingBeeRoom)
+        // gameServer.define("state_spelling_bee", StateSpellingBeeRoom)
         gameServer.define("state_gameplay_defender", StateGamePlayDefender)
 
         gameServer.onShutdown(function(){

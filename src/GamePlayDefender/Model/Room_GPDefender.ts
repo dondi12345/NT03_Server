@@ -4,12 +4,14 @@ import { logController } from "../../LogServer/Controller/LogController";
 import { DataModel } from "../../Utils/DataModel";
 import { Message } from "../../MessageServer/Model/Message";
 import { router_GPDefender } from "../Router/Router_GPDefender";
-import { controller__GPDefender } from "../Controller/Controller__GPDefender";
+import { controller_GPDefender } from "../Controller/Controller__GPDefender";
+import { MonsterBot_GPDefender } from "../Controller/MonsterBot_GPDefender";
 
 export class Room_GPDefender extends Room<State_GPDefender> {
     slot1 : string = "";
     slot2 : string = "";
-    
+    maxClients: number = 2;
+    curClients = 0;
 
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
@@ -20,18 +22,26 @@ export class Room_GPDefender extends Room<State_GPDefender> {
             var message = DataModel.Parse<Message>(data);
             router_GPDefender.Router(message, this);
         })
+        var monsterBot = new MonsterBot_GPDefender();
+        monsterBot.Start(this);
     }
 
     onJoin (client: Client, options) {
         logController.LogDev("Dev", options.name_player, client.sessionId, "joined!");
         this.state.createPlayer(client.sessionId, options.name_player);
-        controller__GPDefender.PutPlayer(client.sessionId, this);
+        controller_GPDefender.PutPlayer(client.sessionId, this);
+        this.curClients ++;
     }
 
     onLeave (client) {
         logController.LogDev("Dev", client.sessionId, "left!");
         this.state.removePlayer(client.sessionId);
-        controller__GPDefender.RemoveSlot(client.sessionId, this);
+        controller_GPDefender.RemoveSlot(client.sessionId, this);
+        this.curClients --;
+        if(this.curClients <= 0){
+            this.state.bullets.clear();
+            this.state.monsters.clear();
+        }
     }
 
     onDispose () {

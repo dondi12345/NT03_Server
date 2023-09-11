@@ -1,9 +1,11 @@
 import { Message } from "../../MessageServer/Model/Message";
 import { DataModel } from "../../Utils/DataModel";
+import { BulletData_GPDefender } from "../Model/Bullet_GPDefender";
+import { MonsterData_GPDefender } from "../Model/Monster_GPDefender";
 import { Room_GPDefender } from "../Model/Room_GPDefender";
 import { RotateData_GPDefender } from "../Model/RotateData_GPDefender";
 
-const Pos = [
+export const Pos = [
     {
         x : 5,
         y : 0,
@@ -16,7 +18,7 @@ const Pos = [
     },
 ]
 
-class Controller__GPDefender{
+class Controller_GPDefender{
     RotatePlayer(message : Message, room : Room_GPDefender){
         try {
             var rotateData = DataModel.Parse<RotateData_GPDefender>(message.Data);
@@ -60,6 +62,23 @@ class Controller__GPDefender{
             room.slot2 = "";
         }
     }
+
+    PlayerFire(message : Message, room : Room_GPDefender){
+        var bulletData = DataModel.Parse<BulletData_GPDefender>(message.Data);
+        if(bulletData == null || bulletData == undefined) return;
+        room.state.createBullet(bulletData);
+    }
+
+    BulletImpact(message : Message, room : Room_GPDefender){
+        var bulletData = DataModel.Parse<BulletData_GPDefender>(message.Data);
+        if(bulletData == null || bulletData == undefined) return;
+        room.state.removeBullet(bulletData.bullet_id);
+    }
+
+    MonsterSpawn(monsterData : MonsterData_GPDefender, room : Room_GPDefender){
+        if(monsterData == null || monsterData == undefined) return;
+        room.state.createMonster(monsterData);
+    }
 }
 
-export const controller__GPDefender = new Controller__GPDefender();
+export const controller_GPDefender = new Controller_GPDefender();
