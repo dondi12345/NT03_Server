@@ -4,13 +4,12 @@ const type = Context.create(); // this is your @type() decorator bound to a cont
 export class MonsterData_GPDefender{
     monster_id : string = "";
     monster_code : number = 0;
-    
-    speed = 0.0;
-    hp = 0;
+    time_born : number = 0;
+    space : number = 0;
 
-    x = 0.0;
-    y = 0.0;
-    z = 0.0;
+    way_code = 0;
+    speed = 0;
+    hp = 0;
 }
 
 export class Monster_GPDefender extends Schema{
@@ -18,16 +17,16 @@ export class Monster_GPDefender extends Schema{
     monster_id = "";
     @type("number")
     monster_code = 0;
+    @type("number")
+    time_born = 0;
+    @type("number")
+    space = 0;
 
+
+    @type("number")
+    way_code = 0;
     @type("number")
     speed = 0;
     @type("number")
     hp = 0;
-
-    @type("number")
-    x = 0;
-    @type("number")
-    y = 0;
-    @type("number")
-    z = 0;
 }

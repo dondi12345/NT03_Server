@@ -11,8 +11,8 @@ export class State_GPDefender extends Schema{
     bullets = new MapSchema<Bullet_GPDefender>();
     @type({ map : Monster_GPDefender})
     monsters =  new MapSchema<Monster_GPDefender>();
-
-    something = "This attribute won't be sent to the client-side";
+    @type("number")
+    time = 0;
 
     createPlayer(sessionId: string, name_player : string) {
         var player = new Player_GPDefender();
@@ -27,6 +27,7 @@ export class State_GPDefender extends Schema{
     createBullet(bulletData : BulletData_GPDefender){
         var bullet = new Bullet_GPDefender();
         bullet.bullet_id = bulletData.bullet_id;
+        bullet.player_id = bulletData.player_id;
         bullet.bullet_code = bulletData.bullet_code;
         bullet.time_start = bulletData.time_start;
         bullet.speed = bulletData.speed;
@@ -47,11 +48,11 @@ export class State_GPDefender extends Schema{
         var monster = new Monster_GPDefender();
         monster.monster_id = monsterData.monster_id;
         monster.monster_code = monsterData.monster_code;
+        monster.time_born = monsterData.time_born;
+        monster.way_code = monsterData.way_code;
         monster.speed = monsterData.speed;
         monster.hp = monsterData.hp;
-        monster.x = monsterData.x;
-        monster.y = monsterData.y;
-        monster.z = monsterData.z;
+        monster.space = monsterData.space;
         this.monsters.set(monster.monster_id, monster);
     }
 

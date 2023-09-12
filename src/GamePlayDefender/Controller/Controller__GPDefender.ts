@@ -7,14 +7,14 @@ import { RotateData_GPDefender } from "../Model/RotateData_GPDefender";
 
 export const Pos = [
     {
-        x : 5,
-        y : 0,
-        z : 0,
+        x : -64,
+        y : 5,
+        z : 35,
     },
     {
-        x : -5,
-        y : 0,
-        z : 0,
+        x : -87,
+        y : 8,
+        z : 47.5,
     },
 ]
 

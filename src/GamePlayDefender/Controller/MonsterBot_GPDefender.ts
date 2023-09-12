@@ -2,24 +2,14 @@ import { Types } from "mongoose";
 import { MonsterData_GPDefender } from "../Model/Monster_GPDefender";
 import { Room_GPDefender } from "../Model/Room_GPDefender";
 import { Pos, controller_GPDefender } from "./Controller__GPDefender";
-import { Vector3 } from "../../Utils/Vector3Utils";
 
-const PosSpawnMonster = [
+const Wave_Start = [
     {
-        x: 10, y: 0, z: 20
+        x: -66, y: 0, z: -60
     },
     {
-        x: 5, y: 0, z: 20,
+        x: -76.3, y: 0, z: -60,
     },
-    {
-        x: 0, y: 0, z: 20,
-    },
-    {
-        x: -5, y: 0, z: 20,
-    },
-    {
-        x: 10, y: 0, z: 20,
-    }
 ]
 
 const MonsterData = [
@@ -35,15 +25,54 @@ const MonsterData = [
     }
 ]
 
-const MonsterSpawnData = {
-    delay_spawn : 1,
-    max_monster : 10,
-}
-
-const TimeDela = 0.5;
+const MonsterSpawnData = [
+    {
+        time : 1,
+        monsters:[
+            {
+                monster_code : 0,
+                way_code : 0,
+            },
+        ]
+    },
+    {
+        time : 2,
+        monsters:[
+            {
+                monster_code : 1,
+                way_code : 1,
+            },
+        ]
+    },
+    {
+        time : 3,
+        monsters:[
+            {
+                monster_code : 1,
+                way_code : 0,
+            },
+            {
+                monster_code : 0,
+                way_code : 1,
+            },
+        ]
+    },
+    {
+        time : 4,
+        monsters:[
+            {
+                monster_code : 0,
+                way_code : 0,
+            },
+            {
+                monster_code : 1,
+                way_code : 1,
+            },
+        ]
+    },
+]
 
 export class MonsterBot_GPDefender {
-
     Room: Room_GPDefender;
     StartDefense: boolean = false;
 
@@ -51,52 +80,31 @@ export class MonsterBot_GPDefender {
 
     CountMonster : number = 0;
 
-    Start(room: Room_GPDefender) {
+    Init(room: Room_GPDefender) {
         this.Room = room;
-        this.Update();
     }
 
     Update() {
-        this.CountDelaySpawn -= TimeDela;
-
-        if(this.CountMonster < MonsterSpawnData.max_monster){
-            if(this.CountDelaySpawn < 0){
-                this.SpawnMonster();
-                this.CountMonster++;
-                this.CountDelaySpawn = MonsterSpawnData.delay_spawn;
-            }
+        if(this.CountDelaySpawn >= MonsterSpawnData.length) return;
+        if(this.Room.state.time > MonsterSpawnData[this.CountDelaySpawn].time){
+            this.SpawnMonster(MonsterSpawnData[this.CountDelaySpawn]);
         }
-        this.MoveMonster();
-        setTimeout(() => {
-            this.Update();
-        }, TimeDela*1000)
     }
-
-    SpawnMonster(){
-        var data = MonsterData[this.CountMonster%MonsterData.length]
-        var pos = PosSpawnMonster[this.CountMonster%PosSpawnMonster.length]
-        var monsterData = new MonsterData_GPDefender();
-        monsterData.monster_id = new Types.ObjectId().toString();
-        monsterData.monster_code = data.monster_code;
-        monsterData.hp = data.hp;
-        monsterData.speed = data.speed;
-        monsterData.x = pos.x;
-        monsterData.y = pos.y;
-        monsterData.z = pos.z;
-        controller_GPDefender.MonsterSpawn(monsterData, this.Room);
-        console.log("Spawn Monster")
-    }
-
-    MoveMonster(){
-        this.Room.state.monsters.forEach(element=>{
-            var pos = Pos[0]
-            var vec = Vector3.Minus(Vector3.New(element.x, element.y, element.z), Vector3.New(pos.x, pos.y, pos.z));
-            var step = (element.speed / Math.sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z)) * TimeDela;
-            if(step == null || step == undefined || Number.isNaN(step)) return;
-            element.x -= vec.x*step;
-            element.y -= vec.y*step;
-            element.z -= vec.z*step;
-            console.log(element.x, element.y, element.z);
-        })
+    SpawnMonster(data){
+        this.CountDelaySpawn++;
+        data.monsters.forEach(element => {
+            var data_monster = MonsterData[element.monster_code];
+            var pos = Wave_Start[element.way_code]
+            var monsterData = new MonsterData_GPDefender();
+            monsterData.monster_id = new Types.ObjectId().toString();
+            monsterData.monster_code = element.monster_code;
+            monsterData.time_born = this.Room.state.time;
+            monsterData.way_code = element.way_code;
+            monsterData.hp = data_monster.hp;
+            monsterData.space = 0;
+            monsterData.speed = data_monster.speed;
+            controller_GPDefender.MonsterSpawn(monsterData, this.Room);
+            console.log("Spawn Monster")
+        });
     }
 }

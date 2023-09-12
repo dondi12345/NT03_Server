@@ -7,11 +7,15 @@ import { router_GPDefender } from "../Router/Router_GPDefender";
 import { controller_GPDefender } from "../Controller/Controller__GPDefender";
 import { MonsterBot_GPDefender } from "../Controller/MonsterBot_GPDefender";
 
+export const TimeDela = 0.5;
+
 export class Room_GPDefender extends Room<State_GPDefender> {
     slot1 : string = "";
     slot2 : string = "";
     maxClients: number = 2;
     curClients = 0;
+    monsterBot : MonsterBot_GPDefender;
+
 
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
@@ -22,8 +26,17 @@ export class Room_GPDefender extends Room<State_GPDefender> {
             var message = DataModel.Parse<Message>(data);
             router_GPDefender.Router(message, this);
         })
-        var monsterBot = new MonsterBot_GPDefender();
-        monsterBot.Start(this);
+        this.monsterBot = new MonsterBot_GPDefender();
+        this.monsterBot.Init(this);
+        this.Update();
+    }
+
+    Update() {
+        this.state.time += TimeDela;
+        this.monsterBot.Update();
+        setTimeout(() => {
+            this.Update();
+        }, TimeDela*1000)
     }
 
     onJoin (client: Client, options) {
