@@ -1,4 +1,5 @@
 import { Message } from "../../MessageServer/Model/Message";
+import { DamageCharacter } from "../../Utils/DamagerCharacter";
 import { DataModel } from "../../Utils/DataModel";
 import { BulletData_GPDefender } from "../Model/Bullet_GPDefender";
 import { MonsterData_GPDefender } from "../Model/Monster_GPDefender";
@@ -78,6 +79,17 @@ class Controller_GPDefender{
     MonsterSpawn(monsterData : MonsterData_GPDefender, room : Room_GPDefender){
         if(monsterData == null || monsterData == undefined) return;
         room.state.createMonster(monsterData);
+    }
+    
+    TargetGetDmg(message : Message, room : Room_GPDefender){
+        var damageCharacter = DataModel.Parse<DamageCharacter>(message.Data);
+        var monster = room.state.monsters.get(damageCharacter.TarID);
+        try {
+            if(monster == undefined || monster == null) return;
+            monster.hp -= damageCharacter.dmg;
+        } catch (error) {
+            
+        }
     }
 }
 

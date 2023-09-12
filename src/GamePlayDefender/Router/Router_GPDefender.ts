@@ -15,6 +15,9 @@ export class Router_GPDefender{
         if(messgae.MessageCode == Message_GPDefender.bullet_impact){
             controller_GPDefender.BulletImpact(messgae, room);
         }
+        if(messgae.MessageCode == Message_GPDefender.target_get_dmg){
+            controller_GPDefender.TargetGetDmg(messgae, room);
+        }
     }
 }
 
