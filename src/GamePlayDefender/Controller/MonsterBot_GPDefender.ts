@@ -15,12 +15,12 @@ const Wave_Start = [
 const MonsterData = [
     {
         "monster_code": 0,
-        "speed": 1.2,
+        "speed": 3.6,
         "hp": 100
     },
     {
         "monster_code": 1,
-        "speed": 1,
+        "speed": 3,
         "hp": 150
     }
 ]
