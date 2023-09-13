@@ -13,14 +13,15 @@ const express_1 = __importDefault(require("express"));
 // Import demo room handlers
 const GuessWordStateHandler_1 = require("./GuessWord/Model/GuessWordStateHandler");
 const SpellingBeeStateHandler_1 = require("./SpellingBee/Model/SpellingBeeStateHandler");
+const Room_GPDefender_1 = require("../GamePlayDefender/Model/Room_GPDefender");
 exports.configGuessWord = (0, arena_1.default)({
     options: {},
     initializeGameServer: (gameServer) => {
         // Define "lobby" room
         // Define "state_handler" room
-        gameServer.define("state_guess_number", GuessWordStateHandler_1.StateGuessWordRoom)
-            .enableRealtimeListing();
+        gameServer.define("state_guess_number", GuessWordStateHandler_1.StateGuessWordRoom).enableRealtimeListing();
         gameServer.define("state_spelling_bee", SpellingBeeStateHandler_1.StateSpellingBeeRoom);
+        gameServer.define("state_gameplay_defender", Room_GPDefender_1.Room_GPDefender);
         gameServer.onShutdown(function () {
             console.log(`game server is going down.`);
         });

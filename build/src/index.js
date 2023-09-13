@@ -1,4 +1,6 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const GuessWord_1 = require("./MiniGameGuessWord/GuessWord");
 /**
  * IMPORTANT:
  * ---------
@@ -9,7 +11,4 @@
  *
  * See: https://docs.colyseus.io/server/api/#constructor-options
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-const WordService_1 = require("./MiniGameGuessWord/GuessWord/Service/WordService");
-// Import arena config
-(0, WordService_1.TestWord)();
+GuessWord_1.miniGameWord;
