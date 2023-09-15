@@ -29,6 +29,7 @@ class Room_GPDefender extends colyseus_1.Room {
         this.monsterBot = new MonsterBot_GPDefender_1.MonsterBot_GPDefender();
         this.monsterBot.Init(this);
         this.Update();
+        Controller__GPDefender_1.controller_GPDefender.RoomStart(this);
     }
     Update() {
         this.state.time += exports.TimeDela;
@@ -51,6 +52,7 @@ class Room_GPDefender extends colyseus_1.Room {
         if (this.curClients <= 0) {
             this.state.bullets.clear();
             this.state.monsters.clear();
+            this.monsterBot.Destroy();
         }
     }
     onDispose() {

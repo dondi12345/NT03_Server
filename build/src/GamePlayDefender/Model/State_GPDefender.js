@@ -19,6 +19,8 @@ class State_GPDefender extends schema_1.Schema {
         this.bullets = new schema_1.MapSchema();
         this.monsters = new schema_1.MapSchema();
         this.time = 0;
+        this.hp_barrier = 0;
+        this.max_hp_barrier = 0;
     }
     createPlayer(sessionId, name_player) {
         var player = new Player_GPDefender_1.Player_GPDefender();
@@ -56,6 +58,7 @@ class State_GPDefender extends schema_1.Schema {
         monster.hp = monsterData.hp;
         monster.space = monsterData.space;
         this.monsters.set(monster.monster_id, monster);
+        return monster;
     }
     removeMonster(monster_id) {
         this.monsters.delete(monster_id);
@@ -73,4 +76,10 @@ __decorate([
 __decorate([
     type("number")
 ], State_GPDefender.prototype, "time", void 0);
+__decorate([
+    type("number")
+], State_GPDefender.prototype, "hp_barrier", void 0);
+__decorate([
+    type("number")
+], State_GPDefender.prototype, "max_hp_barrier", void 0);
 exports.State_GPDefender = State_GPDefender;

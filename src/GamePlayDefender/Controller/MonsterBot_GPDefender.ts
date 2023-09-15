@@ -46,6 +46,7 @@ export class MonsterData {
     speed : number;
     hp : number;
     delay_attack : number;
+    wait_bullet : number;
     damage : number;
 }
 
@@ -54,14 +55,16 @@ const MonsterDatas : MonsterData[] = [
         "monster_code": 0,
         "speed": 2.4,
         "hp": 100,
-        "delay_attack" : 2,
-        "damage" : 7
+        "delay_attack" : 4,
+        "wait_bullet" : 1,
+        "damage" : 7,
     },
     {
         "monster_code": 1,
         "speed": 2,
         "hp": 150,
-        "delay_attack" : 4,
+        "delay_attack" : 7,
+        "wait_bullet" : 1.33,
         "damage" : 10
     }
 ]

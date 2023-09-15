@@ -3,6 +3,12 @@ import { Room_GPDefender, TimeDela } from "./Room_GPDefender";
 import { MonsterData, Path } from "../Controller/MonsterBot_GPDefender";
 const type = Context.create(); // this is your @type() decorator bound to a context
 
+export const MonsterAnimation = {
+    Idle : 0,
+    Walk : 1,
+    Attack : 2,
+}
+
 export class MonsterData_GPDefender{
     monster_id : string = "";
     monster_code : number = 0;
@@ -12,6 +18,7 @@ export class MonsterData_GPDefender{
     way_code = 0;
     speed = 0;
     hp = 0;
+    action = 0;
 }
 
 export class Monster_GPDefender extends Schema{
@@ -31,6 +38,8 @@ export class Monster_GPDefender extends Schema{
     speed = 0;
     @type("number")
     hp = 0;
+    @type("number")
+    action = 0;
 }
 
 export class MonsterDefaultModel_GPDefender{
@@ -69,9 +78,12 @@ export class MonsterDefaultModel_GPDefender{
             if(this.count_delay_attack < 0){
                 this.Attack();
                 this.count_delay_attack = this.monsterData.delay_attack;
+            }else{
+                this.monster_GPDefender.action = MonsterAnimation.Idle;
             }
         }else{
             console.log(this.monster_id + " move")
+            this.monster_GPDefender.action = MonsterAnimation.Walk;
         }
         setTimeout(() => {
             this.Update();
@@ -79,6 +91,7 @@ export class MonsterDefaultModel_GPDefender{
     }
 
     Attack(){
+        this.monster_GPDefender.action = MonsterAnimation.Attack;
         console.log(this.monster_id + " attack")
         this.room.state.hp_barrier -= this.monsterData.damage;
     }

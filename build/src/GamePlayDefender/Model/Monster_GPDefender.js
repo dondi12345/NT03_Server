@@ -6,9 +6,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Monster_GPDefender = exports.MonsterData_GPDefender = void 0;
+exports.MonsterDefaultModel_GPDefender = exports.Monster_GPDefender = exports.MonsterData_GPDefender = exports.MonsterAnimation = void 0;
 const schema_1 = require("@colyseus/schema");
+const Room_GPDefender_1 = require("./Room_GPDefender");
 const type = schema_1.Context.create(); // this is your @type() decorator bound to a context
+exports.MonsterAnimation = {
+    Idle: 0,
+    Walk: 1,
+    Attack: 2,
+};
 class MonsterData_GPDefender {
     constructor() {
         this.monster_id = "";
@@ -18,6 +24,7 @@ class MonsterData_GPDefender {
         this.way_code = 0;
         this.speed = 0;
         this.hp = 0;
+        this.action = 0;
     }
 }
 exports.MonsterData_GPDefender = MonsterData_GPDefender;
@@ -31,6 +38,7 @@ class Monster_GPDefender extends schema_1.Schema {
         this.way_code = 0;
         this.speed = 0;
         this.hp = 0;
+        this.action = 0;
     }
 }
 __decorate([
@@ -54,4 +62,55 @@ __decorate([
 __decorate([
     type("number")
 ], Monster_GPDefender.prototype, "hp", void 0);
+__decorate([
+    type("number")
+], Monster_GPDefender.prototype, "action", void 0);
 exports.Monster_GPDefender = Monster_GPDefender;
+class MonsterDefaultModel_GPDefender {
+    constructor() {
+        this.is_destroy = false;
+        this.count_delay_attack = 0;
+    }
+    Start(room, monsterData, monster_GPDefender, path) {
+        this.monster_id = monster_GPDefender.monster_id + "";
+        this.room = room;
+        this.monsterData = monsterData;
+        this.monster_GPDefender = monster_GPDefender;
+        this.path = path;
+        this.Update();
+    }
+    Destroy() {
+        console.log(this.monster_id + " dead");
+        this.is_destroy = true;
+    }
+    Update() {
+        if (this.room == undefined || this.room == null || this.is_destroy) {
+            console.log(this.monster_id + " dead");
+            return;
+        }
+        let space = this.monster_GPDefender.space + (this.room.state.time - this.monster_GPDefender.time_born) * this.monster_GPDefender.speed;
+        if (space > this.path.Space) {
+            this.count_delay_attack -= Room_GPDefender_1.TimeDela;
+            if (this.count_delay_attack < 0) {
+                this.Attack();
+                this.count_delay_attack = this.monsterData.delay_attack;
+            }
+            else {
+                this.monster_GPDefender.action = exports.MonsterAnimation.Idle;
+            }
+        }
+        else {
+            console.log(this.monster_id + " move");
+            this.monster_GPDefender.action = exports.MonsterAnimation.Walk;
+        }
+        setTimeout(() => {
+            this.Update();
+        }, Room_GPDefender_1.TimeDela * 1000);
+    }
+    Attack() {
+        this.monster_GPDefender.action = exports.MonsterAnimation.Attack;
+        console.log(this.monster_id + " attack");
+        this.room.state.hp_barrier -= this.monsterData.damage;
+    }
+}
+exports.MonsterDefaultModel_GPDefender = MonsterDefaultModel_GPDefender;

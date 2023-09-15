@@ -1,7 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.controller_GPDefender = exports.Pos = void 0;
+exports.controller_GPDefender = exports.Pos = exports.DefenseConfig = void 0;
 const DataModel_1 = require("../../Utils/DataModel");
+exports.DefenseConfig = {
+    hp_barrier: 1000,
+    time_start: 15,
+};
 exports.Pos = [
     {
         x: -64,
@@ -15,6 +19,10 @@ exports.Pos = [
     },
 ];
 class Controller_GPDefender {
+    RoomStart(room) {
+        room.state.hp_barrier = exports.DefenseConfig.hp_barrier;
+        room.state.max_hp_barrier = exports.DefenseConfig.hp_barrier;
+    }
     RotatePlayer(message, room) {
         try {
             var rotateData = DataModel_1.DataModel.Parse(message.Data);
@@ -74,7 +82,7 @@ class Controller_GPDefender {
     MonsterSpawn(monsterData, room) {
         if (monsterData == null || monsterData == undefined)
             return;
-        room.state.createMonster(monsterData);
+        return room.state.createMonster(monsterData);
     }
     TargetGetDmg(message, room) {
         var damageCharacter = DataModel_1.DataModel.Parse(message.Data);
@@ -83,6 +91,10 @@ class Controller_GPDefender {
             if (monster == undefined || monster == null)
                 return;
             monster.hp -= damageCharacter.dmg;
+            if (monster.hp < 0) {
+                room.monsterBot.DestroyMonster(monster.monster_id);
+                room.state.monsters.delete(monster.monster_id);
+            }
         }
         catch (error) {
         }
