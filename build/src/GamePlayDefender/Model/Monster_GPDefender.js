@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MonsterDefaultModel_GPDefender = exports.Monster_GPDefender = exports.MonsterData_GPDefender = exports.MonsterAnimation = void 0;
 const schema_1 = require("@colyseus/schema");
 const Room_GPDefender_1 = require("./Room_GPDefender");
+const LogController_1 = require("../../LogServer/Controller/LogController");
 const type = schema_1.Context.create(); // this is your @type() decorator bound to a context
 exports.MonsterAnimation = {
     Idle: 0,
@@ -85,7 +86,7 @@ class MonsterDefaultModel_GPDefender {
     }
     Update() {
         if (this.room == undefined || this.room == null || this.is_destroy) {
-            console.log(this.monster_id + " dead");
+            LogController_1.logController.LogDev(this.monster_id + " dead");
             return;
         }
         let space = this.monster_GPDefender.space + (this.room.state.time - this.monster_GPDefender.time_born) * this.monster_GPDefender.speed;
@@ -100,7 +101,7 @@ class MonsterDefaultModel_GPDefender {
             }
         }
         else {
-            console.log(this.monster_id + " move");
+            LogController_1.logController.LogDev(this.monster_id + " move");
             this.monster_GPDefender.action = exports.MonsterAnimation.Walk;
         }
         setTimeout(() => {
@@ -109,7 +110,7 @@ class MonsterDefaultModel_GPDefender {
     }
     Attack() {
         this.monster_GPDefender.action = exports.MonsterAnimation.Attack;
-        console.log(this.monster_id + " attack");
+        LogController_1.logController.LogDev(this.monster_id + " attack");
         this.room.state.hp_barrier -= this.monsterData.damage;
     }
 }

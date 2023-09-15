@@ -1,6 +1,7 @@
 import { Schema, Context } from "@colyseus/schema";
 import { Room_GPDefender, TimeDela } from "./Room_GPDefender";
 import { MonsterData, Path } from "../Controller/MonsterBot_GPDefender";
+import { logController } from "../../LogServer/Controller/LogController";
 const type = Context.create(); // this is your @type() decorator bound to a context
 
 export const MonsterAnimation = {
@@ -69,7 +70,7 @@ export class MonsterDefaultModel_GPDefender{
 
     Update() {
         if(this.room == undefined || this.room == null || this.is_destroy){
-            console.log(this.monster_id + " dead")
+            logController.LogDev(this.monster_id + " dead")
             return;
         }
         let space = this.monster_GPDefender.space + (this.room.state.time - this.monster_GPDefender.time_born)*this.monster_GPDefender.speed;
@@ -82,7 +83,7 @@ export class MonsterDefaultModel_GPDefender{
                 this.monster_GPDefender.action = MonsterAnimation.Idle;
             }
         }else{
-            console.log(this.monster_id + " move")
+            logController.LogDev(this.monster_id + " move")
             this.monster_GPDefender.action = MonsterAnimation.Walk;
         }
         setTimeout(() => {
@@ -92,7 +93,7 @@ export class MonsterDefaultModel_GPDefender{
 
     Attack(){
         this.monster_GPDefender.action = MonsterAnimation.Attack;
-        console.log(this.monster_id + " attack")
+        logController.LogDev(this.monster_id + " attack")
         this.room.state.hp_barrier -= this.monsterData.damage;
     }
 }
