@@ -29,6 +29,7 @@ export class Room_GPDefender extends Room<State_GPDefender> {
         this.monsterBot = new MonsterBot_GPDefender();
         this.monsterBot.Init(this);
         this.Update();
+        controller_GPDefender.RoomStart(this);
     }
 
     Update() {
@@ -54,6 +55,7 @@ export class Room_GPDefender extends Room<State_GPDefender> {
         if(this.curClients <= 0){
             this.state.bullets.clear();
             this.state.monsters.clear();
+            this.monsterBot.Destroy();
         }
     }
 

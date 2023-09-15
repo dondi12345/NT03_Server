@@ -6,6 +6,12 @@ import { MonsterData_GPDefender } from "../Model/Monster_GPDefender";
 import { Room_GPDefender } from "../Model/Room_GPDefender";
 import { RotateData_GPDefender } from "../Model/RotateData_GPDefender";
 
+export const DefenseConfig = {
+    hp_barrier : 1000,
+    time_start : 15,
+
+}
+
 export const Pos = [
     {
         x : -64,
@@ -20,6 +26,11 @@ export const Pos = [
 ]
 
 class Controller_GPDefender{
+    RoomStart(room : Room_GPDefender){
+        room.state.hp_barrier = DefenseConfig.hp_barrier;
+        room.state.max_hp_barrier = DefenseConfig.hp_barrier;
+    }
+
     RotatePlayer(message : Message, room : Room_GPDefender){
         try {
             var rotateData = DataModel.Parse<RotateData_GPDefender>(message.Data);
@@ -78,7 +89,7 @@ class Controller_GPDefender{
 
     MonsterSpawn(monsterData : MonsterData_GPDefender, room : Room_GPDefender){
         if(monsterData == null || monsterData == undefined) return;
-        room.state.createMonster(monsterData);
+        return room.state.createMonster(monsterData);
     }
     
     TargetGetDmg(message : Message, room : Room_GPDefender){
@@ -87,6 +98,10 @@ class Controller_GPDefender{
         try {
             if(monster == undefined || monster == null) return;
             monster.hp -= damageCharacter.dmg;
+            if(monster.hp < 0){
+                room.monsterBot.DestroyMonster(monster.monster_id);
+                room.state.monsters.delete(monster.monster_id);
+            }
         } catch (error) {
             
         }

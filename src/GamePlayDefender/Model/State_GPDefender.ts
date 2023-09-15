@@ -13,6 +13,10 @@ export class State_GPDefender extends Schema{
     monsters =  new MapSchema<Monster_GPDefender>();
     @type("number")
     time = 0;
+    @type("number")
+    hp_barrier = 0;
+    @type("number")
+    max_hp_barrier = 0;
 
     createPlayer(sessionId: string, name_player : string) {
         var player = new Player_GPDefender();
@@ -54,6 +58,7 @@ export class State_GPDefender extends Schema{
         monster.hp = monsterData.hp;
         monster.space = monsterData.space;
         this.monsters.set(monster.monster_id, monster);
+        return monster;
     }
 
     removeMonster(monster_id : string){
