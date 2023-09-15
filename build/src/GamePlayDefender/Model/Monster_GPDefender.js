@@ -111,7 +111,9 @@ class MonsterDefaultModel_GPDefender {
     Attack() {
         this.monster_GPDefender.action = exports.MonsterAnimation.Attack;
         LogController_1.logController.LogDev(this.monster_id + " attack");
-        this.room.state.hp_barrier -= this.monsterData.damage;
+        setTimeout(() => {
+            this.room.state.hp_barrier -= this.monsterData.damage;
+        }, this.monsterData.wait_bullet * 1000);
     }
 }
 exports.MonsterDefaultModel_GPDefender = MonsterDefaultModel_GPDefender;
