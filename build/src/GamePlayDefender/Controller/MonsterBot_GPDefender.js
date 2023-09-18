@@ -21,49 +21,49 @@ class Path {
 exports.Path = Path;
 const Paths = [
     {
-        Points: [
+        "Points": [
             {
-                x: -68, y: 0, z: -60
+                "x": -68, "y": 0, "z": -60
             },
             {
-                x: -68, y: 0, z: 19.12
+                "x": -68, "y": 0, "z": 19.12
             }
         ],
-        Space: 79.12
+        "Space": 79.12
     },
     {
-        Points: [
+        "Points": [
             {
-                x: -76.3, y: 0, z: -60
+                "x": -76.3, "y": 0, "z": -60
             },
             {
-                x: -76.3, y: 0, z: 19.12
+                "x": -76.3, "y": 0, "z": 19.12
             }
         ],
-        Space: 79.12
+        "Space": 79.12
     },
     {
-        Points: [
+        "Points": [
             {
-                x: -72.5, y: 0, z: -60
+                "x": -72.5, "y": 0, "z": -60
             },
             {
-                x: -72.5, y: 0, z: -5
+                "x": -72.5, "y": 0, "z": 19.12
             }
         ],
-        Space: 65
+        "Space": 79.12
     },
     {
-        Points: [
+        "Points": [
             {
-                x: -64.5, y: 0, z: -60
+                "x": -64.5, "y": 0, "z": -60
             },
             {
-                x: -64.5, y: 0, z: -5
+                "x": -64.5, "y": 0, "z": 19.12
             }
         ],
-        Space: 65
-    },
+        "Space": 79.12
+    }
 ];
 class MonsterData {
 }
@@ -76,6 +76,7 @@ const MonsterDatas = [
         "delay_attack": 4,
         "wait_bullet": 2,
         "damage": 7,
+        "rank": 15,
     },
     {
         "monster_code": 1,
@@ -84,6 +85,7 @@ const MonsterDatas = [
         "delay_attack": 7,
         "wait_bullet": 1.33,
         "damage": 10,
+        "rank": 1,
     }
 ];
 class SpawnData {
@@ -96,7 +98,7 @@ const SpawnDatas = [
         monsters: [
             {
                 monster_code: 0,
-                way_code: 2,
+                way_code: 0,
             },
         ]
     },
@@ -114,11 +116,11 @@ const SpawnDatas = [
         monsters: [
             {
                 monster_code: 1,
-                way_code: 0,
+                way_code: 2,
             },
             {
                 monster_code: 0,
-                way_code: 3,
+                way_code: 1,
             },
         ]
     },
@@ -131,7 +133,7 @@ const SpawnDatas = [
             },
             {
                 monster_code: 1,
-                way_code: 1,
+                way_code: 3,
             },
         ]
     },

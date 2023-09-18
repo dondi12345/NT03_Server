@@ -71,6 +71,7 @@ class MonsterDefaultModel_GPDefender {
     constructor() {
         this.is_destroy = false;
         this.count_delay_attack = 0;
+        this.is_running = true;
     }
     Start(room, monsterData, monster_GPDefender, path) {
         this.monster_id = monster_GPDefender.monster_id + "";
@@ -89,8 +90,14 @@ class MonsterDefaultModel_GPDefender {
             LogController_1.logController.LogDev(this.monster_id + " dead");
             return;
         }
-        let space = this.monster_GPDefender.space + (this.room.state.time - this.monster_GPDefender.time_born) * this.monster_GPDefender.speed;
+        let space = this.monsterData.rank + this.monster_GPDefender.space + (this.room.state.time - this.monster_GPDefender.time_born) * this.monster_GPDefender.speed;
         if (space > this.path.Space) {
+            if (this.is_running) {
+                this.monster_GPDefender.space += (this.room.state.time - this.monster_GPDefender.time_born) * this.monster_GPDefender.speed;
+                this.monster_GPDefender.time_born = this.room.state.time;
+                this.monster_GPDefender.speed = 0;
+                this.is_running = false;
+            }
             this.count_delay_attack -= Room_GPDefender_1.TimeDela;
             if (this.count_delay_attack < 0) {
                 this.Attack();
@@ -101,6 +108,12 @@ class MonsterDefaultModel_GPDefender {
             }
         }
         else {
+            if (!this.is_running) {
+                this.monster_GPDefender.space += (this.room.state.time - this.monster_GPDefender.time_born) * this.monster_GPDefender.speed;
+                this.monster_GPDefender.time_born = this.room.state.time;
+                this.monster_GPDefender.speed = this.monsterData.speed;
+                this.is_running = true;
+            }
             LogController_1.logController.LogDev(this.monster_id + " move");
             this.monster_GPDefender.action = exports.MonsterAnimation.Walk;
         }
