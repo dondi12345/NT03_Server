@@ -54,6 +54,8 @@ export class MonsterDefaultModel_GPDefender{
     is_destroy = false;
     count_delay_attack : number = 0;
 
+    is_running = true;
+
     Start(room : Room_GPDefender, monsterData : MonsterData, monster_GPDefender : Monster_GPDefender, path : Path){
         this.monster_id = monster_GPDefender.monster_id+"";
         this.room = room;
@@ -73,8 +75,14 @@ export class MonsterDefaultModel_GPDefender{
             logController.LogDev(this.monster_id + " dead")
             return;
         }
-        let space = this.monster_GPDefender.space + (this.room.state.time - this.monster_GPDefender.time_born)*this.monster_GPDefender.speed;
+        let space = this.monsterData.rank + this.monster_GPDefender.space + (this.room.state.time - this.monster_GPDefender.time_born)*this.monster_GPDefender.speed;
         if(space > this.path.Space){
+            if(this.is_running){
+                this.monster_GPDefender.space += (this.room.state.time - this.monster_GPDefender.time_born)*this.monster_GPDefender.speed;
+                this.monster_GPDefender.time_born = this.room.state.time;
+                this.monster_GPDefender.speed = 0;
+                this.is_running = false;
+            }
             this.count_delay_attack -= TimeDela;
             if(this.count_delay_attack < 0){
                 this.Attack();
@@ -83,6 +91,12 @@ export class MonsterDefaultModel_GPDefender{
                 this.monster_GPDefender.action = MonsterAnimation.Idle;
             }
         }else{
+            if(!this.is_running){
+                this.monster_GPDefender.space += (this.room.state.time - this.monster_GPDefender.time_born)*this.monster_GPDefender.speed;
+                this.monster_GPDefender.time_born = this.room.state.time;
+                this.monster_GPDefender.speed = this.monsterData.speed;
+                this.is_running = true;
+            }
             logController.LogDev(this.monster_id + " move")
             this.monster_GPDefender.action = MonsterAnimation.Walk;
         }
