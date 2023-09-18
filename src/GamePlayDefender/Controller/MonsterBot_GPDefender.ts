@@ -19,10 +19,10 @@ const Paths : Path[]= [
         Points :
             [
                 {
-                    x : -66, y : 0, z : -60
+                    x : -68, y : 0, z : -60
                 },
                 {
-                    x : -66, y : 0, z : 19.12
+                    x : -68, y : 0, z : 19.12
                 }
             ],
         Space : 79.12
@@ -38,7 +38,31 @@ const Paths : Path[]= [
                 }
             ],
         Space : 79.12
-    }
+    },
+    {
+        Points :
+            [
+                {
+                    x : -72.5, y : 0, z : -60
+                },
+                {
+                    x : -72.5, y : 0, z : -5
+                }
+            ],
+        Space : 65
+    },
+    {
+        Points :
+            [
+                {
+                    x : -64.5, y : 0, z : -60
+                },
+                {
+                    x : -64.5, y : 0, z : -5
+                }
+            ],
+        Space : 65
+    },
 ]
 
 export class MonsterData {
@@ -56,7 +80,7 @@ const MonsterDatas : MonsterData[] = [
         "speed": 2.4,
         "hp": 100,
         "delay_attack" : 4,
-        "wait_bullet" : 1,
+        "wait_bullet" : 2,
         "damage" : 7,
     },
     {
@@ -65,7 +89,7 @@ const MonsterDatas : MonsterData[] = [
         "hp": 150,
         "delay_attack" : 7,
         "wait_bullet" : 1.33,
-        "damage" : 10
+        "damage" : 10,
     }
 ]
 
@@ -85,7 +109,7 @@ const SpawnDatas : SpawnData[] = [
         monsters:[
             {
                 monster_code : 0,
-                way_code : 0,
+                way_code : 2,
             },
         ]
     },
@@ -107,7 +131,7 @@ const SpawnDatas : SpawnData[] = [
             },
             {
                 monster_code : 0,
-                way_code : 1,
+                way_code : 3,
             },
         ]
     },
@@ -116,7 +140,7 @@ const SpawnDatas : SpawnData[] = [
         monsters:[
             {
                 monster_code : 0,
-                way_code : 0,
+                way_code : 2,
             },
             {
                 monster_code : 1,
