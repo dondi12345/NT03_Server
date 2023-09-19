@@ -16,7 +16,6 @@ export class Room_GPDefender extends Room<State_GPDefender> {
     curClients = 0;
     monsterBot : MonsterBot_GPDefender;
 
-
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
         var state = new State_GPDefender();
@@ -30,6 +29,7 @@ export class Room_GPDefender extends Room<State_GPDefender> {
         this.monsterBot.Init(this);
         this.Update();
         controller_GPDefender.RoomStart(this);
+        this.state.barrier_id = "barrier";
     }
 
     Update() {

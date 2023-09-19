@@ -1,16 +1,11 @@
 import { Types } from "mongoose";
 import { MonsterData_GPDefender, MonsterDefaultModel_GPDefender, Monster_GPDefender } from "../Model/Monster_GPDefender";
 import { Room_GPDefender } from "../Model/Room_GPDefender";
-import { Pos, controller_GPDefender } from "./Controller__GPDefender";
-
-export class Position {
-    x : number = 0;
-    y : number = 0;
-    z : number = 0;
-}
+import { Pos_Player, controller_GPDefender } from "./Controller__GPDefender";
+import { Vector3 } from "../../Utils/Vector3Utils";
 
 export class Path {
-    Points : Position[] = [];
+    Points : Vector3[] = [];
     Space : number = 0;
 }
 
@@ -73,6 +68,7 @@ export class MonsterData {
     wait_bullet : number;
     damage : number;
     rank : number;
+    bullet_code : number;
 }
 
 const MonsterDatas : MonsterData[] = [
@@ -81,18 +77,20 @@ const MonsterDatas : MonsterData[] = [
         "speed": 2.4,
         "hp": 100,
         "delay_attack" : 4,
-        "wait_bullet" : 2,
+        "wait_bullet" : 1.1,
         "damage" : 7,
         "rank" : 15,
+        "bullet_code" : 3,
     },
     {
         "monster_code": 1,
         "speed": 2,
         "hp": 150,
         "delay_attack" : 7,
-        "wait_bullet" : 1.33,
+        "wait_bullet" : 1.2,
         "damage" : 10,
         "rank" : 1,
+        "bullet_code" : 1,
     }
 ]
 

@@ -17,6 +17,8 @@ export class State_GPDefender extends Schema{
     hp_barrier = 0;
     @type("number")
     max_hp_barrier = 0;
+    @type("string")
+    barrier_id : string = "barrier"
 
     createPlayer(sessionId: string, name_player : string) {
         var player = new Player_GPDefender();
@@ -30,17 +32,7 @@ export class State_GPDefender extends Schema{
 
     createBullet(bulletData : BulletData_GPDefender){
         var bullet = new Bullet_GPDefender();
-        bullet.bullet_id = bulletData.bullet_id;
-        bullet.player_id = bulletData.player_id;
-        bullet.bullet_code = bulletData.bullet_code;
-        bullet.time_start = bulletData.time_start;
-        bullet.speed = bulletData.speed;
-        bullet.x = bulletData.x;
-        bullet.y = bulletData.y;
-        bullet.z = bulletData.z;
-        bullet.r_x = bulletData.r_x;
-        bullet.r_y = bulletData.r_y;
-        bullet.r_z = bulletData.r_z;
+        bullet.ParseFromData(bulletData);
         this.bullets.set(bullet.bullet_id, bullet);
     }
 

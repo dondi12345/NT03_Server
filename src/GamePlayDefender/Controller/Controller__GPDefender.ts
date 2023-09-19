@@ -12,7 +12,7 @@ export const DefenseConfig = {
 
 }
 
-export const Pos = [
+export const Pos_Player = [
     {
         x : -64,
         y : 5,
@@ -22,6 +22,30 @@ export const Pos = [
         x : -87,
         y : 8,
         z : 47.5,
+    },
+]
+
+export const Pos_Barrier = [
+    {
+        x : -70.56, y : 1, z : 20.18
+    },
+    {
+        x : -65.68, y : 1, z : 20.28
+    },
+    {
+        x : -60.86, y : 1, z : 20.16
+    },
+    {
+        x : -56.2, y : 1, z : 20.12
+    },
+    {
+        x : -80.14, y : 1, z : 20.28
+    },
+    {
+        x : -75.32, y : 1, z : 20.16
+    },
+    {
+        x : -85.08, y : 1, z : 20.12
     },
 ]
 
@@ -51,16 +75,16 @@ class Controller_GPDefender{
         var player = room.state.players.get(player_id);
         if(player == null || player == undefined) return;
         if(room.slot1.length == 0){
-            player.x = Pos[0].x;
-            player.y = Pos[0].y;
-            player.z = Pos[0].z;
+            player.x = Pos_Player[0].x;
+            player.y = Pos_Player[0].y;
+            player.z = Pos_Player[0].z;
             room.slot1 = player_id;
             return;
         }
         if(room.slot2.length == 0){
-            player.x = Pos[1].x;
-            player.y = Pos[1].y;
-            player.z = Pos[1].z;
+            player.x = Pos_Player[1].x;
+            player.y = Pos_Player[1].y;
+            player.z = Pos_Player[1].z;
             room.slot2 = player_id;
             return;
         }
