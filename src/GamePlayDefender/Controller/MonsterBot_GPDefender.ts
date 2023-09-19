@@ -187,7 +187,6 @@ export class MonsterBot_GPDefender {
         this.CountDelaySpawn++;
         data.monsters.forEach(element => {
             var data_monster = MonsterDatas[element.monster_code];
-            console.log(data_monster);
             var monsterData_GPDefender = new MonsterData_GPDefender();
             monsterData_GPDefender.monster_id = new Types.ObjectId().toString();
             monsterData_GPDefender.monster_code = element.monster_code;

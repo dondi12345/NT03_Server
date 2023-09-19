@@ -4,6 +4,13 @@ import { BulletData_GPDefender, Bullet_GPDefender } from "./Bullet_GPDefender";
 import { MonsterData_GPDefender, Monster_GPDefender } from "./Monster_GPDefender";
 const type = Context.create(); 
 
+export const GameStatus = {
+    prepare : 1,
+    playing : 2,
+    win : 3,
+    lose : 4,
+}
+
 export class State_GPDefender extends Schema{
     @type({ map : Player_GPDefender })
     players = new MapSchema<Player_GPDefender>();
@@ -19,6 +26,8 @@ export class State_GPDefender extends Schema{
     max_hp_barrier = 0;
     @type("string")
     barrier_id : string = "barrier"
+    @type("number")
+    game_status = 0;
 
     createPlayer(sessionId: string, name_player : string) {
         var player = new Player_GPDefender();

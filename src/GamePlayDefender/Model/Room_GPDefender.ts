@@ -1,5 +1,5 @@
 import { Room, Client, Delayed } from "colyseus";
-import { State_GPDefender } from "./State_GPDefender";
+import { GameStatus, State_GPDefender } from "./State_GPDefender";
 import { logController } from "../../LogServer/Controller/LogController";
 import { DataModel } from "../../Utils/DataModel";
 import { Message } from "../../MessageServer/Model/Message";
@@ -30,6 +30,7 @@ export class Room_GPDefender extends Room<State_GPDefender> {
         this.Update();
         controller_GPDefender.RoomStart(this);
         this.state.barrier_id = "barrier";
+        this.state.game_status = GameStatus.playing;
     }
 
     Update() {

@@ -2,9 +2,11 @@ import { Message } from "../../MessageServer/Model/Message";
 import { DamageCharacter } from "../../Utils/DamagerCharacter";
 import { DataModel } from "../../Utils/DataModel";
 import { BulletData_GPDefender } from "../Model/Bullet_GPDefender";
+import { Message_GPDefender } from "../Model/Message_GPDefender";
 import { MonsterData_GPDefender } from "../Model/Monster_GPDefender";
 import { Room_GPDefender } from "../Model/Room_GPDefender";
 import { RotateData_GPDefender } from "../Model/RotateData_GPDefender";
+import { GameStatus } from "../Model/State_GPDefender";
 
 export const DefenseConfig = {
     hp_barrier : 1000,
@@ -125,9 +127,19 @@ class Controller_GPDefender{
             if(monster.hp < 0){
                 room.monsterBot.DestroyMonster(monster.monster_id);
                 room.state.monsters.delete(monster.monster_id);
+                if(room.state.monsters.size == 0){
+                    room.state.game_status = GameStatus.win;
+                }
             }
         } catch (error) {
-            
+            console.log(error);
+        }
+    }
+
+    BarrierTakeDmg(dmg : number, room : Room_GPDefender){
+        room.state.hp_barrier -= dmg;
+        if(room.state.hp_barrier <= 0){
+            room.state.game_status = GameStatus.lose;
         }
     }
 }

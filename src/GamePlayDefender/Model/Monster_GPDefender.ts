@@ -138,9 +138,8 @@ export class MonsterDefaultModel_GPDefender{
                 var message = new Message();
                 message.MessageCode = Message_GPDefender.bullet_impact;
                 message.Data = JSON.stringify(bulletData);
-                console.log(message)
                 controller_GPDefender.BulletImpact(message, this.room);
-                this.room.state.hp_barrier -= this.monsterData.damage;
+                controller_GPDefender.BarrierTakeDmg(this.monsterData.damage, this.room);
             }, minDis/15 * 1000);
         }, this.monsterData.wait_bullet*1000)
     }
