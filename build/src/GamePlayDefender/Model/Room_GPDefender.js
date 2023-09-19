@@ -31,6 +31,7 @@ class Room_GPDefender extends colyseus_1.Room {
         this.Update();
         Controller__GPDefender_1.controller_GPDefender.RoomStart(this);
         this.state.barrier_id = "barrier";
+        this.state.game_status = State_GPDefender_1.GameStatus.playing;
     }
     Update() {
         this.state.time += exports.TimeDela;

@@ -131,6 +131,213 @@ const SpawnDatas = [
             },
         ]
     },
+    {
+        time: 6,
+        monsters: [
+            {
+                monster_code: 0,
+                way_code: 1,
+            },
+            {
+                monster_code: 1,
+                way_code: 0,
+            },
+        ]
+    },
+    {
+        time: 8,
+        monsters: [
+            {
+                monster_code: 0,
+                way_code: 2,
+            },
+            {
+                monster_code: 1,
+                way_code: 1,
+            },
+        ]
+    },
+    {
+        time: 10,
+        monsters: [
+            {
+                monster_code: 0,
+                way_code: 0,
+            },
+            {
+                monster_code: 1,
+                way_code: 3,
+            },
+        ]
+    },
+    // {
+    //     time : 12,
+    //     monsters:[
+    //         {
+    //             monster_code : 0,
+    //             way_code : 0,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 1,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 2,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 3,
+    //         },
+    //     ]
+    // },
+    // {
+    //     time : 14,
+    //     monsters:[
+    //         {
+    //             monster_code : 1,
+    //             way_code : 0,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 1,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 2,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 3,
+    //         },
+    //     ]
+    // },
+    // {
+    //     time : 16,
+    //     monsters:[
+    //         {
+    //             monster_code : 0,
+    //             way_code : 0,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 1,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 2,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 3,
+    //         },
+    //     ]
+    // },
+    // {
+    //     time : 18,
+    //     monsters:[
+    //         {
+    //             monster_code : 1,
+    //             way_code : 0,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 1,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 2,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 3,
+    //         },
+    //     ]
+    // },
+    // {
+    //     time : 20,
+    //     monsters:[
+    //         {
+    //             monster_code : 0,
+    //             way_code : 0,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 1,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 2,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 3,
+    //         },
+    //     ]
+    // },
+    // {
+    //     time : 22,
+    //     monsters:[
+    //         {
+    //             monster_code : 1,
+    //             way_code : 0,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 1,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 2,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 3,
+    //         },
+    //     ]
+    // },
+    // {
+    //     time : 25,
+    //     monsters:[
+    //         {
+    //             monster_code : 0,
+    //             way_code : 0,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 1,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 2,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 3,
+    //         },
+    //     ]
+    // },
+    // {
+    //     time : 30,
+    //     monsters:[
+    //         {
+    //             monster_code : 1,
+    //             way_code : 0,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 1,
+    //         },
+    //         {
+    //             monster_code : 1,
+    //             way_code : 2,
+    //         },
+    //         {
+    //             monster_code : 0,
+    //             way_code : 3,
+    //         },
+    //     ]
+    // },
 ];
 class MonsterBot_GPDefender {
     constructor() {
@@ -160,7 +367,6 @@ class MonsterBot_GPDefender {
         this.CountDelaySpawn++;
         data.monsters.forEach(element => {
             var data_monster = MonsterDatas[element.monster_code];
-            console.log(data_monster);
             var monsterData_GPDefender = new Monster_GPDefender_1.MonsterData_GPDefender();
             monsterData_GPDefender.monster_id = new mongoose_1.Types.ObjectId().toString();
             monsterData_GPDefender.monster_code = element.monster_code;
@@ -176,7 +382,6 @@ class MonsterBot_GPDefender {
                 this.Monsters[monster.monster_id] = monsterDefaultModel_GPDefender;
             }
             ;
-            console.log("Spawn Monster");
         });
     }
     DestroyMonster(monster_id) {

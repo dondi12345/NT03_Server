@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.controller_GPDefender = exports.Pos_Barrier = exports.Pos_Player = exports.DefenseConfig = void 0;
 const DataModel_1 = require("../../Utils/DataModel");
+const State_GPDefender_1 = require("../Model/State_GPDefender");
 exports.DefenseConfig = {
     hp_barrier: 1000,
     time_start: 15,
@@ -117,9 +118,19 @@ class Controller_GPDefender {
             if (monster.hp < 0) {
                 room.monsterBot.DestroyMonster(monster.monster_id);
                 room.state.monsters.delete(monster.monster_id);
+                if (room.state.monsters.size == 0) {
+                    room.state.game_status = State_GPDefender_1.GameStatus.win;
+                }
             }
         }
         catch (error) {
+            console.log(error);
+        }
+    }
+    BarrierTakeDmg(dmg, room) {
+        room.state.hp_barrier -= dmg;
+        if (room.state.hp_barrier <= 0) {
+            room.state.game_status = State_GPDefender_1.GameStatus.lose;
         }
     }
 }

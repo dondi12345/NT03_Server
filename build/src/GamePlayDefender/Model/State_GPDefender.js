@@ -6,12 +6,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.State_GPDefender = void 0;
+exports.State_GPDefender = exports.GameStatus = void 0;
 const schema_1 = require("@colyseus/schema");
 const Player_GPDefender_1 = require("./Player_GPDefender");
 const Bullet_GPDefender_1 = require("./Bullet_GPDefender");
 const Monster_GPDefender_1 = require("./Monster_GPDefender");
 const type = schema_1.Context.create();
+exports.GameStatus = {
+    prepare: 1,
+    playing: 2,
+    win: 3,
+    lose: 4,
+};
 class State_GPDefender extends schema_1.Schema {
     constructor() {
         super(...arguments);
@@ -22,6 +28,7 @@ class State_GPDefender extends schema_1.Schema {
         this.hp_barrier = 0;
         this.max_hp_barrier = 0;
         this.barrier_id = "barrier";
+        this.game_status = 0;
     }
     createPlayer(sessionId, name_player) {
         var player = new Player_GPDefender_1.Player_GPDefender();
@@ -76,4 +83,7 @@ __decorate([
 __decorate([
     type("string")
 ], State_GPDefender.prototype, "barrier_id", void 0);
+__decorate([
+    type("number")
+], State_GPDefender.prototype, "game_status", void 0);
 exports.State_GPDefender = State_GPDefender;

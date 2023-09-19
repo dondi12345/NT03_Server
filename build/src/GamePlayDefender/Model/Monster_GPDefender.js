@@ -151,9 +151,8 @@ class MonsterDefaultModel_GPDefender {
                 var message = new Message_1.Message();
                 message.MessageCode = Message_GPDefender_1.Message_GPDefender.bullet_impact;
                 message.Data = JSON.stringify(bulletData);
-                console.log(message);
                 Controller__GPDefender_1.controller_GPDefender.BulletImpact(message, this.room);
-                this.room.state.hp_barrier -= this.monsterData.damage;
+                Controller__GPDefender_1.controller_GPDefender.BarrierTakeDmg(this.monsterData.damage, this.room);
             }, minDis / 15 * 1000);
         }, this.monsterData.wait_bullet * 1000);
     }
