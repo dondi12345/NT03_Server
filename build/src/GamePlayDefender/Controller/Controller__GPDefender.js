@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.controller_GPDefender = exports.Pos = exports.DefenseConfig = void 0;
+exports.controller_GPDefender = exports.Pos_Barrier = exports.Pos_Player = exports.DefenseConfig = void 0;
 const DataModel_1 = require("../../Utils/DataModel");
 exports.DefenseConfig = {
     hp_barrier: 1000,
     time_start: 15,
 };
-exports.Pos = [
+exports.Pos_Player = [
     {
         x: -64,
         y: 5,
@@ -16,6 +16,29 @@ exports.Pos = [
         x: -87,
         y: 8,
         z: 47.5,
+    },
+];
+exports.Pos_Barrier = [
+    {
+        x: -70.56, y: 1, z: 20.18
+    },
+    {
+        x: -65.68, y: 1, z: 20.28
+    },
+    {
+        x: -60.86, y: 1, z: 20.16
+    },
+    {
+        x: -56.2, y: 1, z: 20.12
+    },
+    {
+        x: -80.14, y: 1, z: 20.28
+    },
+    {
+        x: -75.32, y: 1, z: 20.16
+    },
+    {
+        x: -85.08, y: 1, z: 20.12
     },
 ];
 class Controller_GPDefender {
@@ -45,16 +68,16 @@ class Controller_GPDefender {
         if (player == null || player == undefined)
             return;
         if (room.slot1.length == 0) {
-            player.x = exports.Pos[0].x;
-            player.y = exports.Pos[0].y;
-            player.z = exports.Pos[0].z;
+            player.x = exports.Pos_Player[0].x;
+            player.y = exports.Pos_Player[0].y;
+            player.z = exports.Pos_Player[0].z;
             room.slot1 = player_id;
             return;
         }
         if (room.slot2.length == 0) {
-            player.x = exports.Pos[1].x;
-            player.y = exports.Pos[1].y;
-            player.z = exports.Pos[1].z;
+            player.x = exports.Pos_Player[1].x;
+            player.y = exports.Pos_Player[1].y;
+            player.z = exports.Pos_Player[1].z;
             room.slot2 = player_id;
             return;
         }

@@ -10,6 +10,12 @@ exports.MonsterDefaultModel_GPDefender = exports.Monster_GPDefender = exports.Mo
 const schema_1 = require("@colyseus/schema");
 const Room_GPDefender_1 = require("./Room_GPDefender");
 const LogController_1 = require("../../LogServer/Controller/LogController");
+const Bullet_GPDefender_1 = require("./Bullet_GPDefender");
+const mongoose_1 = require("mongoose");
+const Vector3Utils_1 = require("../../Utils/Vector3Utils");
+const Controller__GPDefender_1 = require("../Controller/Controller__GPDefender");
+const Message_1 = require("../../MessageServer/Model/Message");
+const Message_GPDefender_1 = require("./Message_GPDefender");
 const type = schema_1.Context.create(); // this is your @type() decorator bound to a context
 exports.MonsterAnimation = {
     Idle: 0,
@@ -125,8 +131,48 @@ class MonsterDefaultModel_GPDefender {
         this.monster_GPDefender.action = exports.MonsterAnimation.Attack;
         LogController_1.logController.LogDev(this.monster_id + " attack");
         setTimeout(() => {
-            this.room.state.hp_barrier -= this.monsterData.damage;
+            var pos = this.GetPos();
+            var minPos_Barrior = Controller__GPDefender_1.Pos_Barrier[0];
+            var minDis = Vector3Utils_1.Vector3.Distance(pos, Vector3Utils_1.Vector3.New(minPos_Barrior.x, minPos_Barrior.y, minPos_Barrior.z));
+            for (let index = 0; index < Controller__GPDefender_1.Pos_Barrier.length; index++) {
+                const element = Controller__GPDefender_1.Pos_Barrier[index];
+                var dis = Vector3Utils_1.Vector3.Distance(pos, Vector3Utils_1.Vector3.New(element.x, element.y, element.z));
+                if (dis < minDis) {
+                    minDis = dis;
+                    minPos_Barrior = element;
+                }
+            }
+            var bulletData = Bullet_GPDefender_1.BulletData_GPDefender.New(new mongoose_1.Types.ObjectId().toString(), this.monster_id, this.room.state.barrier_id, this.monsterData.bullet_code, this.room.state.time, pos.x, pos.y + 3, pos.z, 0, 0, 0, minPos_Barrior.x, minPos_Barrior.y, minPos_Barrior.z);
+            var message = new Message_1.Message();
+            message.MessageCode = Message_GPDefender_1.Message_GPDefender.player_fire;
+            message.Data = JSON.stringify(bulletData);
+            Controller__GPDefender_1.controller_GPDefender.PlayerFire(message, this.room);
+            setTimeout(() => {
+                var message = new Message_1.Message();
+                message.MessageCode = Message_GPDefender_1.Message_GPDefender.bullet_impact;
+                message.Data = JSON.stringify(bulletData);
+                console.log(message);
+                Controller__GPDefender_1.controller_GPDefender.BulletImpact(message, this.room);
+                this.room.state.hp_barrier -= this.monsterData.damage;
+            }, minDis / 15 * 1000);
         }, this.monsterData.wait_bullet * 1000);
+    }
+    GetPos() {
+        var time = this.room.state.time - this.monster_GPDefender.time_born;
+        var curSpace = this.monster_GPDefender.space + this.monster_GPDefender.speed * time;
+        var pos = this.path.Points[this.path.Points.length - 1];
+        for (let i = 0; i < this.path.Points.length - 1; i++) {
+            var dis = Vector3Utils_1.Vector3.Distance(this.path.Points[i], this.path.Points[i + 1]);
+            if (dis > curSpace) {
+                var d = Vector3Utils_1.Vector3.Minus(this.path.Points[i + 1], this.path.Points[i]);
+                pos = Vector3Utils_1.Vector3.New(this.path.Points[i].x + d.x / dis * curSpace, this.path.Points[i].y + d.y / dis * curSpace, this.path.Points[i].z + d.z / dis * curSpace);
+                break;
+            }
+            else {
+                curSpace -= dis;
+            }
+        }
+        return pos;
     }
 }
 exports.MonsterDefaultModel_GPDefender = MonsterDefaultModel_GPDefender;

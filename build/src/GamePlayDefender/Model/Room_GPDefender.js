@@ -30,6 +30,7 @@ class Room_GPDefender extends colyseus_1.Room {
         this.monsterBot.Init(this);
         this.Update();
         Controller__GPDefender_1.controller_GPDefender.RoomStart(this);
+        this.state.barrier_id = "barrier";
     }
     Update() {
         this.state.time += exports.TimeDela;

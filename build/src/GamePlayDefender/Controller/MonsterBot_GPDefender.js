@@ -1,17 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MonsterBot_GPDefender = exports.MonsterData = exports.Path = exports.Position = void 0;
+exports.MonsterBot_GPDefender = exports.MonsterData = exports.Path = void 0;
 const mongoose_1 = require("mongoose");
 const Monster_GPDefender_1 = require("../Model/Monster_GPDefender");
 const Controller__GPDefender_1 = require("./Controller__GPDefender");
-class Position {
-    constructor() {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
-    }
-}
-exports.Position = Position;
 class Path {
     constructor() {
         this.Points = [];
@@ -74,18 +66,20 @@ const MonsterDatas = [
         "speed": 2.4,
         "hp": 100,
         "delay_attack": 4,
-        "wait_bullet": 2,
+        "wait_bullet": 1.1,
         "damage": 7,
         "rank": 15,
+        "bullet_code": 3,
     },
     {
         "monster_code": 1,
         "speed": 2,
         "hp": 150,
         "delay_attack": 7,
-        "wait_bullet": 1.33,
+        "wait_bullet": 1.2,
         "damage": 10,
         "rank": 1,
+        "bullet_code": 1,
     }
 ];
 class SpawnData {

@@ -21,6 +21,7 @@ class State_GPDefender extends schema_1.Schema {
         this.time = 0;
         this.hp_barrier = 0;
         this.max_hp_barrier = 0;
+        this.barrier_id = "barrier";
     }
     createPlayer(sessionId, name_player) {
         var player = new Player_GPDefender_1.Player_GPDefender();
@@ -32,17 +33,7 @@ class State_GPDefender extends schema_1.Schema {
     }
     createBullet(bulletData) {
         var bullet = new Bullet_GPDefender_1.Bullet_GPDefender();
-        bullet.bullet_id = bulletData.bullet_id;
-        bullet.player_id = bulletData.player_id;
-        bullet.bullet_code = bulletData.bullet_code;
-        bullet.time_start = bulletData.time_start;
-        bullet.speed = bulletData.speed;
-        bullet.x = bulletData.x;
-        bullet.y = bulletData.y;
-        bullet.z = bulletData.z;
-        bullet.r_x = bulletData.r_x;
-        bullet.r_y = bulletData.r_y;
-        bullet.r_z = bulletData.r_z;
+        bullet.ParseFromData(bulletData);
         this.bullets.set(bullet.bullet_id, bullet);
     }
     removeBullet(bullet_id) {
@@ -82,4 +73,7 @@ __decorate([
 __decorate([
     type("number")
 ], State_GPDefender.prototype, "max_hp_barrier", void 0);
+__decorate([
+    type("string")
+], State_GPDefender.prototype, "barrier_id", void 0);
 exports.State_GPDefender = State_GPDefender;

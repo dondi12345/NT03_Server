@@ -13,15 +13,30 @@ class BulletData_GPDefender {
     constructor() {
         this.bullet_id = "";
         this.player_id = "";
+        this.target_id = "";
         this.bullet_code = 0;
         this.time_start = 0;
-        this.speed = 0.0;
-        this.x = 0.0;
-        this.y = 0.0;
-        this.z = 0.0;
-        this.r_x = 0.0;
-        this.r_y = 0.0;
-        this.r_z = 0.0;
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+        this.r_x = 0;
+        this.r_y = 0;
+        this.r_z = 0;
+    }
+    static New(bullet_id, player_id, target_id, bullet_code, time_start, x, y, z, r_x, r_y, r_z, end_x, end_y, end_z) {
+        var bulletData_GPDefender = new BulletData_GPDefender();
+        bulletData_GPDefender.bullet_id = bullet_id;
+        bulletData_GPDefender.player_id = player_id;
+        bulletData_GPDefender.target_id = target_id;
+        bulletData_GPDefender.bullet_code = bullet_code;
+        bulletData_GPDefender.time_start = time_start;
+        bulletData_GPDefender.x = x;
+        bulletData_GPDefender.y = y;
+        bulletData_GPDefender.z = z;
+        bulletData_GPDefender.r_x = r_x;
+        bulletData_GPDefender.r_y = r_y;
+        bulletData_GPDefender.r_z = r_z;
+        return bulletData_GPDefender;
     }
 }
 exports.BulletData_GPDefender = BulletData_GPDefender;
@@ -30,15 +45,29 @@ class Bullet_GPDefender extends schema_1.Schema {
         super(...arguments);
         this.bullet_id = "";
         this.player_id = "";
+        this.target_id = "";
         this.bullet_code = 0;
         this.time_start = 0;
-        this.speed = 0.0;
-        this.x = 0.0;
-        this.y = 0.0;
-        this.z = 0.0;
-        this.r_x = 0.0;
-        this.r_y = 0.0;
-        this.r_z = 0.0;
+        this.speed = 0;
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+        this.r_x = 0;
+        this.r_y = 0;
+        this.r_z = 0;
+    }
+    ParseFromData(bulletData_GPDefender) {
+        this.bullet_id = bulletData_GPDefender.bullet_id;
+        this.player_id = bulletData_GPDefender.player_id;
+        this.target_id = bulletData_GPDefender.target_id;
+        this.bullet_code = bulletData_GPDefender.bullet_code;
+        this.time_start = bulletData_GPDefender.time_start;
+        this.x = bulletData_GPDefender.x;
+        this.y = bulletData_GPDefender.y;
+        this.z = bulletData_GPDefender.z;
+        this.r_x = bulletData_GPDefender.r_x;
+        this.r_y = bulletData_GPDefender.r_y;
+        this.r_z = bulletData_GPDefender.r_z;
     }
 }
 __decorate([
@@ -47,6 +76,9 @@ __decorate([
 __decorate([
     type("string")
 ], Bullet_GPDefender.prototype, "player_id", void 0);
+__decorate([
+    type("string")
+], Bullet_GPDefender.prototype, "target_id", void 0);
 __decorate([
     type("number")
 ], Bullet_GPDefender.prototype, "bullet_code", void 0);
