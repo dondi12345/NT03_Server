@@ -18,6 +18,9 @@ export class Router_GPDefender{
         if(messgae.MessageCode == Message_GPDefender.target_get_dmg){
             controller_GPDefender.TargetGetDmg(messgae, room);
         }
+        if(messgae.MessageCode == Message_GPDefender.change_gun){
+            controller_GPDefender.ChangeGun(messgae, room);
+        }
     }
 }
 

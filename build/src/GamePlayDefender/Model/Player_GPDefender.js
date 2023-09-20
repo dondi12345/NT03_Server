@@ -25,6 +25,7 @@ class Player_GPDefender extends schema_1.Schema {
         this.d_r_x = 0.0;
         this.d_r_y = 0.0;
         this.d_r_z = 0.0;
+        this.index_gun = 0.0;
     }
 }
 __decorate([
@@ -66,4 +67,7 @@ __decorate([
 __decorate([
     type("number")
 ], Player_GPDefender.prototype, "d_r_z", void 0);
+__decorate([
+    type("number")
+], Player_GPDefender.prototype, "index_gun", void 0);
 exports.Player_GPDefender = Player_GPDefender;

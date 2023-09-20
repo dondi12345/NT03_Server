@@ -8,4 +8,5 @@ exports.Message_GPDefender = {
     target_get_dmg: 18003,
     win_game: 18004,
     lose_game: 18005,
+    change_gun: 18006,
 };

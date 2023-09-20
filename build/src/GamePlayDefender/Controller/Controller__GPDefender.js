@@ -42,6 +42,8 @@ exports.Pos_Barrier = [
         x: -85.08, y: 1, z: 20.12
     },
 ];
+class ChangeGunData {
+}
 class Controller_GPDefender {
     RoomStart(room) {
         room.state.hp_barrier = exports.DefenseConfig.hp_barrier;
@@ -122,6 +124,18 @@ class Controller_GPDefender {
                     room.state.game_status = State_GPDefender_1.GameStatus.win;
                 }
             }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    ChangeGun(message, room) {
+        var changeGunData = DataModel_1.DataModel.Parse(message.Data);
+        var player = room.state.players.get(changeGunData.player_id);
+        try {
+            if (player == undefined || player == null)
+                return;
+            player.index_gun = changeGunData.index_gun;
         }
         catch (error) {
             console.log(error);

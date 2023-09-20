@@ -31,4 +31,7 @@ export class Player_GPDefender extends Schema{
     d_r_y = 0.0;
     @type("number")
     d_r_z = 0.0;
+
+    @type("number")
+    index_gun = 0.0;
 }
