@@ -1,20 +1,40 @@
 import { Client } from "colyseus";
 import { PlayerStatus_AAC, StateStatus_AAC } from "../Model/Enum_AAC";
 import { Room_AAC } from "../Model/Room_AAC";
-import { PlayerInfor_AAC } from "../Model/PlayerSub_AAC";
+import { ChessInFeild, PlayerData_AAC, PlayerInfo_AAC } from "../Model/PlayerSub_AAC";
 import { Round, Start_Config } from "../Config/Config_AAC";
+import { Message, MessageData } from "../../MessageServer/Model/Message";
+import { MsgCode_AAC } from "../Model/MsgCode_AAC";
 
 class Controller_AAC{
-    PlayerJoin(room: Room_AAC, client: Client, playerData : PlayerInfor_AAC){
+    PlayerJoin(room: Room_AAC, client: Client, playerInfo : PlayerInfo_AAC){
         room.state.createPlayer(client.sessionId);
+
+        playerInfo.SessionId = client.sessionId;
+        room.playerInfoDic.Add(client.sessionId, playerInfo);
+
+        var message = new Message();
+        message.MessageCode = MsgCode_AAC.Update_PlayerInfo;
+        message.Data = JSON.stringify(playerInfo);
+        var messageData = new MessageData([JSON.stringify(message)]);
+        
+        room.sendToAllClient(JSON.stringify(messageData));
+
+        var playerData = new PlayerData_AAC();
         playerData.SessionId = client.sessionId;
-        room.playerInfoDic.Add(client.sessionId, playerData); 
+        room.playerDataDic.Add(client.sessionId, playerData);
+
+        var chessInFeild = new ChessInFeild();
+        chessInFeild.SessionId = client.sessionId;
+        room.ChessInFeildDic.Add(client.sessionId, chessInFeild);
     }
 
     PlayerLeave(room: Room_AAC, client: Client){
         if(room.state.status == StateStatus_AAC.Lobby){
             room.playerInfoDic.Remove(client.sessionId);
-            room.playerInfoDic.Remove(client.sessionId);
+            room.playerDataDic.Remove(client.sessionId);
+            room.ClientDic.Remove(client.sessionId);
+            room.ChessInFeildDic.Remove(client.sessionId);
         }
     }
 
@@ -38,11 +58,17 @@ class Controller_AAC{
         room.lock();
         room.state.status = StateStatus_AAC.Matching;
         room.state.timeTurn = Round.prepare_before_round_start;
-        room.state.players.forEach(element => {
-            element.gold = Start_Config.Gold;
-            element.exp = Start_Config.Exp;
-            element.lv = Start_Config.Lv;
-        });
+        room.playerDataDic.Keys().forEach(element=>{
+            let value : PlayerData_AAC = room.playerDataDic.Get(element);
+            value.gold = Start_Config.Gold;
+            value.exp = Start_Config.Exp;
+            value.lv = Start_Config.Lv;
+            var message = new Message();
+            message.MessageCode = MsgCode_AAC.Update_PlayerData;
+            message.Data = JSON.stringify(value);
+            var messageData = new MessageData([JSON.stringify(message)]);
+            room.sendToClient(element, JSON.stringify(messageData));
+        })
     }
 
     CheckTime(room: Room_AAC){

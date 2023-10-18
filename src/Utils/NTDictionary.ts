@@ -5,6 +5,10 @@ export class NTDictionary<T>{
         this.dictionary = {}
     }
 
+    Keys(){
+        return Object.keys(this.dictionary);
+    }
+
     Get(key : string){
         return this.dictionary[key];
     }
