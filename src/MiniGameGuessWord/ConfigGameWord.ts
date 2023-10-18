@@ -10,6 +10,7 @@ import express from 'express';
 import { StateGuessWordRoom } from "./GuessWord/Model/GuessWordStateHandler";
 import { StateSpellingBeeRoom } from "./SpellingBee/Model/SpellingBeeStateHandler";
 import { Room_GPDefender as StateGamePlayDefender} from "../GamePlayDefender/Model/Room_GPDefender";
+import { Room_AAC } from "../AxieAutoChess/Model/Room_AAC";
 
 export const configGuessWord = config({
     options: {
@@ -23,6 +24,7 @@ export const configGuessWord = config({
 
         gameServer.define("state_spelling_bee", StateSpellingBeeRoom)
         gameServer.define("state_gameplay_defender", StateGamePlayDefender)
+        gameServer.define("gameplay_aac",Room_AAC)
 
         gameServer.onShutdown(function(){
             console.log(`game server is going down.`);

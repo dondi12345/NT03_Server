@@ -6,8 +6,8 @@ import { spellingBeeBotService } from "./SpellingBeeBot/Service/SpellingBeeBotSe
 class MiniGameWord{
     Init(){
         listen(configGuessWord, portConfig.portMiniGameWord)
-        guessNumberBotService;
-        spellingBeeBotService;
+        // guessNumberBotService;
+        // spellingBeeBotService;
     }
     constructor(){
         this.Init();
