@@ -1,10 +1,11 @@
 import { Client } from "colyseus";
 import { PlayerStatus_AAC, StateStatus_AAC } from "../Model/Enum_AAC";
 import { Room_AAC } from "../Model/Room_AAC";
-import { ChessInDeck, ChessInFeild, PlayerData_AAC, PlayerInfo_AAC } from "../Model/PlayerSub_AAC";
-import { Round, Start_Config } from "../Config/Config_AAC";
+import { ChessData_AAC, PlayerChessData_AAC, PlayerData_AAC, PlayerInfo_AAC, PlayerShopData_AAC } from "../Model/PlayerSub_AAC";
+import { Round, ShopChess, Start_Config } from "../Config/Config_AAC";
 import { Message, MessageData } from "../../MessageServer/Model/Message";
 import { MsgCode_AAC } from "../Model/MsgCode_AAC";
+import { Types } from "mongoose";
 
 class Controller_AAC{
     PlayerJoin(room: Room_AAC, client: Client, playerInfo : PlayerInfo_AAC){
@@ -24,13 +25,13 @@ class Controller_AAC{
         playerData.SessionId = client.sessionId;
         room.playerDataDic.Add(client.sessionId, playerData);
 
-        var chessInFeild = new ChessInFeild();
-        chessInFeild.SessionId = client.sessionId;
-        room.ChessInFeildDic.Add(client.sessionId, chessInFeild);
+        var playerChessData = new PlayerChessData_AAC();
+        playerChessData.SessionId = client.sessionId;
+        room.PlayerChessDataDic.Add(client.sessionId, playerChessData);
 
-        var chessInDeck = new ChessInDeck();
-        chessInDeck.SessionId = client.sessionId;
-        room.ChessInDeckDic.Add(client.sessionId, chessInDeck);
+        var playerShopData = new PlayerShopData_AAC();
+        playerShopData.SessionId = client.sessionId;
+        room.PlayerShopDataDic.Add(client.sessionId, playerShopData);
     }
 
     PlayerLeave(room: Room_AAC, client: Client){
@@ -38,8 +39,7 @@ class Controller_AAC{
             room.playerInfoDic.Remove(client.sessionId);
             room.playerDataDic.Remove(client.sessionId);
             room.ClientDic.Remove(client.sessionId);
-            room.ChessInFeildDic.Remove(client.sessionId);
-            room.ChessInDeckDic.Remove(client.sessionId);
+            room.PlayerChessDataDic.Remove(client.sessionId);
         }
     }
 
@@ -68,10 +68,20 @@ class Controller_AAC{
             value.gold = Start_Config.Gold;
             value.exp = Start_Config.Exp;
             value.lv = Start_Config.Lv;
-            var message = new Message();
-            message.MessageCode = MsgCode_AAC.Update_PlayerData;
-            message.Data = JSON.stringify(value);
-            var messageData = new MessageData([JSON.stringify(message)]);
+
+            var messageUP = new Message();
+            messageUP.MessageCode = MsgCode_AAC.Update_PlayerData;
+            messageUP.Data = JSON.stringify(value);
+            
+            var playerShopData = new PlayerShopData_AAC();
+            playerShopData.SessionId = element;
+            playerShopData.Chesses = GetRandomChessForShop();
+            room.PlayerShopDataDic.Add(element, playerShopData);
+            var messageUS = new Message();
+            messageUS.MessageCode = MsgCode_AAC.Update_PlayerShop;
+            messageUS.Data = JSON.stringify(playerShopData);
+
+            var messageData = new MessageData([JSON.stringify(messageUP), JSON.stringify(messageUS)]);
             room.sendToClient(element, JSON.stringify(messageData));
         })
     }
@@ -85,3 +95,15 @@ class Controller_AAC{
 }
 
 export const controller_AAC = new Controller_AAC();
+
+function GetRandomChessForShop(){
+    var chessDatas : ChessData_AAC[] = [];
+    for (let i = 0; i < 4; i++) {
+        var index = ShopChess[Math.floor(Math.random()*ShopChess.length)];
+        var chessData = new ChessData_AAC();
+        chessData._id = new Types.ObjectId().toString();
+        chessData.Index = index;
+        chessDatas.push(chessData);
+    }
+    return chessDatas;
+}

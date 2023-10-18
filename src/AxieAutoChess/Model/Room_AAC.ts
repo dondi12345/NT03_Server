@@ -4,7 +4,7 @@ import { State_AAC } from "./State_AAC";
 import { DataModel } from "../../Utils/DataModel";
 import { Message, MessageData } from "../../MessageServer/Model/Message";
 import { MsgCode_AAC } from "./MsgCode_AAC";
-import { ChessInDeck, ChessInFeild, PlayerData_AAC, PlayerInfo_AAC } from "./PlayerSub_AAC";
+import { PlayerChessData_AAC, PlayerData_AAC, PlayerInfo_AAC, PlayerShopData_AAC } from "./PlayerSub_AAC";
 import { controller_AAC } from "../Controller/Controller_AAC";
 import { logController } from "../../LogServer/Controller/LogController";
 
@@ -14,8 +14,8 @@ export class Room_AAC extends Room<State_AAC> {
     playerInfoDic : NTDictionary<PlayerInfo_AAC>;
     playerDataDic : NTDictionary<PlayerData_AAC>;
     ClientDic : NTDictionary<Client>;
-    ChessInFeildDic : NTDictionary<ChessInFeild>;
-    ChessInDeckDic : NTDictionary<ChessInDeck>;
+    PlayerChessDataDic : NTDictionary<PlayerChessData_AAC>;
+    PlayerShopDataDic : NTDictionary<PlayerShopData_AAC>;
     
     delayedInterval!: Delayed;
 
@@ -55,8 +55,7 @@ export class Room_AAC extends Room<State_AAC> {
     InitRoom(){
         this.playerInfoDic = new NTDictionary<PlayerInfo_AAC>();
         this.ClientDic = new NTDictionary<Client>();
-        this.ChessInFeildDic = new NTDictionary<ChessInFeild>();
-        this.ChessInDeckDic = new NTDictionary<ChessInDeck>();
+        this.PlayerChessDataDic = new NTDictionary<PlayerChessData_AAC>();
         this.playerDataDic = new NTDictionary<PlayerData_AAC>();
     }
 

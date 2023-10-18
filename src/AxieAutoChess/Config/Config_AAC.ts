@@ -8,3 +8,5 @@ export const Round = {
     prepare_before_round_start : 15,
     time_roud : 90,
 }
+
+export const ShopChess = [1,2]
