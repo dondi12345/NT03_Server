@@ -1,7 +1,7 @@
 import { Client } from "colyseus";
 import { PlayerStatus_AAC, StateStatus_AAC } from "../Model/Enum_AAC";
 import { Room_AAC } from "../Model/Room_AAC";
-import { ChessInFeild, PlayerData_AAC, PlayerInfo_AAC } from "../Model/PlayerSub_AAC";
+import { ChessInDeck, ChessInFeild, PlayerData_AAC, PlayerInfo_AAC } from "../Model/PlayerSub_AAC";
 import { Round, Start_Config } from "../Config/Config_AAC";
 import { Message, MessageData } from "../../MessageServer/Model/Message";
 import { MsgCode_AAC } from "../Model/MsgCode_AAC";
@@ -27,6 +27,10 @@ class Controller_AAC{
         var chessInFeild = new ChessInFeild();
         chessInFeild.SessionId = client.sessionId;
         room.ChessInFeildDic.Add(client.sessionId, chessInFeild);
+
+        var chessInDeck = new ChessInDeck();
+        chessInDeck.SessionId = client.sessionId;
+        room.ChessInDeckDic.Add(client.sessionId, chessInDeck);
     }
 
     PlayerLeave(room: Room_AAC, client: Client){
@@ -35,6 +39,7 @@ class Controller_AAC{
             room.playerDataDic.Remove(client.sessionId);
             room.ClientDic.Remove(client.sessionId);
             room.ChessInFeildDic.Remove(client.sessionId);
+            room.ChessInDeckDic.Remove(client.sessionId);
         }
     }
 
