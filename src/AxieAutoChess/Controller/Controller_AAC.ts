@@ -12,8 +12,10 @@ class Controller_AAC{
     }
 
     PlayerLeave(room: Room_AAC, client: Client){
-        room.playerInfoDic.Remove(client.sessionId);
-        room.playerInfoDic.Remove(client.sessionId);
+        if(room.state.status == StateStatus_AAC.Lobby){
+            room.playerInfoDic.Remove(client.sessionId);
+            room.playerInfoDic.Remove(client.sessionId);
+        }
     }
 
     PlayerReady(room: Room_AAC, client: Client) {
