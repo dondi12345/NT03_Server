@@ -18,4 +18,5 @@ export enum PlayerStatus_AAC{
 export enum StateStatus_AAC{
     Lobby,
     Matching,
+    Battle,
 }

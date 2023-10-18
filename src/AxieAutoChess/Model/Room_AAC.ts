@@ -1,18 +1,20 @@
-import { Client, Room } from "colyseus";
+import { Client, Delayed, Room } from "colyseus";
 import { NTDictionary } from "../../Utils/NTDictionary";
 import { State_AAC } from "./State_AAC";
 import { DataModel } from "../../Utils/DataModel";
 import { Message, MessageData } from "../../MessageServer/Model/Message";
 import { MsgCode_AAC } from "./MsgCode_AAC";
-import { PlayerData_AAC } from "./PlayerData_AAC";
+import { PlayerInfor_AAC } from "./PlayerSub_AAC";
 import { controller_AAC } from "../Controller/Controller_AAC";
 import { logController } from "../../LogServer/Controller/LogController";
 
 export class Room_AAC extends Room<State_AAC> {
     maxClients: number = 1;
 
-    playerDataDic : NTDictionary<PlayerData_AAC>;
+    playerInfoDic : NTDictionary<PlayerInfor_AAC>;
     ClientDic : NTDictionary<Client>;
+    
+    delayedInterval!: Delayed;
 
     onCreate(options: any){
         console.log("Room_AAC created!", options);
@@ -26,13 +28,17 @@ export class Room_AAC extends Room<State_AAC> {
                 return;
             }
         })
+        this.delayedInterval = this.clock.setInterval(() => {
+            this.state.timeTurn--;
+            controller_AAC.CheckTime(this);
+        }, 1000);
         this.InitRoom();
     }
 
     onJoin (client: Client, options) {
         this.ClientDic.Add(client.sessionId, client);
         console.log(client.sessionId + ": Join", options)
-        var playerData = DataModel.Parse<PlayerData_AAC>(options);
+        var playerData = DataModel.Parse<PlayerInfor_AAC>(options);
         controller_AAC.PlayerJoin(this, client, playerData);
     }
 
@@ -43,12 +49,12 @@ export class Room_AAC extends Room<State_AAC> {
     }
 
     InitRoom(){
-        this.playerDataDic = new NTDictionary<PlayerData_AAC>();
+        this.playerInfoDic = new NTDictionary<PlayerInfor_AAC>();
         this.ClientDic = new NTDictionary<Client>();
     }
 
     sendToAllClient(...message: string[]){
-        for(let key in this.playerDataDic){
+        for(let key in this.playerInfoDic){
             try {
                 var messageData = new MessageData(message);
                 logController.LogDev("Dev", JSON.stringify(messageData))
