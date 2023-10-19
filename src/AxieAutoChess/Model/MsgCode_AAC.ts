@@ -9,4 +9,6 @@ export const MsgCode_AAC = {
     Update_PlayerChess : 12008,
     Reset_PlayerShop : 12009,
     Reset_PlayerShop_Fail : 12010,
+    SellChess : 12011,
+    SellChess_Fail : 12012,
 }

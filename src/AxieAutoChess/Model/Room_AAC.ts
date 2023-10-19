@@ -38,6 +38,10 @@ export class Room_AAC extends Room<State_AAC> {
                 controller_AAC.ResetPlayerShop(this, client);
                 return;
             }
+            if(message.MessageCode == MsgCode_AAC.SellChess){
+                controller_AAC.SellChess(this, client, message);
+                return;
+            }
         })
         this.delayedInterval = this.clock.setInterval(() => {
             this.state.timeTurn--;

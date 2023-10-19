@@ -1,7 +1,7 @@
 import { Client } from "colyseus";
 import { PlayerStatus_AAC, StateStatus_AAC } from "../Model/Enum_AAC";
 import { Room_AAC } from "../Model/Room_AAC";
-import { BuyChessData_AAC, ChessData_AAC, PlayerChessData_AAC, PlayerData_AAC, PlayerInfo_AAC, PlayerShopData_AAC } from "../Model/PlayerSub_AAC";
+import { BuyChessData_AAC, ChessData_AAC, PlayerChessData_AAC, PlayerData_AAC, PlayerInfo_AAC, PlayerShopData_AAC, SellChessData_AAC } from "../Model/PlayerSub_AAC";
 import { Round, ShopChess, ShopConfig, Start_Config } from "../Config/Config_AAC";
 import { Message, MessageData } from "../../MessageServer/Model/Message";
 import { MsgCode_AAC } from "../Model/MsgCode_AAC";
@@ -79,6 +79,13 @@ class Controller_AAC {
             room.sendToClient(client.sessionId, JSON.stringify(messageData));
             return;
         }
+        var playerData = room.playerDataDic.Get(client.sessionId);
+        if (playerData == undefined || playerData == null) {
+            messageBack.push(JSON.stringify(BuyChessFailMsg("Not found PlayerData")));
+            var messageData = new MessageData(messageBack)
+            room.sendToClient(client.sessionId, JSON.stringify(messageData));
+            return;
+        }
 
         var slot = -1;
         for (let index = 0; index < 9; index++) {
@@ -96,14 +103,6 @@ class Controller_AAC {
         }
         if (slot == -1) {
             messageBack.push(JSON.stringify(BuyChessFailMsg("Cap slot in deck")));
-            var messageData = new MessageData(messageBack)
-            room.sendToClient(client.sessionId, JSON.stringify(messageData));
-            return;
-        }
-
-        var playerData = room.playerDataDic.Get(client.sessionId);
-        if (playerData == undefined || playerData == null) {
-            messageBack.push(JSON.stringify(BuyChessFailMsg("Not found PlayerData")));
             var messageData = new MessageData(messageBack)
             room.sendToClient(client.sessionId, JSON.stringify(messageData));
             return;
@@ -133,6 +132,8 @@ class Controller_AAC {
             }
         }
         if (chess == null || chess == undefined) {
+            var messageData = new MessageData([JSON.stringify(BuyChessFailMsg("Not found Chess"))])
+            room.sendToClient(client.sessionId, JSON.stringify(messageData));
             return;
         }
         chess.Slot = slot;
@@ -162,15 +163,64 @@ class Controller_AAC {
         var messageData = new MessageData(messageBack);
         room.sendToClient(client.sessionId, JSON.stringify(messageData));
     }
+
+    SellChess(room: Room_AAC, client: Client, message: Message) {
+        var messageBack: string[] = [];
+
+        var sellChessData = DataModel.Parse<SellChessData_AAC>(message.Data);
+
+        var playerChessData = room.PlayerChessDataDic.Get(client.sessionId);
+        if (playerChessData == undefined || playerChessData == null) {
+            var messageData = new MessageData([JSON.stringify(SellChessFailMsg("Not found PlayerChess"))])
+            room.sendToClient(client.sessionId, JSON.stringify(messageData));
+            return;
+        }
+        var playerData = room.playerDataDic.Get(client.sessionId);
+        if (playerData == undefined || playerData == null) {
+            var messageData = new MessageData([JSON.stringify(SellChessFailMsg("Not found PlayerData"))])
+            room.sendToClient(client.sessionId, JSON.stringify(messageData));
+            return;
+        }
+        for (let index = 0; index < playerChessData.Chesses.length; index++) {
+            const element = playerChessData.Chesses[index];
+            if (element._id == sellChessData.ChessId) {
+                var chessData = service_AAC.chessDataDic.Get(element.Index.toString());
+                if (chessData == null || chessData == undefined) {
+                    var messageData = new MessageData([JSON.stringify(SellChessFailMsg("Not found chessData"))])
+                    room.sendToClient(client.sessionId, JSON.stringify(messageData));
+                    return;
+                }
+                playerChessData.Chesses.splice(index, 1);
+                playerData.gold += FomuaChessCost(chessData.Cost, element.Star);
+
+                var messageUPC = new Message();
+                messageUPC.MessageCode = MsgCode_AAC.Update_PlayerChess;
+                messageUPC.Data = JSON.stringify(playerChessData);
+
+                var messageUPD = new Message();
+                messageUPD.MessageCode = MsgCode_AAC.Update_PlayerData;
+                messageUPD.Data = JSON.stringify(playerData);
+
+                messageBack.push(JSON.stringify(messageUPC));
+                messageBack.push(JSON.stringify(messageUPD));
+
+                var messageData = new MessageData(messageBack);
+                room.sendToClient(client.sessionId, JSON.stringify(messageData));
+                return;
+            }
+        }
+        var messageData = new MessageData([JSON.stringify(SellChessFailMsg("Not found Chess"))])
+        room.sendToClient(client.sessionId, JSON.stringify(messageData));
+    }
     ResetPlayerShop(room: Room_AAC, client: Client) {
         var messageBack: string[] = [];
         var playerData = room.playerDataDic.Get(client.sessionId);
-        if(playerData == null || playerData == undefined){
+        if (playerData == null || playerData == undefined) {
             var messageData = new MessageData([JSON.stringify(ResetShopFailMsg("Not found playerData"))])
             room.sendToClient(client.sessionId, JSON.stringify(messageData));
             return;
         }
-        if(ShopConfig.ResetCost > playerData.gold){
+        if (ShopConfig.ResetCost > playerData.gold) {
             var messageData = new MessageData([JSON.stringify(ResetShopFailMsg("Not enought gold"))])
             room.sendToClient(client.sessionId, JSON.stringify(messageData));
             return;
@@ -258,4 +308,14 @@ function ResetShopFailMsg(error: string) {
     message.MessageCode = MsgCode_AAC.Reset_PlayerShop_Fail;
     message.Data = error;
     return message;
+}
+function SellChessFailMsg(error: string) {
+    var message = new Message();
+    message.MessageCode = MsgCode_AAC.SellChess_Fail;
+    message.Data = error;
+    return message;
+}
+
+function FomuaChessCost(baseCost: number, star: number) {
+    return baseCost * star;
 }

@@ -34,3 +34,7 @@ export class BuyChessData_AAC{
     SessionId : string;
     ChessId : string;
 }
+export class SellChessData_AAC{
+    SessionId : string;
+    ChessId : string;
+}
