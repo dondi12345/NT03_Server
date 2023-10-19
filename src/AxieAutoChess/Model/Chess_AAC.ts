@@ -12,5 +12,5 @@ export class Chess_AAC {
     "Dmg": number[];
     "CritRate": number;
     "Value": number;
-    "Skill": number
+    "SkillIndex": number
 }

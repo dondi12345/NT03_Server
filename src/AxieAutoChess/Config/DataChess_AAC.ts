@@ -12,7 +12,7 @@ export const dataChess =
         "Dmg" : [70,126,227],
         "CritRate" : 0.25,
         "Value" : 1000,
-        "Skill" : 1
+        "SkillIndex" : 1
     },
     {
         "Index" : 2,
@@ -26,6 +26,6 @@ export const dataChess =
         "Dmg" : [70,126,227],
         "CritRate" : 0.25,
         "Value" : 1000,
-        "Skill" : 1
+        "SkillIndex" : 1
     },
 ]
