@@ -1,3 +1,5 @@
+import { Chess_AAC } from "./Chess_AAC";
+
 export class PlayerInfo_AAC{
     ID : string;
     SessionId : string;
@@ -17,7 +19,17 @@ export class ChessData_AAC{
     Index : number = 0;
     Star : number = 1;
     Slot : number = 0;
-    IsUse : boolean = false; 
+    IsUse : boolean = false;
+}
+export class ChessInShopData_AAC{
+    _id : string;
+    Index : number = 0;
+    Star : number = 1;
+    Player : string = "";
+
+    ParseFromChess(chessData : Chess_AAC){
+        this.Index = chessData.Index;
+    }
 }
 
 export class PlayerChessData_AAC{

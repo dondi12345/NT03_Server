@@ -4,9 +4,11 @@ import { State_AAC } from "./State_AAC";
 import { DataModel } from "../../Utils/DataModel";
 import { Message, MessageData } from "../../MessageServer/Model/Message";
 import { MsgCode_AAC } from "./MsgCode_AAC";
-import { PlayerChessData_AAC, PlayerData_AAC, PlayerInfo_AAC, PlayerShopData_AAC } from "./PlayerSub_AAC";
+import { ChessInShopData_AAC, PlayerChessData_AAC, PlayerData_AAC, PlayerInfo_AAC, PlayerShopData_AAC } from "./PlayerSub_AAC";
 import { controller_AAC } from "../Controller/Controller_AAC";
 import { logController } from "../../LogServer/Controller/LogController";
+import { dataChess } from "../Config/DataChess_AAC";
+import { Types } from "mongoose";
 
 export class Room_AAC extends Room<State_AAC> {
     maxClients: number = 1;
@@ -15,7 +17,13 @@ export class Room_AAC extends Room<State_AAC> {
     playerDataDic : NTDictionary<PlayerData_AAC>;
     ClientDic : NTDictionary<Client>;
     PlayerChessDataDic : NTDictionary<PlayerChessData_AAC>;
-    PlayerShopDataDic : NTDictionary<PlayerShopData_AAC>;
+
+    ShopChess: NTDictionary<ChessInShopData_AAC>;
+    ChessOneGold : ChessInShopData_AAC[];
+    ChessTwoGold : ChessInShopData_AAC[];
+    ChessThreeGold : ChessInShopData_AAC[];
+    ChessFourGold : ChessInShopData_AAC[];
+    ChessFiveGold : ChessInShopData_AAC[];
     
     delayedInterval!: Delayed;
 
@@ -69,7 +77,38 @@ export class Room_AAC extends Room<State_AAC> {
         this.ClientDic = new NTDictionary<Client>();
         this.playerDataDic = new NTDictionary<PlayerData_AAC>();
         this.PlayerChessDataDic = new NTDictionary<PlayerChessData_AAC>();
-        this.PlayerShopDataDic = new NTDictionary<PlayerShopData_AAC>();
+        this.ShopChess = new NTDictionary<ChessInShopData_AAC>();
+        this.ChessOneGold = []
+        this.ChessTwoGold = []
+        this.ChessThreeGold = []
+        this.ChessFourGold = []
+        this.ChessFiveGold = []
+        dataChess.forEach(element => {
+            for (let index = 0; index < element.Amount; index++) {
+                var chessInShopData = new ChessInShopData_AAC();
+                chessInShopData._id = new Types.ObjectId().toString();
+                chessInShopData.ParseFromChess(element);
+                this.ShopChess.Add(chessInShopData._id, chessInShopData);
+                switch (element.Cost) {
+                    case 1:
+                        this.ChessOneGold.push(chessInShopData);
+                        break;
+                    case 2:
+                        this.ChessTwoGold.push(chessInShopData);
+                        break;
+                    case 3:
+                        this.ChessThreeGold.push(chessInShopData);
+                        break;
+                    case 4:
+                        this.ChessFourGold.push(chessInShopData);
+                        break;
+                    case 5:
+                        this.ChessFiveGold.push(chessInShopData);
+                        break;
+                }
+            }
+        });
+        console.log(this.ChessOneGold.length, this.ChessTwoGold.length, this.ChessThreeGold.length, this.ChessFourGold.length, this.ChessFiveGold.length)
     }
 
     sendToAllClient(data){

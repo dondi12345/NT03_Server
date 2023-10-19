@@ -1,8 +1,8 @@
 import { Client } from "colyseus";
 import { PlayerStatus_AAC, StateStatus_AAC } from "../Model/Enum_AAC";
 import { Room_AAC } from "../Model/Room_AAC";
-import { BuyChessData_AAC, ChessData_AAC, PlayerChessData_AAC, PlayerData_AAC, PlayerInfo_AAC, PlayerShopData_AAC, SellChessData_AAC } from "../Model/PlayerSub_AAC";
-import { Round, ShopChess, ShopConfig, Start_Config } from "../Config/Config_AAC";
+import { BuyChessData_AAC, ChessData_AAC, ChessInShopData_AAC, PlayerChessData_AAC, PlayerData_AAC, PlayerInfo_AAC, PlayerShopData_AAC, SellChessData_AAC } from "../Model/PlayerSub_AAC";
+import { RollingChessData, Round, ShopConfig, Start_Config } from "../Config/Config_AAC";
 import { Message, MessageData } from "../../MessageServer/Model/Message";
 import { MsgCode_AAC } from "../Model/MsgCode_AAC";
 import { Types } from "mongoose";
@@ -30,10 +30,6 @@ class Controller_AAC {
         var playerChessData = new PlayerChessData_AAC();
         playerChessData.SessionId = client.sessionId;
         room.PlayerChessDataDic.Add(client.sessionId, playerChessData);
-
-        var playerShopData = new PlayerShopData_AAC();
-        playerShopData.SessionId = client.sessionId;
-        room.PlayerShopDataDic.Add(client.sessionId, playerShopData);
     }
 
     PlayerLeave(room: Room_AAC, client: Client) {
@@ -64,13 +60,15 @@ class Controller_AAC {
         var messageBack: string[] = [];
 
         var buyChessData = DataModel.Parse<BuyChessData_AAC>(message.Data);
-        var playerShopData = room.PlayerShopDataDic.Get(client.sessionId);
-        if (playerShopData == undefined || playerShopData == null) {
+        var chessInShopData = room.ShopChess.Get(buyChessData.ChessId);
+        if (chessInShopData == undefined || chessInShopData == null) {
+            console.log(buyChessData.ChessId,JSON.stringify(chessInShopData))
             messageBack.push(JSON.stringify(BuyChessFailMsg("Not found ChessShop")));
             var messageData = new MessageData(messageBack)
             room.sendToClient(client.sessionId, JSON.stringify(messageData));
             return;
         }
+        
 
         var playerChessData = room.PlayerChessDataDic.Get(client.sessionId);
         if (playerChessData == undefined || playerChessData == null) {
@@ -79,6 +77,15 @@ class Controller_AAC {
             room.sendToClient(client.sessionId, JSON.stringify(messageData));
             return;
         }
+        playerChessData.Chesses.forEach(element => {
+            if(element._id == buyChessData.ChessId){
+                messageBack.push(JSON.stringify(BuyChessFailMsg("Chess Owned")));
+                var messageData = new MessageData(messageBack)
+                room.sendToClient(client.sessionId, JSON.stringify(messageData));
+                return;
+            }
+        });
+
         var playerData = room.playerDataDic.Get(client.sessionId);
         if (playerData == undefined || playerData == null) {
             messageBack.push(JSON.stringify(BuyChessFailMsg("Not found PlayerData")));
@@ -108,44 +115,31 @@ class Controller_AAC {
             return;
         }
 
-        var chess: ChessData_AAC | undefined;
-        for (let index = 0; index < playerShopData.Chesses.length; index++) {
-            const element = playerShopData.Chesses[index];
-            if (element._id == buyChessData.ChessId) {
-                var chessData = service_AAC.chessDataDic.Get(element.Index.toString());
-                if (chessData == null || chessData == undefined) {
-                    messageBack.push(JSON.stringify(BuyChessFailMsg("Not found ChessData")));
-                    var messageData = new MessageData(messageBack)
-                    room.sendToClient(client.sessionId, JSON.stringify(messageData));
-                    return;
-                }
-                if (chessData.Cost > playerData.gold) {
-                    messageBack.push(JSON.stringify(BuyChessFailMsg("Not enought money")));
-                    var messageData = new MessageData(messageBack)
-                    room.sendToClient(client.sessionId, JSON.stringify(messageData));
-                    return;
-                }
-                playerData.gold -= chessData.Cost;
-                chess = element;
-                playerShopData.Chesses.splice(index, 1);
-                break;
-            }
-        }
-        if (chess == null || chess == undefined) {
-            var messageData = new MessageData([JSON.stringify(BuyChessFailMsg("Not found Chess"))])
+        var chessData = service_AAC.chessDataDic.Get(chessInShopData.Index.toString());
+        if (chessData == null || chessData == undefined) {
+            messageBack.push(JSON.stringify(BuyChessFailMsg("Not found ChessData")));
+            var messageData = new MessageData(messageBack)
             room.sendToClient(client.sessionId, JSON.stringify(messageData));
             return;
         }
+        if (chessData.Cost > playerData.gold) {
+            messageBack.push(JSON.stringify(BuyChessFailMsg("Not enought money")));
+            var messageData = new MessageData(messageBack)
+            room.sendToClient(client.sessionId, JSON.stringify(messageData));
+            return;
+        }
+        room.ShopChess.Remove(buyChessData.ChessId);
+        playerData.gold -= chessData.Cost;
+
+        var chess = new ChessData_AAC();
+        chess._id = chessInShopData._id;
+        chess.Index = chessInShopData.Index;
         chess.Slot = slot;
         playerChessData.Chesses.push(chess);
 
         var messageBS = new Message();
         messageBS.MessageCode = MsgCode_AAC.BuyChess_Suc;
         messageBS.Data = JSON.stringify(chess);
-
-        var messageUS = new Message();
-        messageUS.MessageCode = MsgCode_AAC.Update_PlayerShop;
-        messageUS.Data = JSON.stringify(playerShopData);
 
         var messageUPC = new Message();
         messageUPC.MessageCode = MsgCode_AAC.Update_PlayerChess;
@@ -156,7 +150,6 @@ class Controller_AAC {
         messageUPD.Data = JSON.stringify(playerData);
 
         messageBack.push(JSON.stringify(messageBS));
-        messageBack.push(JSON.stringify(messageUS));
         messageBack.push(JSON.stringify(messageUPC));
         messageBack.push(JSON.stringify(messageUPD));
 
@@ -184,14 +177,43 @@ class Controller_AAC {
         for (let index = 0; index < playerChessData.Chesses.length; index++) {
             const element = playerChessData.Chesses[index];
             if (element._id == sellChessData.ChessId) {
-                var chessData = service_AAC.chessDataDic.Get(element.Index.toString());
-                if (chessData == null || chessData == undefined) {
+                var chess = service_AAC.chessDataDic.Get(element.Index.toString());
+                if (chess == null || chess == undefined) {
                     var messageData = new MessageData([JSON.stringify(SellChessFailMsg("Not found chessData"))])
                     room.sendToClient(client.sessionId, JSON.stringify(messageData));
                     return;
                 }
+
+                var amountChess = 1;
+                if (element.Star == 2) amountChess = 3;
+                else if (element.Star == 3) amountChess = 9;
+
+                for (let index = 0; index < amountChess; index++) {
+                    var chessInShopData = new ChessInShopData_AAC();
+                    chessInShopData._id = new Types.ObjectId().toString();
+                    chessInShopData.Index = element.Index;
+                    room.ShopChess.Add(chessInShopData._id, chessInShopData);
+                    switch (chess.Cost) {
+                        case 5:
+                            room.ChessFiveGold.push(chessInShopData);
+                            break;
+                        case 4:
+                            room.ChessFourGold.push(chessInShopData);
+                            break;
+                        case 3:
+                            room.ChessThreeGold.push(chessInShopData);
+                            break;
+                        case 2:
+                            room.ChessTwoGold.push(chessInShopData);
+                            break;
+                        default:
+                            room.ChessOneGold.push(chessInShopData);
+                            break;
+                    }
+                }
+
                 playerChessData.Chesses.splice(index, 1);
-                playerData.gold += FomuaChessCost(chessData.Cost, element.Star);
+                playerData.gold += FomuaChessCost(chess.Cost, element.Star);
 
                 var messageUPC = new Message();
                 messageUPC.MessageCode = MsgCode_AAC.Update_PlayerChess;
@@ -232,8 +254,7 @@ class Controller_AAC {
 
         var playerShopData = new PlayerShopData_AAC();
         playerShopData.SessionId = client.sessionId;
-        playerShopData.Chesses = GetRandomChessForShop();
-        room.PlayerShopDataDic.Add(client.sessionId, playerShopData);
+        playerShopData.Chesses = GetRandomChessForShop(room, client.sessionId, playerData.lv);
         var messageUS = new Message();
         messageUS.MessageCode = MsgCode_AAC.Update_PlayerShop;
         messageUS.Data = JSON.stringify(playerShopData);
@@ -251,20 +272,20 @@ class Controller_AAC {
         room.lock();
         room.state.status = StateStatus_AAC.Matching;
         room.state.timeTurn = Round.prepare_before_round_start;
+
         room.playerDataDic.Keys().forEach(element => {
-            let value: PlayerData_AAC = room.playerDataDic.Get(element);
-            value.gold = Start_Config.Gold;
-            value.exp = Start_Config.Exp;
-            value.lv = Start_Config.Lv;
+            let playerData: PlayerData_AAC = room.playerDataDic.Get(element);
+            playerData.gold = Start_Config.Gold;
+            playerData.exp = Start_Config.Exp;
+            playerData.lv = Start_Config.Lv;
 
             var messageUP = new Message();
             messageUP.MessageCode = MsgCode_AAC.Update_PlayerData;
-            messageUP.Data = JSON.stringify(value);
+            messageUP.Data = JSON.stringify(playerData);
 
             var playerShopData = new PlayerShopData_AAC();
             playerShopData.SessionId = element;
-            playerShopData.Chesses = GetRandomChessForShop();
-            room.PlayerShopDataDic.Add(element, playerShopData);
+            playerShopData.Chesses = GetRandomChessForShop(room, playerData.SessionId, playerData.lv);
             var messageUS = new Message();
             messageUS.MessageCode = MsgCode_AAC.Update_PlayerShop;
             messageUS.Data = JSON.stringify(playerShopData);
@@ -284,15 +305,85 @@ class Controller_AAC {
 
 export const controller_AAC = new Controller_AAC();
 
-function GetRandomChessForShop() {
+function GetRandomChessForShop(room: Room_AAC, sessionId: string, lv: number) {
+    var rollingData = RollingChessData[lv];
     var chessDatas: ChessData_AAC[] = [];
-    for (let i = 0; i < 4; i++) {
-        var index = ShopChess[Math.floor(Math.random() * ShopChess.length)];
+    room.ShopChess.Keys().forEach(element => {
+        var chessInShopData = room.ShopChess.Get(element);
+        if (chessInShopData.Player == sessionId) {
+            chessInShopData.Player = "";
+            var chess = service_AAC.chessDataDic.Get(chessInShopData.Index.toString());
+            room.ShopChess.Add(chessInShopData._id, chessInShopData);
+            switch (chess.Cost) {
+                case 5:
+                    room.ChessFiveGold.push(chessInShopData);
+                    break;
+                case 4:
+                    room.ChessFourGold.push(chessInShopData);
+                    break;
+                case 3:
+                    room.ChessThreeGold.push(chessInShopData);
+                    break;
+                case 2:
+                    room.ChessTwoGold.push(chessInShopData);
+                    break;
+                default:
+                    room.ChessOneGold.push(chessInShopData);
+                    break;
+            }
+        }
+    });
+    for (let i = 0; i < ShopConfig.Amount; i++) {
+        var rand = Math.random();
         var chessData = new ChessData_AAC();
-        chessData._id = new Types.ObjectId().toString();
-        chessData.Index = index;
-        chessDatas.push(chessData);
+        if (rand < rollingData.FiveGold && room.ChessFiveGold.length > 0) {
+            var index = Math.floor(Math.random() * room.ChessFiveGold.length);
+            var chessInShopData = room.ChessFiveGold[index];
+            room.ChessFiveGold.splice(index, 1);
+            room.ShopChess.Get(chessInShopData._id).Player = sessionId;
+            chessData._id = chessInShopData._id;
+            chessData.Index = chessInShopData.Index;
+            chessData.Slot = i;
+            chessDatas.push(chessData)
+        } else if (rand < (rollingData.FiveGold + rollingData.FourGold) && room.ChessFourGold.length > 0) {
+            var index = Math.floor(Math.random() * room.ChessFourGold.length);
+            var chessInShopData = room.ChessFourGold[index];
+            room.ChessFourGold.splice(index, 1);
+            room.ShopChess.Get(chessInShopData._id).Player = sessionId;
+            chessData._id = chessInShopData._id;
+            chessData.Index = chessInShopData.Index;
+            chessData.Slot = i;
+            chessDatas.push(chessData)
+        } else if (rand < (rollingData.FiveGold + rollingData.FourGold + rollingData.ThreeGold) && room.ChessThreeGold.length > 0) {
+            var index = Math.floor(Math.random() * room.ChessThreeGold.length);
+            var chessInShopData = room.ChessThreeGold[index];
+            room.ChessThreeGold.splice(index, 1);
+            room.ShopChess.Get(chessInShopData._id).Player = sessionId;
+            chessData._id = chessInShopData._id;
+            chessData.Index = chessInShopData.Index;
+            chessData.Slot = i;
+            chessDatas.push(chessData)
+        } else if (rand < (rollingData.FiveGold + rollingData.FourGold + rollingData.ThreeGold + rollingData.TwoGold) && room.ChessTwoGold.length > 0) {
+            var index = Math.floor(Math.random() * room.ChessTwoGold.length);
+            var chessInShopData = room.ChessTwoGold[index];
+            room.ChessTwoGold.splice(index, 1);
+            room.ShopChess.Get(chessInShopData._id).Player = sessionId;
+            chessData._id = chessInShopData._id;
+            chessData.Index = chessInShopData.Index;
+            chessData.Slot = i;
+            chessDatas.push(chessData)
+        } else {
+            var index = Math.floor(Math.random() * room.ChessOneGold.length);
+            var chessInShopData = room.ChessOneGold[index];
+            room.ChessOneGold.splice(index, 1);
+            room.ShopChess.Get(chessInShopData._id).Player = sessionId;
+            chessData._id = chessInShopData._id;
+            chessData.Index = chessInShopData.Index;
+            chessData.Slot = i;
+            chessDatas.push(chessData)
+        }
     }
+    console.log(room.ChessOneGold.length, room.ChessTwoGold.length, room.ChessThreeGold.length, room.ChessFourGold.length, room.ChessFiveGold.length)
     return chessDatas;
 }
 
