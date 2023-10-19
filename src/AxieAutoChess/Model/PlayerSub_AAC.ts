@@ -14,7 +14,7 @@ export class PlayerData_AAC{
 
 export class ChessData_AAC{
     _id : string;
-    Index : number;
+    Index : number = 0;
     Star : number = 1;
     Slot : number = 0;
     IsUse : boolean = false; 
@@ -22,10 +22,15 @@ export class ChessData_AAC{
 
 export class PlayerChessData_AAC{
     SessionId : string;
-    Chesses : ChessData_AAC[];
+    Chesses : ChessData_AAC[] = [];
 }
 
 export class PlayerShopData_AAC{
     SessionId : string;
-    Chesses : ChessData_AAC[];
+    Chesses : ChessData_AAC[] = [];
+}
+
+export class BuyChessData_AAC{
+    SessionId : string;
+    ChessId : string;
 }

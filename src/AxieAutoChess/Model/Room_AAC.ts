@@ -30,6 +30,14 @@ export class Room_AAC extends Room<State_AAC> {
                 controller_AAC.PlayerReady(this, client)
                 return;
             }
+            if(message.MessageCode == MsgCode_AAC.BuyChess){
+                controller_AAC.BuyChess(this, client, message)
+                return;
+            }
+            if(message.MessageCode == MsgCode_AAC.Reset_PlayerShop){
+                controller_AAC.ResetPlayerShop(this, client);
+                return;
+            }
         })
         this.delayedInterval = this.clock.setInterval(() => {
             this.state.timeTurn--;
@@ -55,8 +63,9 @@ export class Room_AAC extends Room<State_AAC> {
     InitRoom(){
         this.playerInfoDic = new NTDictionary<PlayerInfo_AAC>();
         this.ClientDic = new NTDictionary<Client>();
-        this.PlayerChessDataDic = new NTDictionary<PlayerChessData_AAC>();
         this.playerDataDic = new NTDictionary<PlayerData_AAC>();
+        this.PlayerChessDataDic = new NTDictionary<PlayerChessData_AAC>();
+        this.PlayerShopDataDic = new NTDictionary<PlayerShopData_AAC>();
     }
 
     sendToAllClient(data){

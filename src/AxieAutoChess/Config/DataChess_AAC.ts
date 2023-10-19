@@ -1,9 +1,9 @@
-const data = 
+export const dataChess = 
 [
     {
         "Index" : 1,
-        "Origin" : "Aqua",
-        "Class" : "Titan",
+        "Origin" : 1,
+        "Class" : 8,
         "Name" : "Neptune",
         "Cost" : 5,
         "HP" : [900,1620,2916],
@@ -16,10 +16,10 @@ const data =
     },
     {
         "Index" : 2,
-        "Origin" : "Aqua",
-        "Class" : "Worrior",
+        "Origin" : 1,
+        "Class" : 2,
         "Name" : "Jinbei",
-        "Cost" : 5,
+        "Cost" : 4,
         "HP" : [900,1620,2916],
         "Def" : 65,
         "MagicDef" : 65,
